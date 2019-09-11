@@ -7,12 +7,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css'
 
 class Header extends Component {
-    state = {
-        isOpen: false
-    };
 
-    toggleCollapse = () => {
-        this.setState({ isOpen: !this.state.isOpen });
+
+    doLogOut = async e => {
+        e.preventDefault();
+        localStorage.setItem('admin_logged_in', '')
+        localStorage.setItem('user_token', '')
+        window.location.reload()
+        alert('Anda Berhasil Log Out!')
     }
 
     render() {
@@ -24,13 +26,13 @@ class Header extends Component {
                             <strong className="white-text"></strong>
                         </MDBNavbarBrand>
                         <MDBNavbarToggler onClick={this.toggleCollapse} />
-                        <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
+                        <MDBCollapse id="navbarCollapse3" navbar>
                             <MDBNavbarNav right>
                                 <MDBNavItem active>
-                                    <MDBNavLink to="#!">Home</MDBNavLink>
+                                    <MDBNavLink >Home</MDBNavLink>
                                 </MDBNavItem>
                                 <MDBNavItem>
-                                    <MDBNavLink to="#!">Logout</MDBNavLink>
+                                    <MDBNavLink onClick={this.doLogOut}>Logout</MDBNavLink>
                                 </MDBNavItem>
                             </MDBNavbarNav>
 

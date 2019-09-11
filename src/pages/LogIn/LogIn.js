@@ -20,6 +20,7 @@ class LogIn extends Component {
         this.password = React.createRef();
     }
 
+
     // post action to API to login
     doLogIn = async e => {
         e.preventDefault();
@@ -80,7 +81,6 @@ class LogIn extends Component {
 
             </div >
         );
-
     }
 }
 
