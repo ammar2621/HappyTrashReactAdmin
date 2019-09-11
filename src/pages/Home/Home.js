@@ -11,6 +11,10 @@ import { connect } from "unistore/react";
 import { actions } from "../../store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
+import OrderImage from './img/tracking.png'
+import CategoryImage from './img/list.png'
+import TrashImage from './img/plastic-bag.png'
+import RewardImage from './img/medal.png'
 import './Home.css'
 
 class Home extends Component {
@@ -43,42 +47,47 @@ class Home extends Component {
 
     render() {
         return (
-            <div style={{ height: "100vh" }}>
-                <Header style={{
-                    position: "sticky",
-                    bottom: "0"
-                }} />
-                <MDBContainer >
+            <div style={{ height: "100vh" }} >
+                <Header />
+                <MDBContainer id="home" style={{ height: "100vh" }} fluid>
                     <MDBRow center='true' className="justify-content-center">
-                        <MDBCol md="6" >
+                        <MDBCol md="6" className="text-center" >
                             <br />
+                            <h1 className="text-center">Admin Dasbor</h1>
+                            <h2 className="text-center">Silakan Pilih Menu</h2>
                             <br />
+                            <MDBBtn className="rounded-pill menubutton" type="submit">
+                                <img
+                                    class=""
+                                    src={OrderImage}
+                                    alt="Order"
+                                    height="40px"
+                                />&nbsp; Order</MDBBtn>
                             <br />
-                            <h1 className="text-center">Admin Dashboard</h1>
+                            <MDBBtn className="rounded-pill menubutton" type="submit">
+                                <img
+                                    class=""
+                                    src={CategoryImage}
+                                    alt="Category"
+                                    height="40px"
+                                />&nbsp; Kategori</MDBBtn>
                             <br />
-                            <form>
-                                <p className="h4 text-center mb-4">Sign in</p>
-                                <label htmlFor="defaultFormLoginEmailEx" className="grey-text">
-                                    Your email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="defaultFormLoginEmailEx"
-                                    className="form-control"
-                                />
-                                <br />
-                                <label htmlFor="defaultFormLoginPasswordEx" className="grey-text">
-                                    Your password
-                                </label>
-                                <input
-                                    type="password"
-                                    id="defaultFormLoginPasswordEx"
-                                    className="form-control"
-                                />
-                                <div className="text-center mt-4">
-                                    <MDBBtn className="rounded-pill" style={{ width: "145px", fontWeight: "700" }} onClick={this.doLogIn} id="LoginButton" type="submit">Login</MDBBtn>
-                                </div>
-                            </form>
+                            <MDBBtn className="rounded-pill menubutton" type="submit">
+                                <img
+                                    class=""
+                                    src={TrashImage}
+                                    alt="Order"
+                                    height="40px"
+                                /> Jenis Sampah</MDBBtn>
+                            <br />
+                            <MDBBtn className="rounded-pill menubutton" type="submit"> <img
+                                class=""
+                                src={RewardImage}
+                                alt="Order"
+                                height="40px"
+                            />&nbsp; Hadiah </MDBBtn>
+                            <br />
+
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer >
