@@ -146,19 +146,19 @@ class Trash extends Component {
 
 
                                             <tr>
-                                                <td>1</td>
-                                                <td>1</td>
-                                                <td>Plastik</td>
-                                                <td>http</td>
-                                                <td>1</td>
-                                                <td>Rp. X</td>
-                                                <td>tanggalsekarang</td>
-                                                <td>tanggalsekarang</td>
-                                                <td><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
+                                                <td valign="bottom"> 1</td>
+                                                <td valign="bottom"> 1</td>
+                                                <td valign="bottom"> Plastik</td>
+                                                <td valign="bottom"> http</td>
+                                                <td valign="bottom"> 1</td>
+                                                <td valign="bottom"> Rp. X</td>
+                                                <td valign="bottom"> tanggalsekarang</td>
+                                                <td valign="bottom"> tanggalsekarang</td>
+                                                <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
                                                     Change
                                                         </button>
                                                 </td>
-                                                <td><button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" >
+                                                <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}>
                                                     Delete
                                                 </button></td>
                                             </tr>
