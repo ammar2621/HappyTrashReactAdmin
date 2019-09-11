@@ -1,0 +1,40 @@
+{
+  "name": "your-app",
+  "version": "0.1.0",
+  "private": true,
+  "// If You want to install mdbreact from our GitLab repository, please replace '4.19.1' with gitURL provided here ->": "git+https://oauth2:<YOUR-TOKEN-GOES-HERE>@git.mdbootstrap.com/mdb/react/re-pro.git",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "mdbreact": "4.19.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "sweetalert2": "^8.17.1",
+    "unistore": "^3.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "rename": "renamer --find App-clear.js --replace App.js ./src/App-clear.js && renamer --find style.css --replace index.css ./src/style.css ",
+    "remove-demo": "rimraf ./src/assets ./src/components ./src/pages ./src/Routes.js ./src/App.js ./src/index.css && npm run rename"
+  },
+  "devDependencies": {
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "renamer": "^1.0.0",
+    "rimraf": "^2.6.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
