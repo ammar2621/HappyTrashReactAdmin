@@ -10,6 +10,8 @@ import Home from './pages/Home/Home'
 import LogIn from './pages/LogIn/LogIn'
 import Trash from './pages/Trash/Trash'
 import TrashEdit from './pages/Trash/TrashEdit'
+import Category from './pages/Category/Category'
+import CategoryEdit from './pages/Category/CategoryEdit'
 
 class MainRoute extends React.Component {
     render() {
@@ -20,6 +22,8 @@ class MainRoute extends React.Component {
                     <Route exact path="/" component={Home} />
                     <Route exact path="/trash" component={Trash} />
                     <Route exact path="/trash/edit/:id" component={TrashEdit} />
+                    <Route exact path="/category" component={Category} />
+                    <Route exact path="/category/edit/:category_id" component={CategoryEdit} />
                 </Switch>
             </Router>
         );
