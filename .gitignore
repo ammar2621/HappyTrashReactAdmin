@@ -1,3 +1,8 @@
 node_modules/
+<<<<<<< HEAD
 License.pdf
 README.txt
+=======
+README.txt
+License.pdf
+>>>>>>> e4ee7a6b0d2545e38c05682081815226fcf1c3d8
