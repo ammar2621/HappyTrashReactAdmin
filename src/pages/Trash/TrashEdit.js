@@ -38,7 +38,7 @@ class Trash extends Component {
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
             return (
-                <div>
+                <div style={{ height: "100vh" }}>
                     <Header />
                     <MDBContainer>
                         <br />
@@ -101,8 +101,8 @@ class Trash extends Component {
                             <br />
 
 
-                            <button class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
-                                Add
+                            <button class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}>
+                                Edit
                   </button>
 
                         </form>

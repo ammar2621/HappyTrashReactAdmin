@@ -38,7 +38,7 @@ class Trash extends Component {
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
             return (
-                <div>
+                <div style={{ height: "100vh" }}>
                     <Header />
                     <MDBContainer>
                         <br />
