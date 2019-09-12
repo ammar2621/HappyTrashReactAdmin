@@ -23,5 +23,6 @@ div {
 color: black
 }
 
-#bodyreward {
+.button-view-image-reward {
+    background-color: #49B462 !important;
 }

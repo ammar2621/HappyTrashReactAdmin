@@ -1,12 +1,18 @@
 import React, { Component } from "react";
 import {
+    MDBBtn,
     MDBContainer,
     MDBTabPane,
     MDBTabContent,
     MDBNav,
     MDBNavItem,
-    MDBNavLink
+    MDBNavLink,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter
 } from "mdbreact";
+
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -19,7 +25,8 @@ import './Reward.css'
 
 class Reward extends Component {
     state = {
-        activeItem: "1"
+        activeItem: "1",
+        modal: false
     }
 
     constructor(props) {
@@ -39,6 +46,12 @@ class Reward extends Component {
         }
     };
 
+    toggleModal = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    }
+
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
             return (
@@ -51,17 +64,17 @@ class Reward extends Component {
                             <MDBNavItem>
                                 <MDBNavLink className="tab-reward" active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >
                                     Tambah Hadiah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                             <MDBNavItem>
                                 <MDBNavLink className="tab-reward" active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >
                                     List Hadiah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                             <MDBNavItem>
                                 <MDBNavLink className="tab-reward" active={this.state.activeItem === "3"} onClick={this.toggle("3")} role="tab" >
                                     Penerima Hadiah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem} >
@@ -138,9 +151,13 @@ class Reward extends Component {
                                                 <td valign="bottom"> tangalseakarang</td>
                                                 <td valign="bottom"> tanggalsekarang</td>
                                                 <td valign="bottom">
-                                                    <button className="btn btn-lg btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                        Lihat
-                                                        </button>
+                                                    <MDBBtn style={{ padding: "4px" }} className="button-view-image-reward  btn btn-lg btn-block rounded-pill" onClick={this.toggleModal}>Lihat</MDBBtn>
+                                                    <MDBModal isOpen={this.state.modal} toggle={this.toggleModal} centered>
+                                                        <MDBModalHeader toggle={this.toggleModal} ></MDBModalHeader>
+                                                        <MDBModalBody className="text-center">
+                                                            <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
+                                                        </MDBModalBody>
+                                                    </MDBModal>
                                                 </td>
                                                 <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
                                                     Ubah
