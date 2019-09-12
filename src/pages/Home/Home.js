@@ -3,8 +3,7 @@ import {
     MDBBtn,
     MDBCol,
     MDBContainer,
-    MDBRow,
-    MDBInput
+    MDBRow
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
@@ -22,9 +21,7 @@ class Home extends Component {
         super(props);
     }
 
-
     render() {
-
         if (localStorage.getItem('admin_logged_in') == 'true') {
             return (
                 <div style={{ height: "100vh" }} >
@@ -36,42 +33,48 @@ class Home extends Component {
                                 <h1 className="text-center">Admin Dasbor</h1>
                                 <h2 className="text-center">Silakan Pilih Menu</h2>
                                 <br />
-                                <MDBBtn className="rounded-pill menubutton" type="submit">
-                                    <img
-                                        class=""
-                                        src={OrderImage}
-                                        alt="Order"
+                                <Link to="/order" >
+                                    <MDBBtn className="rounded-pill menubutton" type="submit">
+                                        <img
+                                            class=""
+                                            src={OrderImage}
+                                            alt="Order"
+                                            height="40px"
+                                        />&nbsp; Order
+                                        </MDBBtn>
+                                </Link>
+                                <br />
+                                <Link to="/category" >
+                                    <MDBBtn className="rounded-pill menubutton" type="submit">
+                                        <img
+                                            src={CategoryImage}
+                                            alt="Category"
+                                            height="40px"
+                                        />&nbsp; Kategori</MDBBtn>
+                                </Link>
+                                <br />
+                                <Link to="/trash" >
+                                    <MDBBtn className="rounded-pill menubutton" type="submit">
+                                        <img
+                                            src={TrashImage}
+                                            alt="Trash"
+                                            height="40px"
+                                        /> Jenis Sampah
+                                    </MDBBtn>
+                                </Link>
+                                <br />
+                                <Link to="/reward">
+                                    <MDBBtn className="rounded-pill menubutton" type="submit"> <img
+                                        src={RewardImage}
+                                        alt="Reward"
                                         height="40px"
-                                    />&nbsp; Order</MDBBtn>
+                                    />&nbsp; Hadiah
+                                </MDBBtn>
+                                </Link>
                                 <br />
-                                <MDBBtn className="rounded-pill menubutton" type="submit">
-                                    <img
-                                        class=""
-                                        src={CategoryImage}
-                                        alt="Category"
-                                        height="40px"
-                                    />&nbsp; Kategori</MDBBtn>
-                                <br />
-                                <MDBBtn className="rounded-pill menubutton" type="submit">
-                                    <img
-                                        class=""
-                                        src={TrashImage}
-                                        alt="Order"
-                                        height="40px"
-                                    /> Jenis Sampah</MDBBtn>
-                                <br />
-                                <MDBBtn className="rounded-pill menubutton" type="submit"> <img
-                                    class=""
-                                    src={RewardImage}
-                                    alt="Order"
-                                    height="40px"
-                                />&nbsp; Hadiah </MDBBtn>
-                                <br />
-
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer >
-
                 </div >
             );
         } else {
