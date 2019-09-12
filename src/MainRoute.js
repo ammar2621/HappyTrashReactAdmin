@@ -12,6 +12,8 @@ import Trash from './pages/Trash/Trash'
 import TrashEdit from './pages/Trash/TrashEdit'
 import Category from './pages/Category/Category'
 import CategoryEdit from './pages/Category/CategoryEdit'
+import Reward from './pages/Reward/Reward'
+import RewardEdit from './pages/Reward/RewardEdit'
 
 class MainRoute extends React.Component {
     render() {
@@ -21,9 +23,11 @@ class MainRoute extends React.Component {
                     <Route exact path="/login" component={LogIn} />
                     <Route exact path="/" component={Home} />
                     <Route exact path="/trash" component={Trash} />
-                    <Route exact path="/trash/edit/:id" component={TrashEdit} />
+                    <Route exact path="/trash/edit/:trash_id" component={TrashEdit} />
                     <Route exact path="/category" component={Category} />
                     <Route exact path="/category/edit/:category_id" component={CategoryEdit} />
+                    <Route exact path="/reward" component={Reward} />
+                    <Route exact path="/reward/edit/:reward_id" component={RewardEdit} />
                 </Switch>
             </Router>
         );
