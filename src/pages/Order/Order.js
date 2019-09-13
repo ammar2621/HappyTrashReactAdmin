@@ -201,8 +201,8 @@ class Order extends Component {
                                                                 <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
                                                                     <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
                                                                     <MDBModalBody className="text-center">
-                                                                        <h4>Nama: Aulia</h4>
-                                                                        <h4>No HP: 085726317***</h4>
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
@@ -275,8 +275,8 @@ class Order extends Component {
                                                                 <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
                                                                     <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
                                                                     <MDBModalBody className="text-center">
-                                                                        <h4>Nama: Aulia</h4>
-                                                                        <h4>No HP: 085726317***</h4>
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
@@ -344,8 +344,8 @@ class Order extends Component {
                                                                 <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
                                                                     <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
                                                                     <MDBModalBody className="text-center">
-                                                                        <h4>Nama: Aulia</h4>
-                                                                        <h4>No HP: 085726317***</h4>
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
