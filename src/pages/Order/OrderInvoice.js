@@ -118,7 +118,6 @@ class OrderInvoice extends Component {
 
                                     <tr>
                                         <th colSpan="1" className="text-right">Total:</th>
-
                                         <td>20 kg</td>
                                         <td>Rp 50000</td>
                                         <td>20</td>
