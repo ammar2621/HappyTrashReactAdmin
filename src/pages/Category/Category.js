@@ -50,6 +50,7 @@ class Category extends Component {
         };
         axios(config).then(function (response) {
             console.log(response)
+            self.componentDidMount()
         }).catch(function (error) {
             console.log(error)
         })
@@ -191,5 +192,4 @@ class Category extends Component {
         }
     }
 }
-// export default Category;
 export default connect("url", actions)(Category);
