@@ -14,16 +14,14 @@ import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 
 class Category extends Component {
-    state = {
-        activeItem: "1"
-    }
+
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
-        this.point = React.createRef();
-        this.categoryID = React.createRef();
+        this.doSubmit = this.doSubmit.bind(this);
+        this.state = {
+            activeItem: "1"
+        }
     }
 
 
@@ -34,6 +32,28 @@ class Category extends Component {
             });
         }
     };
+
+    doSubmit = e => {
+        console.log('Masuk')
+        console.log(this.name)
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "POST",
+            url: self.props.url + "/v1/trash_category",
+            data: {
+                category_name: self.name.current.value
+            },
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        };
+        axios(config).then(function (response) {
+            console.log(response)
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
@@ -67,6 +87,7 @@ class Category extends Component {
                                         id="inputName"
                                         class="form-control"
                                         placeholder="Nama"
+                                        ref={this.name}
 
                                     />
                                     <br />
@@ -123,4 +144,5 @@ class Category extends Component {
         }
     }
 }
-export default Category;
+// export default Category;
+export default connect("url", actions)(Category);
