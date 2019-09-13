@@ -20,10 +20,6 @@ class CategoryEdit extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
-        this.point = React.createRef();
-        this.categoryID = React.createRef();
     }
 
 
@@ -34,6 +30,28 @@ class CategoryEdit extends Component {
             });
         }
     };
+
+    editCategory = (e, id) => {
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "PUT",
+            url: self.props.url + "/v1/trash_category/" + id,
+            data: {
+                category_name: self.name.current.value
+            },
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config).then(function (response) {
+            console.log(response)
+            self.props.history.push('/category')
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
@@ -52,10 +70,12 @@ class CategoryEdit extends Component {
                                 id="inputName"
                                 class="form-control"
                                 placeholder="Nama"
+                                ref={this.name}
 
                             />
                             <br />
-                            <button class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}>
+                            <button class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}
+                                onClick={e => this.editCategory(e, this.props.match.params.category_id)}>
                                 Edit
                   </button>
 
@@ -68,4 +88,4 @@ class CategoryEdit extends Component {
         }
     }
 }
-export default CategoryEdit;
+export default connect("url", actions)(CategoryEdit);
