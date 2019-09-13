@@ -38,7 +38,6 @@ class LogIn extends Component {
                         }
                     })
                     .then(response => {
-                        console.log(response.data.claims.role)
                         if (response.data.claims.role === true) {
                             localStorage.setItem('admin_logged_in', true)
                             this.props.history.push('/')
