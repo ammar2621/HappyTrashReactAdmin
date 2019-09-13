@@ -23,11 +23,12 @@ class Header extends Component {
         }
     }
 
+    // to collapse or open the navbar
     toggleCollapse = () => {
         this.setState({ isOpen: !this.state.isOpen });
     }
 
-
+    // to log out from account
     doLogOut = async e => {
         localStorage.setItem('admin_logged_in', '')
         localStorage.setItem('user_token', '')
@@ -40,7 +41,6 @@ class Header extends Component {
 
     render() {
         return (
-            // <Router>
             <MDBNavbar id="navbar" color="default-color" dark expand="md">
                 <MDBNavbarBrand>
                     <Link to="/">
