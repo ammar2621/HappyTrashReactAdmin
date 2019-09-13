@@ -12,6 +12,22 @@ div {
 color: black
 }
 
+.thead-white {
+    background-color: white !important;
+    color: black !important;
+}
+
+.thead-white h4 {
+    font-weight: 700 !important;
+}
+
+.thead-green {
+    background-color: #49B462 !important;
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+
 .button-view-image-reward {
     background-color: #49B462 !important;
 }
@@ -19,4 +35,26 @@ color: black
 .button-white {
     background-color: white !important;
     color: black !important;
+}
+
+#add-button-order {
+    font-weight: 700;
+    padding: 6px;
+    background-color: #49B462 !important;
+}
+
+#checkout-button-order {
+    font-weight: 700;
+    padding: 6px;
+}
+
+
+#add-button-order:hover, #checkout-button-order:hover{
+    font-weight: 700;
+    padding: 6px;
+    background-color: #F8DB3D !important;
+}
+
+.bold-text {
+    font-weight: 700 !important;
 }

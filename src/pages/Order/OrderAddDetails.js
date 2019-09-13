@@ -12,6 +12,7 @@ import { connect } from "unistore/react";
 import { actions } from "../../store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
+import './Order.css'
 
 class OrderAddDetails extends Component {
     constructor(props) {
@@ -30,48 +31,38 @@ class OrderAddDetails extends Component {
                     <Header />
                     <MDBContainer id="bodyreward">
                         <br />
-                        <h2 id="titlerewardedit">Edit Hadiah</h2>
+                        <h2 id="titlerewardedit">Tambah Detail Order</h2>
                         <form class="form-signin">
                             <label for="inputName">
-                                Nama:
+                                Jenis Sampah:
                                     </label>
-                            <input
-                                type="text"
-                                id="inputName"
-                                class="form-control"
-                                placeholder="Nama"
 
-                            />
+                            <select class="form-control" id="status pembayaran">
+                                <option value="0"> Plastik Campuran</option>
+                                <option value="10"> Plastik Bersih</option>
+                                <option value="20">Kardus</option>
+                                <option value="30">Koran</option>
+                                <option value="98">Besi</option>
+                                <option value="99">Besi</option>
+                            </select>
                             <br />
                             <label for="inputPoint  ">
-                                Poin:
+                                Berat (kg):
                                     </label>
                             <input
                                 type="number"
                                 id="inputPoint  "
                                 class="form-control"
-                                placeholder="Nilai Poin"
+                                placeholder="Berat"
                                 min="1"
                             />
                             <br />
-                            <label for="inputStock">
-                                Stok:
-                                    </label>
-                            <input
-                                type="number"
-                                id="inputStock"
-                                class="form-control"
-                                placeholder="Stok"
-                                min="0"
-                            />
-                            <br />
-                            <label for="inputPhoto" >
-                                Upload Foto (Jika Ingin Diubah):
-                                    </label> <br />
-                            <progress value="0" max="100" style={{ width: "100%" }} /> <br />
-                            <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
-                            <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
-                                Edit
+                            <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                                Tambah Sampah Lagi
+                                    </button> <br />
+
+                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                                Checkout
                                     </button> <br />
 
                         </form>
