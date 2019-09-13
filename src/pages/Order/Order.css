@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,700&display=swap');
+
+div {
+    font-family: 'Muli', sans-serif;
+}
+
+#titlereward, #titlerewardedit {
+    font-weight: 700;
+}
+
+.tab-reward {
+color: black
+}
+
+.button-view-image-reward {
+    background-color: #49B462 !important;
+}
+
+.button-white {
+    background-color: white !important;
+    color: black !important;
+}

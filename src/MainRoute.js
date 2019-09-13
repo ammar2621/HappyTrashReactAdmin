@@ -14,6 +14,8 @@ import Category from './pages/Category/Category'
 import CategoryEdit from './pages/Category/CategoryEdit'
 import Reward from './pages/Reward/Reward'
 import RewardEdit from './pages/Reward/RewardEdit'
+import Order from './pages/Order/Order'
+import OrderEdit from './pages/Order/Order'
 
 class MainRoute extends React.Component {
     render() {
@@ -28,6 +30,8 @@ class MainRoute extends React.Component {
                     <Route exact path="/category/edit/:category_id" component={CategoryEdit} />
                     <Route exact path="/reward" component={Reward} />
                     <Route exact path="/reward/edit/:reward_id" component={RewardEdit} />
+                    <Route exact path="/order" component={Order} />
+                    <Route exact path="/order/edit:order_id" component={OrderEdit} />
                 </Switch>
             </Router>
         );
