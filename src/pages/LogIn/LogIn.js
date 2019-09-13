@@ -3,8 +3,7 @@ import {
     MDBBtn,
     MDBCol,
     MDBContainer,
-    MDBRow,
-    MDBInput
+    MDBRow
 } from 'mdbreact';
 import axios from 'axios';
 import { connect } from 'unistore/react';
@@ -31,7 +30,7 @@ class LogIn extends Component {
             })
             .then(response => {
                 localStorage.setItem('admin_token', response.data.token)
-                // get action to check the role if is it ADMIN or NOT
+                // get action to API to check the role if is it ADMIN or NOT
                 axios
                     .get(this.props.url + '/v1/auth', {
                         headers: {
@@ -94,7 +93,7 @@ class LogIn extends Component {
                                     id='defaultFormLoginEmailEx'
                                     className='form-control'
                                     ref={this.email}
-                                    required
+                                    required='required'
                                 />
                                 <br />
                                 <label htmlFor='defaultFormLoginPasswordEx' className='grey-text'>
@@ -105,7 +104,7 @@ class LogIn extends Component {
                                     id='defaultFormLoginPasswordEx'
                                     className='form-control'
                                     ref={this.password}
-                                    required
+                                    required='required'
                                 />
                                 <div className='text-center mt-4'>
                                     <MDBBtn className='rounded-pill' style={{ width: '145px', fontWeight: '700' }} onClick={this.doLogIn} id='LoginButton' type='submit'>Masuk</MDBBtn>
