@@ -6,10 +6,7 @@ import {
     MDBNav,
     MDBNavItem,
     MDBNavLink,
-    MDBBtn,
-    MDBModal,
-    MDBModalBody,
-    MDBModalHeader
+    MDBBtn
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
@@ -62,7 +59,7 @@ class Trash extends Component {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan Huruf Untuk Nama!'
+                text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
             })
             return false
         } else if (!regex_number.test(this.point.current.value)) {
@@ -156,6 +153,12 @@ class Trash extends Component {
             })
     }
 
+    // Function to pop up image
+    openImage = (e, url) => {
+        Swal.fire({
+            html: `<img src=${url} style='max-width: 480px' class="text-center">`
+        })
+    }
 
     // function operate after renderred, to get the list of trashes and category of trashes
     componentDidMount = async () => {
@@ -276,9 +279,16 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
+                                    <label for="inputPhotoURL">
+                                        Upload Foto (masih dalam pengembangan):
+                                    </label>
+                                    <progress value="30" max="100" style={{ width: "100%" }} /> <br />
+                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
                                     <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
                                         Tambah
                                     </button>
+                                    <br />
+                                    <br />
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
@@ -306,21 +316,24 @@ class Trash extends Component {
                                                         <td valign="bottom"> {item.trash_category_id}</td>
                                                         <td valign="bottom"> {item.trash_name}</td>
                                                         <td valign="bottom">
-                                                            <a href={item.photo} >
-                                                                <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                >
-                                                                    Lihat
+                                                            <MDBBtn style={{ padding: "4px" }}
+                                                                className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                onClick={e => this.openImage(e, item.photo)}
+                                                            >
+                                                                Lihat
                                                             </MDBBtn>
-                                                            </a>
                                                         </td>
                                                         <td valign="bottom"> {item.point}</td>
                                                         <td valign="bottom"> Rp. {item.price}</td>
                                                         <td valign="bottom"> {item.created_at.slice(0, 26)}</td>
                                                         <td valign="bottom"> {item.updated_at.slice(0, 26)}</td>
-                                                        <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                            Change
+                                                        <td valign="bottom">
+
+                                                            <Link to={"/trash/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
+                                                            >
+                                                                Edit
                                                         </button>
+                                                            </Link>
                                                         </td>
                                                         <td valign="bottom">
                                                             <button className="btn btn-lg btn-danger btn-block rounded-pill"
