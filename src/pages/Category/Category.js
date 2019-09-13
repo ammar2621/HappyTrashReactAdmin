@@ -73,6 +73,26 @@ class Category extends Component {
         })
     }
 
+    deleteCategory = (e, id) => {
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "DELETE",
+            url: self.props.url + "/v1/trash_category/" + id,
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+        axios(config)
+            .then(function (response) {
+                console.log(response)
+                self.componentDidMount()
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+    }
+
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
             return (
@@ -138,11 +158,16 @@ class Category extends Component {
                                                         <td valign="bottom"> {elm.category_name}</td>
                                                         <td valign="bottom"> {elm.created_at}</td>
                                                         <td valign="bottom"> {elm.updated_at}</td>
-                                                        <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                            Edit
+                                                        <td valign="bottom">
+                                                            <Link to={"/category/edit/" + elm.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
+                                                            >
+                                                                Edit
                                                         </button>
+                                                            </Link>
                                                         </td>
-                                                        <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}>
+                                                        <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}
+                                                            onClick={e => this.deleteCategory(e, elm.id)}
+                                                        >
                                                             Hapus
                                                 </button></td>
                                                     </tr>
