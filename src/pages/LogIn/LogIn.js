@@ -16,28 +16,26 @@ class LogIn extends Component {
     constructor(props) {
         super(props);
         this.doLogIn = this.doLogIn.bind(this);
-        this.username = React.createRef();
+        this.email = React.createRef();
         this.password = React.createRef();
     }
-
 
     // post action to API to login
     doLogIn = async e => {
         e.preventDefault();
-        localStorage.setItem('admin_logged_in', true)
-        window.location.reload()
         const self = this;
         await axios
-            .post(this.props.url + "/api/login/admin", {
-                username: self.state.username,
-                password: self.state.password
+            .post(this.props.url + "/v1/auth", {
+                email: this.email.current.value,
+                password: this.password.current.value
             })
             .then(response => {
                 localStorage.setItem('admin_logged_in', true)
                 localStorage.setItem('admin_token', response.data.token)
-                window.location.reload()
+                this.props.history.push('/')
             })
             .catch(error => {
+                alert('Password atau Email Salah!')
             });
     };
 
@@ -50,26 +48,30 @@ class LogIn extends Component {
                             <br />
                             <br />
                             <br />
-                            <h1 className="text-center">Admin Dasbor</h1>
+                            <h1 className="text-center">Dasbor Admin</h1>
                             <br />
                             <form>
-                                <p className="h4 text-center mb-4">Sign in</p>
+                                <p className="h4 text-center mb-4">Login</p>
                                 <label htmlFor="defaultFormLoginEmailEx" className="grey-text">
-                                    Your email
+                                    Email:
                                 </label>
                                 <input
                                     type="email"
                                     id="defaultFormLoginEmailEx"
                                     className="form-control"
+                                    ref={this.email}
+                                    required
                                 />
                                 <br />
                                 <label htmlFor="defaultFormLoginPasswordEx" className="grey-text">
-                                    Your password
+                                    Password:
                                 </label>
                                 <input
                                     type="password"
                                     id="defaultFormLoginPasswordEx"
                                     className="form-control"
+                                    ref={this.password}
+                                    required
                                 />
                                 <div className="text-center mt-4">
                                     <MDBBtn className="rounded-pill" style={{ width: "145px", fontWeight: "700" }} onClick={this.doLogIn} id="LoginButton" type="submit">Masuk</MDBBtn>
@@ -78,10 +80,9 @@ class LogIn extends Component {
                         </MDBCol>
                     </MDBRow>
                 </MDBContainer >
-
             </div >
         );
     }
 }
 
-export default LogIn;
+export default connect("url", actions)(LogIn);
