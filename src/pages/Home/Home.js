@@ -30,7 +30,7 @@ class Home extends Component {
                         <MDBRow center='true' className="justify-content-center">
                             <MDBCol md="6" className="text-center" >
                                 <br />
-                                <h1 className="text-center">Admin Dasbor</h1>
+                                <h1 className="text-center">Dasbor Admin</h1>
                                 <h2 className="text-center">Silakan Pilih Menu</h2>
                                 <br />
                                 <Link to="/order" >

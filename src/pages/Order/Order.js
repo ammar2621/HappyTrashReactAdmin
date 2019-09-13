@@ -28,7 +28,6 @@ class Order extends Component {
         super(props);
         this.state = {
             activeItem: "1",
-            modal: false,
             modalUser: false,
             modalAddress: false,
             modalPhoto: false

@@ -2,7 +2,6 @@
 
 #home {
     font-family: 'Muli', sans-serif;
-    background-color: #F0F0F0;
 }
 
 div h1 {
@@ -11,7 +10,7 @@ div h1 {
 }
 
 .menubutton {
-    background-color: #F0F0f0 !important;
+    background-color: #ffffff !important;
     color: #000 !important;
     width: 100%;
     max-width: 300px;
