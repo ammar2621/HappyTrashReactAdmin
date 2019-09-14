@@ -49,44 +49,44 @@ class Reward extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         if (e.target.files[0]) {
-          this.state.photo = e.target.files[0];
-          console.log(e.target.files[0])
+            this.state.photo = e.target.files[0];
+            console.log(e.target.files[0])
         }
-      };
-    
+    };
+
     // function to upload photo to cloud storage
     handleUploadPhoto = event => {
-    event.preventDefault();
-    try {
-        const uploadTask = storage
-        .ref(`images/${this.state.photo.name}`)
-        .put(this.state.photo);
-        uploadTask.on(
-        "state_changed",
-        snapshot => {
-            //progress Function
-            const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            this.setState({ progress });
-        },
-        error => {
-            console.log(error);
-        },
-        () => {
-            //Complete Function
-            storage
-            .ref("images")
-            .child(this.state.photo.name)
-            .getDownloadURL()
-            .then(url => {
-                this.setState({ urlPhoto: url });
-                console.log(this.state.urlPhoto);
-            });
+        event.preventDefault();
+        try {
+            const uploadTask = storage
+                .ref(`images/${this.state.photo.name}`)
+                .put(this.state.photo);
+            uploadTask.on(
+                "state_changed",
+                snapshot => {
+                    //progress Function
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    this.setState({ progress });
+                },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    //Complete Function
+                    storage
+                        .ref("images")
+                        .child(this.state.photo.name)
+                        .getDownloadURL()
+                        .then(url => {
+                            this.setState({ urlPhoto: url });
+                            console.log(this.state.urlPhoto);
+                        });
+                }
+            );
+        } catch (err) {
+            console.log("File Kosong");
         }
-        );
-    } catch (err) {
-        console.log("File Kosong");
-    }
     };
 
     // add the reward (post to API)
@@ -167,7 +167,7 @@ class Reward extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 50vh' class="text-center">`
+            html: `<img src=${url} style='max-width: 90vw; max-height: 90vh;' class="text-center">`
         })
     }
 
@@ -284,12 +284,12 @@ class Reward extends Component {
                                     <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <image src={this.state.photo}/>
+                                    <image src={this.state.photo} />
                                     <br />
                                     <br />
                                     <button onClick={this.handleUploadPhoto}>Upload</button>
-                                    <br/>
-                                    <br/>
+                                    <br />
+                                    <br />
                                     <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddReward(e)}>
                                         Tambah
                                     </button> <br />
