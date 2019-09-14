@@ -36,6 +36,10 @@ class Reward extends Component {
         this.price = React.createRef();
         this.point = React.createRef();
         this.categoryID = React.createRef();
+        this.state = {
+            rewards: [],
+            histories: []
+        }
     }
 
     toggle = tab => e => {
@@ -50,6 +54,67 @@ class Reward extends Component {
         this.setState({
             modal: !this.state.modal
         });
+    }
+
+    deleteReward = (e, id) => {
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "PUT",
+            url: self.props.url + "/v1/rewards/" + id,
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            },
+            data: { 'status': false }
+        }
+        axios(config)
+            .then(function (response) {
+                console.log(response.status);
+                self.componentDidMount()
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+    }
+
+    componentDidMount() {
+        const self = this;
+        let config_reward = {
+            method: "GET",
+            url: self.props.url + "/v1/rewards",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        let config_history = {
+            method: "GET",
+            url: self.props.url + "/v1/reward_history",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config_reward)
+            .then(function (response) {
+                console.log(response);
+                self.setState({ rewards: response.data })
+
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+
+        axios(config_history)
+            .then(function (response) {
+                console.log(response);
+                self.setState({ histories: response.data })
+
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+
     }
 
     render() {
@@ -142,31 +207,38 @@ class Reward extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td valign="bottom"> 1</td>
-                                                <td valign="bottom"> Sampah Plastik Campur</td>
-                                                <td valign="bottom"> 1</td>
-                                                <td valign="bottom"> 10 Pcs</td>
-                                                <td valign="bottom"> Aktif</td>
-                                                <td valign="bottom"> tangalseakarang</td>
-                                                <td valign="bottom"> tanggalsekarang</td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }} className="button-view-image-reward  btn btn-lg btn-block rounded-pill" onClick={this.toggleModal}>Lihat</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modal} toggle={this.toggleModal} centered>
-                                                        <MDBModalHeader toggle={this.toggleModal} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                    Ubah
-                                                        </button>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}>
-                                                    Hapus
-                                                </button></td>
-                                            </tr>
+                                            {this.state.rewards.map((elm, key) => {
+                                                return (
+                                                    <tr>
+                                                        <td valign="bottom"> {elm.id}</td>
+                                                        <td valign="bottom"> {elm.name}</td>
+                                                        <td valign="bottom"> {elm.point_to_claim}</td>
+                                                        <td valign="bottom"> {elm.stock} Pcs</td>
+                                                        <td valign="bottom"> {elm.status}</td>
+                                                        <td valign="bottom"> {elm.date_created}</td>
+                                                        <td valign="bottom"> {elm.date_modified}</td>
+                                                        <td valign="bottom">
+                                                            <MDBBtn style={{ padding: "4px" }} className="button-view-image-reward  btn btn-lg btn-block rounded-pill" onClick={this.toggleModal}>Lihat</MDBBtn>
+                                                            <MDBModal isOpen={this.state.modal} toggle={this.toggleModal} centered>
+                                                                <MDBModalHeader toggle={this.toggleModal} ></MDBModalHeader>
+                                                                <MDBModalBody className="text-center">
+                                                                    <img src={elm.photo} alt={elm.photo} />
+                                                                </MDBModalBody>
+                                                            </MDBModal>
+                                                        </td>
+                                                        <td valign="bottom">
+                                                            <Link to={"/reward/edit/" + elm.id}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                                Ubah
+                                                        </button></Link>
+                                                        </td>
+                                                        <td valign="bottom">
+                                                            <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }} onClick={e => this.deleteReward(e, elm.id)}>
+                                                                Hapus
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -184,13 +256,17 @@ class Reward extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td valign="bottom"> 1</td>
-                                                <td valign="bottom"> 1</td>
-                                                <td valign="bottom"> Aulia Rahman Hanifan </td>
-                                                <td valign="bottom"> Voucher Indomaret</td>
-                                                <td valign="bottom"> tanggalsekarang</td>
-                                            </tr>
+                                            {this.state.histories.map((elm, key) => {
+                                                return (
+                                                    <tr>
+                                                        <td valign="bottom"> {key + 1}</td>
+                                                        <td valign="bottom"> {elm.id}</td>
+                                                        <td valign="bottom"> {elm.user.name} </td>
+                                                        <td valign="bottom"> {elm.reward_name}</td>
+                                                        <td valign="bottom"> {elm.created_at}</td>
+                                                    </tr>
+                                                )
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -204,4 +280,4 @@ class Reward extends Component {
         }
     }
 }
-export default Reward;
+export default connect("url", actions)(Reward);
