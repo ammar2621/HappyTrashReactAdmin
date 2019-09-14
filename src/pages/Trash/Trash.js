@@ -348,7 +348,6 @@ class Trash extends Component {
                                         </tbody>
                                     </table>
                                 </div>
-
                             </MDBTabPane>
                         </MDBTabContent>
                     </MDBContainer>
