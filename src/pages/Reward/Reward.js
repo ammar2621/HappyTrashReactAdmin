@@ -29,7 +29,6 @@ class Reward extends Component {
         this.status = React.createRef();
         this.state = {
             activeItem: "1",
-            modal: false,
             reward: [],
             rewardHistory: []
         }
@@ -339,4 +338,5 @@ class Reward extends Component {
         }
     }
 }
+
 export default connect('url', actions)(Reward);

@@ -24,7 +24,8 @@ class OrderInvoice extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalPhoto: false
+            modalPhoto: false,
+            allOrders: JSON.parse(localStorage.getItem('orders'))
         }
     }
 
@@ -37,6 +38,7 @@ class OrderInvoice extends Component {
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
+            let index = this.props.match.params.order_id
             return (
                 <div style={{ height: "100vh" }}>
                     <Header />
@@ -55,16 +57,16 @@ class OrderInvoice extends Component {
                                             Nama:
                                         </td>
                                         <td >
-                                            Aulia Rahman Hanifan
+                                            {this.state.allOrders[index].User.name}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Alamat</td>
-                                        <td>Jalan Tidar</td>
+                                        <td>{this.state.allOrders[index].Order.adress}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Waktu Penjemputan</td>
-                                        <td>Sekarangbanget</td>
+                                        <td>{this.state.allOrders[index].Order.time}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Foto</td>
@@ -77,7 +79,7 @@ class OrderInvoice extends Component {
                                             <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
                                                 <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
                                                 <MDBModalBody className="text-center">
-                                                    <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
+                                                    <img src={this.state.allOrders[index].Order.photo} alt={this.state.allOrders[index].Order.photo} />
                                                 </MDBModalBody>
                                             </MDBModal>
                                         </td>
@@ -101,34 +103,30 @@ class OrderInvoice extends Component {
                                 </thead>
                                 <tbody>
 
-                                    <tr>
-                                        <td valign="bottom">
-                                            Plastik
-                                        </td>
-                                        <td valign="bottom">
-                                            20 kg
-                                        </td>
-                                        <td valign="bottom">
-                                            Rp. 50000
-                                        </td>
-                                        <td valign="bottom">
-                                            20
-                                        </td>
-                                    </tr>
+                                    {this.state.allOrders[index].Details.map((elm, key) => {
+                                        return (
+                                            <tr>
+                                                <td valign="bottom">{elm.trash_detail.trash_name}</td>
+                                                <td valign="bottom">{elm.qty}</td>
+                                                <td valign="bottom">{elm.total_price}</td>
+                                                <td valign="bottom">{elm.point}</td>
+                                            </tr>
+                                        )
+                                    })}
 
                                     <tr>
                                         <th colSpan="1" className="text-right">Total:</th>
-                                        <td>20 kg</td>
-                                        <td>Rp 50000</td>
-                                        <td>20</td>
+                                        <td>{this.state.allOrders[index].Order.total_qty}</td>
+                                        <td>{this.state.allOrders[index].Order.total_price}</td>
+                                        <td>{this.state.allOrders[index].Order.total_point}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                        <Link to="/order"> <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit">
                             OK
-                                    </button> <br />
+                                    </button></Link> <br />
                     </MDBContainer>
                 </div >
             );

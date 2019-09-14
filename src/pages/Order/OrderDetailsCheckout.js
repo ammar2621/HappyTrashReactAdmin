@@ -28,6 +28,33 @@ class OrderDetailsCheckout extends Component {
         this.price = React.createRef();
         this.point = React.createRef();
         this.categoryID = React.createRef();
+        this.state = {
+            order: { User: { name: null }, Order: null, Details: [] }
+        }
+    }
+
+    componentDidMount() {
+        const self = this;
+        let config = {
+            method: "GET",
+            url: self.props.url + "/v1/orders",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config)
+            .then(async function (response) {
+                console.log(response.data)
+                let order = await response.data.filter(function (obj) {
+                    return obj.Order.id == self.props.match.params.order_id
+                })
+                self.setState({ order: order[0] })
+                console.log(self.state)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
 
     render() {
@@ -38,7 +65,7 @@ class OrderDetailsCheckout extends Component {
                     <MDBContainer id="bodyreward">
                         <br />
                         <h2 id="titlerewardedit">Checkout</h2>
-                        <h4>Nama: Aulia Rahman</h4>
+                        <h4>Nama: {this.state.order.User.name}</h4>
                         <div className="table-responsive">
                             <table class="table ">
                                 <thead>
@@ -48,21 +75,21 @@ class OrderDetailsCheckout extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td valign="bottom">
-                                            Plastik
-                                        </td>
-                                        <td valign="bottom">
-                                            20 kg
-                                        </td>
-                                    </tr>
+                                    {this.state.order.Details.map((elm, key) => {
+                                        return (
+                                            <tr>
+                                                <td valign="bottom">{elm.trash_detail.trash_name}</td>
+                                                <td valign="bottom">{elm.qty}</td>
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </table>
                         </div>
 
-                        <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
+                        <Link to={"/order/invoice/" + this.props.match.params.order_id}><button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
                             OK
-                                    </button> <br />
+                                    </button></Link> <br />
                     </MDBContainer>
                 </div >
             );
@@ -71,4 +98,4 @@ class OrderDetailsCheckout extends Component {
         }
     }
 }
-export default OrderDetailsCheckout;
+export default connect("url", actions)(OrderDetailsCheckout);
