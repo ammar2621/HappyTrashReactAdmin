@@ -1,0 +1,13 @@
+.title-of-page {
+    font-weight: 700;
+}
+
+.black-font {
+    color: black !important;
+}
+
+.add-button-trash {
+    font-weight: 700;
+    padding: 10px !important;
+    background-color: #49B462 !important;
+}

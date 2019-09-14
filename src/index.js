@@ -5,9 +5,14 @@ import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
 import "./index.css";
 import MainRoute from "./MainRoute";
-
+import { Provider } from "unistore/react";
+import { store } from "./store";
+import * as serviceWorker from "./serviceWorker";
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<MainRoute />, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}>
+    <MainRoute />
+</Provider>, document.getElementById('root'));
 
 registerServiceWorker();
+serviceWorker.register();
