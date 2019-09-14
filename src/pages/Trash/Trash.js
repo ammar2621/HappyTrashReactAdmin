@@ -20,10 +20,9 @@ class Trash extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
+        this.image = React.createRef();
+        this.stock = React.createRef();
         this.point = React.createRef();
-        this.categoryID = React.createRef();
     }
 
 
@@ -162,14 +161,9 @@ class Trash extends Component {
                                                     Delete
                                                 </button></td>
                                             </tr>
-
-
-
-
                                         </tbody>
                                     </table>
                                 </div>
-
                             </MDBTabPane>
                         </MDBTabContent>
                     </MDBContainer>
@@ -180,4 +174,4 @@ class Trash extends Component {
         }
     }
 }
-export default Trash;
+export default connect('url', actions)(Trash);
