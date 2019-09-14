@@ -5,6 +5,7 @@
   "// If You want to install mdbreact from our GitLab repository, please replace '4.19.1' with gitURL provided here ->": "git+https://oauth2:<YOUR-TOKEN-GOES-HERE>@git.mdbootstrap.com/mdb/react/re-pro.git",
   "dependencies": {
     "axios": "^0.19.0",
+    "firebase": "^6.6.1",
     "mdbreact": "4.19.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

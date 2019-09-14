@@ -18,19 +18,22 @@ import {
 import Header from '../../components/Header'
 import './Reward.css'
 import Swal from 'sweetalert2'
+import { storage } from "../../firebase/index";
 
 class Reward extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.image = React.createRef();
         this.stock = React.createRef();
         this.point = React.createRef();
         this.status = React.createRef();
         this.state = {
             activeItem: "1",
             reward: [],
-            rewardHistory: []
+            rewardHistory: [],
+            photo: null,
+            urlPhoto: "",
+            progress: 0,
         }
     }
 
@@ -41,6 +44,49 @@ class Reward extends Component {
                 activeItem: tab
             });
         }
+    };
+
+    // funtion to store photo uploaded by user
+    handleChangePhoto = e => {
+        if (e.target.files[0]) {
+          this.state.photo = e.target.files[0];
+          console.log(e.target.files[0])
+        }
+      };
+    
+    // function to upload photo to cloud storage
+    handleUploadPhoto = event => {
+    event.preventDefault();
+    try {
+        const uploadTask = storage
+        .ref(`images/${this.state.photo.name}`)
+        .put(this.state.photo);
+        uploadTask.on(
+        "state_changed",
+        snapshot => {
+            //progress Function
+            const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.setState({ progress });
+        },
+        error => {
+            console.log(error);
+        },
+        () => {
+            //Complete Function
+            storage
+            .ref("images")
+            .child(this.state.photo.name)
+            .getDownloadURL()
+            .then(url => {
+                this.setState({ urlPhoto: url });
+                console.log(this.state.urlPhoto);
+            });
+        }
+        );
+    } catch (err) {
+        console.log("File Kosong");
+    }
     };
 
     // add the reward (post to API)
@@ -93,7 +139,7 @@ class Reward extends Component {
                     point_to_claim: Number(this.point.current.value),
                     name: this.name.current.value,
                     stock: Number(this.stock.current.value),
-                    photo: this.image.current.value,
+                    photo: this.state.urlPhoto,
                     status: Number(this.status.current.value)
                 },
                 {
@@ -233,23 +279,17 @@ class Reward extends Component {
                                         <option value='0'> Non-Aktif</option>
                                     </select>
                                     <br />
-                                    <label for="inputStock" >
-                                        URL Gambar:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="inputStock"
-                                        class="form-control"
-                                        placeholder="URL Gambar"
-                                        min="1"
-                                        ref={this.image}
-                                    />
+                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
                                     <br />
-                                    <label for="inputPhoto" >
-                                        Upload Foto (masih dalam pengembangan):
-                                    </label> <br />
-                                    <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
+                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <br />
+                                    <input type="file" onChange={this.handleChangePhoto} />
+                                    <image src={this.state.photo}/>
+                                    <br />
+                                    <br />
+                                    <button onClick={this.handleUploadPhoto}>Upload</button>
+                                    <br/>
+                                    <br/>
                                     <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddReward(e)}>
                                         Tambah
                                     </button> <br />
