@@ -2,3 +2,7 @@ node_modules/
 License.pdf
 README.txt
 build/
+
+# travis
+deploy_rsa 
+deploy_rsa.pub
