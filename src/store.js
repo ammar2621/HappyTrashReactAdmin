@@ -1,7 +1,7 @@
 import createStore from 'unistore';
 
 export const store = createStore({
-  url: 'http://0.0.0.0:5000',
+  url: 'http://backend.fikriamri.xyz',
 });
 
 export const actions = (store) => ({

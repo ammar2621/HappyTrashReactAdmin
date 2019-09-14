@@ -15,6 +15,7 @@ import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Trash.css'
 import Swal from 'sweetalert2'
+import { storage } from "../../firebase/index";
 
 class Trash extends Component {
     constructor(props) {
@@ -27,8 +28,10 @@ class Trash extends Component {
         this.state = {
             activeItem: "1",
             trash: [],
-            modalPhoto: false,
-            category: []
+            category: [],
+            photo: null,
+            urlPhoto: "",
+            progress: 0
         }
     }
 
@@ -41,17 +44,52 @@ class Trash extends Component {
         }
     };
 
-    // function to pop up the picture/photo
-    toggleModalPhoto = () => {
-        this.setState({
-            modalPhoto: !this.state.modalPhoto
-        });
+    // funtion to store photo uploaded by user
+    handleChangePhoto = e => {
+        if (e.target.files[0]) {
+          this.state.photo = e.target.files[0];
+          console.log(e.target.files[0])
+        }
+      };
+    
+    // function to upload photo to cloud storage
+    handleUploadPhoto = event => {
+    event.preventDefault();
+    try {
+        const uploadTask = storage
+        .ref(`images/${this.state.photo.name}`)
+        .put(this.state.photo);
+        uploadTask.on(
+        "state_changed",
+        snapshot => {
+            //progress Function
+            const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.setState({ progress });
+        },
+        error => {
+            console.log(error);
+        },
+        () => {
+            //Complete Function
+            storage
+            .ref("images")
+            .child(this.state.photo.name)
+            .getDownloadURL()
+            .then(url => {
+                this.setState({ urlPhoto: url });
+                console.log(this.state.urlPhoto);
+            });
+        }
+        );
+    } catch (err) {
+        console.log("File Kosong");
     }
+    };
 
     // function to post the trash
     doAddTrash = async e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
         const regex_number = /^\d+$/;
         const regex_name = /^[a-zA-Z ]{2,30}$/;;
         // check the name validation
@@ -83,13 +121,6 @@ class Trash extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return false
-        } else if (!regex_http.test(this.photo.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-            })
-            return false
         }
         const self = this;
         await axios
@@ -98,7 +129,7 @@ class Trash extends Component {
                     trash_category_id: this.category.current.value,
                     trash_name: this.name.current.value,
                     price: Number(this.price.current.value),
-                    photo: this.photo.current.value,
+                    photo: this.state.urlPhoto,
                     point: Number(this.point.current.value)
                 },
                 {
@@ -227,18 +258,6 @@ class Trash extends Component {
                                         ref={this.name}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">
-                                        PhotoURL:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="inputPhotoURL"
-                                        class="form-control"
-                                        placeholder="URL Gambar"
-                                        required='required'
-                                        ref={this.photo}
-                                    />
-                                    <br />
                                     <label for="inputStock">
                                         Kategori:
                                     </label>
@@ -279,11 +298,17 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">
-                                        Upload Foto (masih dalam pengembangan):
-                                    </label>
-                                    <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
+                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
+                                    <br />
+                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <br />
+                                    <input type="file" onChange={this.handleChangePhoto} />
+                                    <image src={this.state.photo}/>
+                                    <br />
+                                    <br />
+                                    <button onClick={this.handleUploadPhoto}>Upload</button>
+                                    <br/>
+                                    <br/>
                                     <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
                                         Tambah
                                     </button>
