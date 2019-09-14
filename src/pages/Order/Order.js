@@ -31,9 +31,9 @@ class Order extends Component {
             modalUser: false,
             modalAddress: false,
             modalPhoto: false,
-            allOrder: [],
-            waitingOrder: [],
-            confirmedOrder: []
+            allOrder: [{ User: { name: null }, Order: { id: null }, Details: [] }],
+            waitingOrder: [{ User: { name: null }, Order: {}, Details: [] }],
+            confirmedOrder: [{ User: { name: null }, Order: {}, Details: [] }]
         }
     }
 
@@ -95,7 +95,7 @@ class Order extends Component {
                 self.setState({ allOrder: response.data })
                 self.setState({ confirmedOrder })
                 self.setState({ waitingOrder })
-                // console.log(self.state.allOrder)
+                console.log(self.state.allOrder)
 
             }).catch(function (error) {
                 console.log(error)
@@ -347,8 +347,8 @@ class Order extends Component {
                                                                 <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
                                                                     <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
                                                                     <MDBModalBody className="text-center">
-                                                                        <h4>{"Nama :" + elm.User.name}</h4>
-                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
+                                                                        {/* <h4>{"Nama :" + elm.User.name}</h4> */}
+                                                                        {/* <h4>{"Kontak :" + elm.User.mobile_number}</h4> */}
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
