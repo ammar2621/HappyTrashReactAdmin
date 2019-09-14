@@ -30,7 +30,10 @@ class Order extends Component {
             activeItem: "1",
             modalUser: false,
             modalAddress: false,
-            modalPhoto: false
+            modalPhoto: false,
+            allOrder: [],
+            waitingOrder: [],
+            confirmedOrder: []
         }
     }
 
@@ -48,7 +51,7 @@ class Order extends Component {
         });
     }
 
-    toggleModalUser = () => {
+    toggleModalUser = async () => {
         this.setState({
             modalUser: !this.state.modalUser
         });
@@ -64,6 +67,88 @@ class Order extends Component {
         this.setState({
             modalPhoto: !this.state.modalPhoto
         });
+    }
+
+    componentDidMount() {
+        const self = this;
+        let config = {
+            method: "GET",
+            url: self.props.url + "/v1/orders",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+        axios(config)
+            .then(function (response) {
+
+                localStorage.setItem('orders', JSON.stringify(response.data))
+
+                let waitingOrder = response.data.filter(function (order) {
+                    return order.Order.status == 'waiting'
+                })
+
+                let confirmedOrder = response.data.filter(function (order) {
+                    return order.Order.status == 'confirmed'
+                })
+
+
+                self.setState({ allOrder: response.data })
+                self.setState({ confirmedOrder })
+                self.setState({ waitingOrder })
+                // console.log(self.state.allOrder)
+
+            }).catch(function (error) {
+                console.log(error)
+            })
+    }
+
+    confirmOrder = (e, id) => {
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "PUT",
+            url: self.props.url + "/v1/orders/" + id,
+            data: {
+                "status": "confirmed"
+            },
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config)
+            .then(function (response) {
+                console.log(response);
+                self.componentDidMount();
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+
+    rejectOrder = (e, id) => {
+        e.preventDefault();
+        const self = this;
+        let config = {
+            method: "PUT",
+            url: self.props.url + "/v1/orders/" + id,
+            data: {
+                "status": "rejected"
+            },
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config)
+            .then(function (response) {
+                console.log(response);
+                self.componentDidMount();
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
 
     render() {
@@ -107,55 +192,61 @@ class Order extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }} className=" button-white  btn btn-lg btn-block rounded-pill" onClick={this.toggleModalUser}>
-                                                        1
+                                            {
+                                                this.state.waitingOrder.map((elm, key) => {
+                                                    return (
+                                                        <tr>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }} className=" button-white  btn btn-lg btn-block rounded-pill" onClick={this.toggleModalUser}>
+                                                                    {elm.Order.user_id}
+                                                                </MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom"> {elm.Order.time}</td>
+                                                            <td valign="bottom"> {elm.Order.created_at}</td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalAddress}>
+                                                                    Lihat
                                                     </MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <h4>Nama: Aulia</h4>
-                                                            <h4>No HP: 085726317***</h4>
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> 24 Maret 2019, 08:00</td>
-                                                <td valign="bottom"> tangalseakarang</td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalAddress}>
-                                                        Lihat
+                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        {elm.Order.photo}
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalPhoto}>
+                                                                    Lihat
                                                     </MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            GAMBAR PETA
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalPhoto}>
-                                                        Lihat
-                                                    </MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-success btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                    Terima
+                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom"> <button className="btn btn-lg btn-success btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" onClick={e => this.confirmOrder(e, elm.Order.id)} >
+                                                                Terima
                                                         </button>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}>
-                                                    Tolak
+                                                            </td>
+                                                            <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }} onClick={e => this.rejectOrder(e, elm.Order.id)}>
+                                                                Tolak
                                                 </button></td>
-                                            </tr>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -175,51 +266,58 @@ class Order extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalUser}>1</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <h4>Nama: Aulia</h4>
-                                                            <h4>No HP: 085726317***</h4>
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> 24 Maret 2019, 08:00</td>
-                                                <td valign="bottom"> tangalseakarang</td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalAddress}>Lihat</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            INI PETA
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                    Isi Detail
-                                                        </button>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}>
-                                                    Batal
+                                            {
+                                                this.state.confirmedOrder.map((elm, key) => {
+                                                    return (
+                                                        <tr>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalUser}>{elm.Order.user_id}</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom"> {elm.Order.time}</td>
+                                                            <td valign="bottom">{elm.Order.created_at}</td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalAddress}>Lihat</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        {elm.Order.adress}
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom">
+                                                                <Link to={"/order/create/" + elm.Order.id}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                                    Isi Detail
+                                                            </button></Link>
+                                                            </td>
+                                                            <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }} onClick={e => this.rejectOrder(e, elm.Order.id)}>
+                                                                Batal
                                                 </button></td>
-                                            </tr>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -238,48 +336,54 @@ class Order extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalUser}>1</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <h4>Nama: Aulia</h4>
-                                                            <h4>No HP: 085726317***</h4>
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> 24 Maret 2019, 08:00</td>
-                                                <td valign="bottom"> tangalseakarang</td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalAddress}>Lihat</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            INI PETA
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom">
-                                                    <MDBBtn style={{ padding: "4px" }}
-                                                        className="button-white  btn btn-lg btn-block rounded-pill"
-                                                        onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
-                                                    <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                        <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                        <MDBModalBody className="text-center">
-                                                            <img src="https://www.w3schools.com/tags/smiley.gif" alt="Gambar" />
-                                                        </MDBModalBody>
-                                                    </MDBModal>
-                                                </td>
-                                                <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                    Lihat Detail
-                                                        </button>
-                                                </td>
-                                            </tr>
+                                            {
+                                                this.state.allOrder.map((elm, key) => {
+                                                    return (
+                                                        <tr>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalUser}>{elm.Order.user_id}</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <h4>{"Nama :" + elm.User.name}</h4>
+                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom"> {elm.Order.time}</td>
+                                                            <td valign="bottom"> {elm.Order.created_at}</td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalAddress}>Lihat</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        {elm.Order.adress}
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom">
+                                                                <MDBBtn style={{ padding: "4px" }}
+                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
+                                                                    onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
+                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
+                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
+                                                                    <MDBModalBody className="text-center">
+                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
+                                                                    </MDBModalBody>
+                                                                </MDBModal>
+                                                            </td>
+                                                            <td valign="bottom"> <Link to={"/order/invoice/" + key}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                                Lihat Detail
+                                                        </button></Link>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -293,4 +397,4 @@ class Order extends Component {
         }
     }
 }
-export default Order;
+export default connect("url", actions)(Order);
