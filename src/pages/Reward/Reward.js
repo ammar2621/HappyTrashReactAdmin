@@ -121,7 +121,7 @@ class Reward extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 480px' class="text-center">`
+            html: `<img src=${url} style='max-width: 50vh' class="text-center">`
         })
     }
 
