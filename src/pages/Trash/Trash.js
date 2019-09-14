@@ -28,7 +28,6 @@ class Trash extends Component {
         this.state = {
             activeItem: "1",
             trash: [],
-            modalPhoto: false,
             category: [],
             photo: null,
             urlPhoto: "",
@@ -44,13 +43,6 @@ class Trash extends Component {
             });
         }
     };
-
-    // function to pop up the picture/photo
-    toggleModalPhoto = () => {
-        this.setState({
-            modalPhoto: !this.state.modalPhoto
-        });
-    }
 
     // funtion to store photo uploaded by user
     handlechange = e => {
@@ -70,7 +62,7 @@ class Trash extends Component {
         uploadTask.on(
         "state_changed",
         snapshot => {
-            //progrress Function
+            //progress Function
             const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.setState({ progress });
@@ -98,7 +90,6 @@ class Trash extends Component {
     // function to post the trash
     doAddTrash = async e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
         const regex_number = /^\d+$/;
         const regex_name = /^[a-zA-Z ]{2,30}$/;;
         // check the name validation
@@ -130,13 +121,6 @@ class Trash extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return false
-        // } else if (!regex_http.test(this.photo.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-        //     })
-        //     return false
         }
         const self = this;
         await axios
@@ -274,18 +258,6 @@ class Trash extends Component {
                                         ref={this.name}
                                     />
                                     <br />
-                                    {/* <label for="inputPhotoURL">
-                                        PhotoURL:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="inputPhotoURL"
-                                        class="form-control"
-                                        placeholder="URL Gambar"
-                                        required='required'
-                                        ref={this.photo}
-                                    />
-                                    <br /> */}
                                     <label for="inputStock">
                                         Kategori:
                                     </label>
@@ -326,14 +298,9 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
-                                    {/* <label for="inputPhotoURL">
-                                        Upload Foto (masih dalam pengembangan):
-                                    </label>
-                                    <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br /> */}
-                                    <label for="urlimage">Pilih Foto Lalu Klik Upload</label>
+                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
                                     <br />
-                                    <progress value={this.state.progress} max="100" />
+                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
                                     <input type="file" onChange={this.handlechange} />
                                     <image src={this.state.photo}/>
