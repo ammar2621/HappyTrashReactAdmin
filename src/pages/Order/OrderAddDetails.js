@@ -22,6 +22,57 @@ class OrderAddDetails extends Component {
         this.price = React.createRef();
         this.point = React.createRef();
         this.categoryID = React.createRef();
+        this.state = {
+            trashes: [],
+            toPut: [],
+            toDisplay: [],
+            trash_id: null,
+            trash_name: null,
+            qty: null
+        }
+    }
+
+    componentDidMount() {
+        const self = this;
+        let config = {
+            method: "GET",
+            url: self.props.url + "/v1/trash",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config)
+            .then(function (response) {
+                console.log(response.data)
+                self.setState({ trashes: response.data })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+    }
+
+    addAnother = async e => {
+        e.preventDefault();
+        let new_put = await {
+            trash_id: this.state.trash_id,
+            qty: parseInt(this.state.qty)
+        }
+
+        let new_display = await {
+            qty: this.state.qty,
+            trash_name: this.state.trash_name
+        }
+        this.state.toPut.push(new_put);
+        this.state.toDisplay.push(new_display);
+        console.log(this.state.toDisplay, this.state.toPut)
+
+    }
+
+
+    checkOut = e => {
+        e.preventDefault();
+        console.log(this.state)
     }
 
     render() {
@@ -31,19 +82,40 @@ class OrderAddDetails extends Component {
                     <Header />
                     <MDBContainer id="bodyreward">
                         <br />
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Nama Sampah </td>
+                                    <td>Berat </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.toDisplay.map((elm, key) => {
+                                    return (
+                                        <tr>
+                                            <td>{elm.trash_name}</td>
+                                            <td>{elm.qty}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
                         <h2 id="titlerewardedit">Tambah Detail Order</h2>
                         <form class="form-signin">
                             <label for="inputName">
                                 Jenis Sampah:
                                     </label>
 
-                            <select class="form-control" id="status pembayaran">
-                                <option value="0"> Plastik Campuran</option>
-                                <option value="10"> Plastik Bersih</option>
-                                <option value="20">Kardus</option>
-                                <option value="30">Koran</option>
-                                <option value="98">Besi</option>
-                                <option value="99">Besi</option>
+                            <select class="form-control" id="status pembayaran" onChange={e => {
+                                this.setState({ trash_id: this.state.trashes[e.target.value].id });
+                                this.setState({ trash_name: this.state.trashes[e.target.value].trash_name });
+                            }}>
+                                {this.state.trashes.map((elm, key) => {
+                                    return (
+                                        <option value={key}> {elm.trash_name}</option>
+                                    )
+                                })}
+
                             </select>
                             <br />
                             <label for="inputPoint  ">
@@ -55,13 +127,14 @@ class OrderAddDetails extends Component {
                                 class="form-control"
                                 placeholder="Berat"
                                 min="1"
+                                onChange={e => { this.setState({ qty: e.target.value }) }}
                             />
                             <br />
-                            <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                            <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.addAnother(e)}>
                                 Tambah Sampah Lagi
                                     </button> <br />
 
-                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.checkOut(e)}>
                                 Checkout
                                     </button> <br />
 
@@ -74,4 +147,4 @@ class OrderAddDetails extends Component {
         }
     }
 }
-export default OrderAddDetails;
+export default connect("url", actions)(OrderAddDetails);

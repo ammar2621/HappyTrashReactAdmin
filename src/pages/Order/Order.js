@@ -306,9 +306,10 @@ class Order extends Component {
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
-                                                            <td valign="bottom"> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
-                                                                Isi Detail
-                                                        </button>
+                                                            <td valign="bottom">
+                                                                <Link to={"/order/create/" + elm.Order.id}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                                    Isi Detail
+                                                            </button></Link>
                                                             </td>
                                                             <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }} onClick={e => this.rejectOrder(e, elm.Order.id)}>
                                                                 Batal
