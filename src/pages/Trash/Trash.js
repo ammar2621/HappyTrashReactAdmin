@@ -45,7 +45,7 @@ class Trash extends Component {
     };
 
     // funtion to store photo uploaded by user
-    handlechange = e => {
+    handleChangePhoto = e => {
         if (e.target.files[0]) {
           this.state.photo = e.target.files[0];
           console.log(e.target.files[0])
@@ -53,7 +53,7 @@ class Trash extends Component {
       };
     
     // function to upload photo to cloud storage
-    handleUpload = event => {
+    handleUploadPhoto = event => {
     event.preventDefault();
     try {
         const uploadTask = storage
@@ -302,11 +302,11 @@ class Trash extends Component {
                                     <br />
                                     <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
-                                    <input type="file" onChange={this.handlechange} />
+                                    <input type="file" onChange={this.handleChangePhoto} />
                                     <image src={this.state.photo}/>
                                     <br />
                                     <br />
-                                    <button onClick={this.handleUpload}>Upload</button>
+                                    <button onClick={this.handleUploadPhoto}>Upload</button>
                                     <br/>
                                     <br/>
                                     <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
