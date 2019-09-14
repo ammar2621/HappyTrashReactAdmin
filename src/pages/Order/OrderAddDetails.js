@@ -72,7 +72,27 @@ class OrderAddDetails extends Component {
 
     checkOut = e => {
         e.preventDefault();
-        console.log(this.state)
+        const self = this;
+        let config = {
+            method: "PUT",
+            url: self.props.url + "/v1/orders/" + self.props.match.params.order_id,
+            data: {
+                'status': 'done',
+                'details': self.state.toPut
+            },
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+
+        axios(config)
+            .then(function (response) {
+                console.log(response.data)
+                self.props.history.push("/order/checkout/" + self.props.match.params.order_id)
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     }
 
     render() {
@@ -82,7 +102,7 @@ class OrderAddDetails extends Component {
                     <Header />
                     <MDBContainer id="bodyreward">
                         <br />
-                        <table>
+                        {/* <table>
                             <thead>
                                 <tr>
                                     <td>Nama Sampah </td>
@@ -99,7 +119,7 @@ class OrderAddDetails extends Component {
                                     )
                                 })}
                             </tbody>
-                        </table>
+                        </table> */}
                         <h2 id="titlerewardedit">Tambah Detail Order</h2>
                         <form class="form-signin">
                             <label for="inputName">
