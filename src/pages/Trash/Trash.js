@@ -15,6 +15,7 @@ import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Trash.css'
 import Swal from 'sweetalert2'
+import { storage } from "../../firebase/index";
 
 class Trash extends Component {
     constructor(props) {
@@ -28,7 +29,10 @@ class Trash extends Component {
             activeItem: "1",
             trash: [],
             modalPhoto: false,
-            category: []
+            category: [],
+            photo: null,
+            urlPhoto: "",
+            progress: 0
         }
     }
 
@@ -47,6 +51,49 @@ class Trash extends Component {
             modalPhoto: !this.state.modalPhoto
         });
     }
+
+    // funtion to store photo uploaded by user
+    handlechange = e => {
+        if (e.target.files[0]) {
+          this.state.photo = e.target.files[0];
+          console.log(e.target.files[0])
+        }
+      };
+    
+    // function to upload photo to cloud storage
+    handleUpload = event => {
+    event.preventDefault();
+    try {
+        const uploadTask = storage
+        .ref(`images/${this.state.photo.name}`)
+        .put(this.state.photo);
+        uploadTask.on(
+        "state_changed",
+        snapshot => {
+            //progrress Function
+            const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.setState({ progress });
+        },
+        error => {
+            console.log(error);
+        },
+        () => {
+            //Complete Function
+            storage
+            .ref("images")
+            .child(this.state.photo.name)
+            .getDownloadURL()
+            .then(url => {
+                this.setState({ urlPhoto: url });
+                console.log(this.state.urlPhoto);
+            });
+        }
+        );
+    } catch (err) {
+        console.log("File Kosong");
+    }
+    };
 
     // function to post the trash
     doAddTrash = async e => {
@@ -83,13 +130,13 @@ class Trash extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return false
-        } else if (!regex_http.test(this.photo.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-            })
-            return false
+        // } else if (!regex_http.test(this.photo.current.value)) {
+        //     Swal.fire({
+        //         type: 'error',
+        //         title: 'Oops...',
+        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
+        //     })
+        //     return false
         }
         const self = this;
         await axios
@@ -98,7 +145,7 @@ class Trash extends Component {
                     trash_category_id: this.category.current.value,
                     trash_name: this.name.current.value,
                     price: Number(this.price.current.value),
-                    photo: this.photo.current.value,
+                    photo: this.state.urlPhoto,
                     point: Number(this.point.current.value)
                 },
                 {
@@ -227,7 +274,7 @@ class Trash extends Component {
                                         ref={this.name}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">
+                                    {/* <label for="inputPhotoURL">
                                         PhotoURL:
                                     </label>
                                     <input
@@ -238,7 +285,7 @@ class Trash extends Component {
                                         required='required'
                                         ref={this.photo}
                                     />
-                                    <br />
+                                    <br /> */}
                                     <label for="inputStock">
                                         Kategori:
                                     </label>
@@ -279,11 +326,22 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">
+                                    {/* <label for="inputPhotoURL">
                                         Upload Foto (masih dalam pengembangan):
                                     </label>
                                     <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
+                                    <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br /> */}
+                                    <label for="urlimage">Pilih Foto Lalu Klik Upload</label>
+                                    <br />
+                                    <progress value={this.state.progress} max="100" />
+                                    <br />
+                                    <input type="file" onChange={this.handlechange} />
+                                    <image src={this.state.photo}/>
+                                    <br />
+                                    <br />
+                                    <button onClick={this.handleUpload}>Upload</button>
+                                    <br/>
+                                    <br/>
                                     <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
                                         Tambah
                                     </button>
