@@ -220,7 +220,7 @@ class Order extends Component {
                                                                 <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
                                                                     <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
                                                                     <MDBModalBody className="text-center">
-                                                                        {elm.Order.photo}
+                                                                        {elm.Order.adress}
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
