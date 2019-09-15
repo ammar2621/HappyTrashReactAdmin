@@ -66,6 +66,7 @@ class OrderAddDetails extends Component {
         this.state.toPut.push(new_put);
         this.state.toDisplay.push(new_display);
         console.log(this.state.toDisplay, this.state.toPut)
+        // e.reset()
 
     }
 
@@ -130,6 +131,7 @@ class OrderAddDetails extends Component {
                                 this.setState({ trash_id: this.state.trashes[e.target.value].id });
                                 this.setState({ trash_name: this.state.trashes[e.target.value].trash_name });
                             }}>
+                                <option value={null} disabled selected>Pilih Sampah</option>
                                 {this.state.trashes.map((elm, key) => {
                                     return (
                                         <option value={key}> {elm.trash_name}</option>
@@ -151,7 +153,7 @@ class OrderAddDetails extends Component {
                             />
                             <br />
                             <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.addAnother(e)}>
-                                Tambah Sampah Lagi
+                                Tambahkan Sampah
                                     </button> <br />
 
                             <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.checkOut(e)}>

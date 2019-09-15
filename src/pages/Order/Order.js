@@ -22,6 +22,7 @@ import {
 } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Order.css'
+import { ELOOP } from "constants";
 
 class Order extends Component {
     constructor(props) {
@@ -376,7 +377,7 @@ class Order extends Component {
                                                                     </MDBModalBody>
                                                                 </MDBModal>
                                                             </td>
-                                                            <td valign="bottom"> <Link to={"/order/invoice/" + key}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                            <td valign="bottom"> <Link to={"/order/invoice/" + elm.Order.id}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
                                                                 Lihat Detail
                                                         </button></Link>
                                                             </td>
