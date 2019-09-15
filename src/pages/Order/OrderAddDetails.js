@@ -57,18 +57,18 @@ class OrderAddDetails extends Component {
     addAnother = async e => {
         e.preventDefault();
         let new_put = await {
-            // trash_id: this.state.trash_id,
-            // qty: parseInt(this.state.qty)
-            trash_id: this.trash_id.current.value,
-            qty: parseInt(this.qty.current.value)
+            trash_id: this.state.trash_id,
+            qty: parseInt(this.state.qty)
+            // trash_id: this.trash_id.current.value,
+            // qty: parseInt(this.qty.current.value)
         }
 
         let new_display = await {
             qty: this.state.qty,
             trash_name: this.state.trash_name
         }
-        this.refs.trash_id.value = ''
-        this.refs.qty.value = ''
+        // this.refs.trash_id.value = ''
+        // this.refs.qty.value = ''
         this.state.toPut.push(new_put);
         this.state.toDisplay.push(new_display);
         console.log(this.state.toDisplay, this.state.toPut)
@@ -134,10 +134,10 @@ class OrderAddDetails extends Component {
                                     </label>
 
                             <select class="form-control" id="status pembayaran" ref={this.trash_id}
-                            // onChange={e => {
-                            // this.setState({ trash_id: this.state.trashes[e.target.value].id });
-                            // this.setState({ trash_name: this.state.trashes[e.target.value].trash_name });
-                            // }}
+                                onChange={e => {
+                                    this.setState({ trash_id: this.state.trashes[e.target.value].id });
+                                    this.setState({ trash_name: this.state.trashes[e.target.value].trash_name });
+                                }}
                             >
                                 <option value={null} disabled selected>Pilih Sampah</option>
                                 {this.state.trashes.map((elm, key) => {
@@ -158,7 +158,7 @@ class OrderAddDetails extends Component {
                                 placeholder="Berat"
                                 min="1"
                                 ref={this.qty}
-                            // onChange={e => { this.setState({ qty: e.target.value }) }}
+                                onChange={e => { this.setState({ qty: e.target.value }) }}
                             />
                             <br />
                             <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.addAnother(e)}>
