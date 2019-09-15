@@ -12,7 +12,7 @@ os:
 - linux
 env:
   global:
-  - DOCKER_IMAGE_NAME="happy-trash-frontend-user"
+  - DOCKER_IMAGE_NAME="happy-trash-frontend-admin"
   - DOCKER_HUB_ORG="alfaruqi26"
 before_script:
 - openssl aes-256-cbc -K $encrypted_aeffeaf102d2_key -iv $encrypted_aeffeaf102d2_iv
