@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import {
-    MDBContainer
-} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -9,20 +7,75 @@ import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import Swal from 'sweetalert2'
 import './Trash.css'
+import { storage } from "../../firebase/index";
 
 class TrashEdit extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.photo = React.createRef();
         this.price = React.createRef();
         this.point = React.createRef();
         this.category = React.createRef();
         this.state = {
             category: [],
-            trash: []
+            trash: [],
+            urlPhoto: '',
+            progress: 0
         }
     }
+
+    // funtion to store photo uploaded by user
+    handleChangePhoto = e => {
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 10000000) {
+                this.setState({ photo: e.target.files[0] })
+                console.log(e.target.files[0])
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    console.log(url)
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
+                }
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 10!'
+                })
+            }
+        }
+    };
 
     // edit trash to database 
     editTrash = e => {
@@ -59,13 +112,6 @@ class TrashEdit extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return false
-        } else if (!regex_http.test(this.photo.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-            })
-            return false
         }
         const self = this;
         let config = {
@@ -76,7 +122,7 @@ class TrashEdit extends Component {
                 trash_category_id: self.category.current.value,
                 price: self.price.current.value,
                 point: self.point.current.value,
-                photo: self.photo.current.value
+                photo: self.state.urlPhoto
             },
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
@@ -115,7 +161,7 @@ class TrashEdit extends Component {
                 self.category.current.value = self.state.trash[0].trash_category_id
                 self.price.current.value = self.state.trash[0].price
                 self.point.current.value = self.state.trash[0].point
-                self.photo.current.value = self.state.trash[0].photo
+                self.state.urlPhoto = self.state.trash[0].photo
             })
             .catch(error => {
             });
@@ -155,26 +201,17 @@ class TrashEdit extends Component {
                                 ref={this.name}
                             />
                             <br />
-                            {/* <label for="inputPhotoURL" >
-                                PhotoURL:
-                                    </label>
-                            <input
-                                type="text"
-                                id="inputPhotoURL"
-                                class="form-control"
-                                placeholder="URL Gambar"
-                                required='required'
-                                ref={this.photo}
-                            />
-                            <br /> */}
                             <label for="inputStock" >
                                 Kategori:
                             </label>
-                            <select class="form-control" id="status pembayaran" ref={this.category}>
+                            <select
+                                ref={this.category}
+                                class="form-control"
+                                id="status pembayaran"
+                            >
                                 {this.state.category.map((item, index) => {
                                     return (
                                         <option
-                                            ref={this.category}
                                             value={item.id}> {item.category_name}</option>
                                     )
                                 })}
@@ -189,6 +226,8 @@ class TrashEdit extends Component {
                                 class="form-control"
                                 placeholder="Harga"
                                 required='required'
+                                min="0"
+                                step="100"
                                 ref={this.price}
                             />
                             <br />
@@ -201,14 +240,25 @@ class TrashEdit extends Component {
                                 class="form-control"
                                 placeholder="Poin"
                                 required='required'
+                                min="1"
                                 ref={this.point}
                             />
                             <br />
-                            <label for="inputPhotoURL">
+                            <label for="inputurlPhoto">
                                 Upload Foto (masih dalam pengembangan):
                                     </label>
-                            <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                            <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
+                            <progress
+                                value={this.state.progress}
+                                max="100"
+                                style={{ width: "100%" }}
+                            />
+                            <br />
+                            <input
+                                type="file"
+                                onChange={this.handleChangePhoto}
+                            />
+                            <br />
+                            <br />
                             <button class="btn btn-lg btn-primary btn-block rounded-pill"
                                 type="submit"
                                 style={{ padding: "6px" }}

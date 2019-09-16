@@ -24,7 +24,6 @@ class Trash extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.photo = React.createRef();
         this.price = React.createRef();
         this.point = React.createRef();
         this.category = React.createRef();
@@ -60,7 +59,7 @@ class Trash extends Component {
             })
             return false;
         } else if (e.target.files[0]) {
-            if (e.target.files[0].size < 10000000) {
+            if (e.target.files[0].size < 5000000) {
                 this.setState({ photo: e.target.files[0] })
                 console.log(e.target.files[0])
                 try {
@@ -95,7 +94,7 @@ class Trash extends Component {
                 Swal.fire({
                     type: 'error',
                     title: 'Oops...',
-                    text: 'Maksimal file 10!'
+                    text: 'Maksimal file 5MB!'
                 })
             }
         }
@@ -105,7 +104,6 @@ class Trash extends Component {
     doAddTrash = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
         if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
@@ -126,13 +124,6 @@ class Trash extends Component {
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
-            })
-            return;
-        } else if (!regexImage.test(this.state.photo.name)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
             })
             return;
         }
@@ -160,7 +151,6 @@ class Trash extends Component {
                 this.name.current.value = ''
                 this.price.current.value = ''
                 this.point.current.value = ''
-                this.photo.current.value = ''
                 this.setState({ photo: "" })
                 this.componentDidMount();
             })
@@ -318,8 +308,9 @@ class Trash extends Component {
                                     <select ref={this.category} class="form-control" id="status pembayaran">
                                         {this.state.category.map((item, index) => {
                                             return (
-                                                <option
-                                                    value={item.id}> {item.category_name}</option>
+                                                <option value={item.id}>
+                                                    {item.category_name}
+                                                </option>
                                             )
                                         })}
                                     </select>
