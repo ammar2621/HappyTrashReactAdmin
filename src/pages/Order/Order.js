@@ -218,16 +218,6 @@ class Order extends Component {
                                                     return (
                                                         <tr>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }} className=" button-white  btn btn-lg btn-block rounded-pill" onClick={this.toggleModalUser}>
-                                                                    {elm.Order.user_id}
-                                                                </MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <h4>{"Nama :" + elm.User.name}</h4>
-                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
@@ -238,17 +228,6 @@ class Order extends Component {
                                                             <td valign="bottom"> {elm.Order.time}</td>
                                                             <td valign="bottom"> {elm.Order.created_at}</td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalAddress}>
-                                                                    Lihat
-                                                    </MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        {elm.Order.adress}
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openAddress(e, elm.Order.adress)}
@@ -257,17 +236,6 @@ class Order extends Component {
                                                             </MDBBtn>
                                                             </td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalPhoto}>
-                                                                    Lihat
-                                                    </MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openImage(e, elm.Order.photo)}
@@ -310,16 +278,6 @@ class Order extends Component {
                                                     return (
                                                         <tr>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalUser}>{elm.Order.user_id}</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <h4>{"Nama :" + elm.User.name}</h4>
-                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
@@ -330,15 +288,6 @@ class Order extends Component {
                                                             <td valign="bottom"> {elm.Order.time}</td>
                                                             <td valign="bottom">{elm.Order.created_at}</td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalAddress}>Lihat</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        {elm.Order.adress}
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openAddress(e, elm.Order.adress)}
@@ -347,15 +296,6 @@ class Order extends Component {
                                                             </MDBBtn>
                                                             </td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openImage(e, elm.Order.photo)}
@@ -398,16 +338,6 @@ class Order extends Component {
                                                     return (
                                                         <tr>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalUser}>{elm.Order.user_id}</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalUser} toggle={this.toggleModalUser} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalUser} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <h4>{"Nama :" + elm.User.name}</h4>
-                                                                        <h4>{"Kontak :" + elm.User.mobile_number}</h4>
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
@@ -418,15 +348,6 @@ class Order extends Component {
                                                             <td valign="bottom"> {elm.Order.time}</td>
                                                             <td valign="bottom"> {elm.Order.created_at}</td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalAddress}>Lihat</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalAddress} toggle={this.toggleModalAddress} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalAddress} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        {elm.Order.adress}
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openAddress(e, elm.Order.adress)}
@@ -435,15 +356,6 @@ class Order extends Component {
                                                                 </MDBBtn>
                                                             </td>
                                                             <td valign="bottom">
-                                                                {/* <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={this.toggleModalPhoto}>Lihat</MDBBtn>
-                                                                <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                                    <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                                    <MDBModalBody className="text-center">
-                                                                        <img src={elm.Order.photo} alt={elm.Order.photo} />
-                                                                    </MDBModalBody>
-                                                                </MDBModal> */}
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
                                                                     onClick={e => this.openImage(e, elm.Order.photo)}
