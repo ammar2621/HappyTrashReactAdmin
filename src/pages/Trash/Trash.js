@@ -38,6 +38,40 @@ class Trash extends Component {
         }
     }
 
+    // const swalWithBootstrapButtons = Swal.mixin({
+    //     customClass: {
+    //         confirmButton: 'btn btn-success',
+    //         cancelButton: 'btn btn-danger'
+    //     },
+    //     buttonsStyling: false
+    // })
+
+    // swalWithBootstrapButtons.fire({
+    //     title: 'Are you sure?',
+    //     text: "You won't be able to revert this!",
+    //     type: 'warning',
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Yes, delete it!',
+    //     cancelButtonText: 'No, cancel!',
+    //     reverseButtons: true
+    //   }).then((result) => {
+    // if (result.value) {
+    //     swalWithBootstrapButtons.fire(
+    //         'Deleted!',
+    //         'Your file has been deleted.',
+    //         'success'
+    //     )
+    // } else if (
+    //     /* Read more about handling dismissals below */
+    //     result.dismiss === Swal.DismissReason.cancel
+    // ) {
+    //     swalWithBootstrapButtons.fire(
+    //         'Cancelled',
+    //         'Your imaginary file is safe :)',
+    //         'error'
+    //     )
+    // }
+
     // function to make modal operate
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
@@ -62,6 +96,35 @@ class Trash extends Component {
         } else if (e.target.files[0]) {
             if (e.target.files[0].size < 10000000) {
                 this.setState({ photo: e.target.files[0] })
+                console.log(e.target.files[0])
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    console.log(url)
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
+                }
             } else {
                 Swal.fire({
                     type: 'error',
@@ -69,46 +132,6 @@ class Trash extends Component {
                     text: 'Maksimal file 10!'
                 })
             }
-        }
-    };
-
-    // function to upload photo to cloud storage
-    handleUploadPhoto = event => {
-        event.preventDefault();
-        if (this.state.photo == "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Silakan pilih file (.jpg , .png atau .gif) terlebih dahulu '
-            })
-            return false;
-        }
-        try {
-            const uploadTask = storage
-                .ref(`images/${this.state.photo.name}`)
-                .put(this.state.photo);
-            uploadTask.on(
-                "state_changed",
-                snapshot => {
-                    //progress Function
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    this.setState({ progress });
-                },
-                error => {
-                },
-                () => {
-                    //Complete Function
-                    storage
-                        .ref("images")
-                        .child(this.state.photo.name)
-                        .getDownloadURL()
-                        .then(url => {
-                            this.setState({ urlPhoto: url });
-                        });
-                }
-            );
-        } catch (err) {
         }
     };
 
@@ -191,29 +214,60 @@ class Trash extends Component {
     deleteTrash = (e, id) => {
         e.preventDefault();
         const self = this;
-        let config = {
-            method: "DELETE",
-            url: self.props.url + `/v1/trash/${id}`,
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Apakah anda yakin?',
+            text: "Anda tidak bisa mengembalikan ketika sudah dihapus!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus saja!!',
+            cancelButtonText: 'Tidak!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let config = {
+                    method: "DELETE",
+                    url: self.props.url + `/v1/trash/${id}`,
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("admin_token")
+                    }
+                }
+                axios(config)
+                    .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Berhasil Menghapus Jenis Sampah!'
+                        })
+                        self.componentDidMount()
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops....',
+                            text: 'Terjadi kesalahan!'
+                        })
+                    })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Tidak Jadi',
+                    'Tetap aman :)',
+                    'error'
+                )
             }
-        }
-        axios(config)
-            .then(function (response) {
-                Swal.fire({
-                    type: 'success',
-                    title: 'Success',
-                    text: 'Berhasil Menghapus Jenis Sampah!'
-                })
-                self.componentDidMount()
-            })
-            .catch(function (error) {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Oops....',
-                    text: 'Terjadi kesalahan!'
-                })
-            })
+        })
+
+
     }
 
     // Function to pop up image
@@ -336,9 +390,6 @@ class Trash extends Component {
                                     <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <br />
-                                    <br />
-                                    <button onClick={this.handleUploadPhoto}>Upload</button>
                                     <br />
                                     <br />
                                     <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
