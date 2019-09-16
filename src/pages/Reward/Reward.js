@@ -102,7 +102,7 @@ class Reward extends Component {
     doAddReward = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
-        // check the name validation
+        // check the form validation
         if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
@@ -158,6 +158,79 @@ class Reward extends Component {
         })
     }
 
+    // function to filter the active/non-active rewards
+    statusFilter = async e => {
+        e.preventDefault();
+        const self = this;
+        if (e.target.value == '0') {
+            // to get the non-active trashes 
+            await axios
+                .get(this.props.url + `/v1/rewards`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    console.log(response.data)
+                    await this.setState({ reward: [], statusReward: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.reward.concat(item);
+                            this.setState({ reward: joined })
+                        }
+                    })
+                    await this.state.reward.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.statusReward.concat('Tidak Aktif');
+                            this.setState({ statusReward: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.statusReward.concat('Aktif');
+                            this.setState({ statusReward: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        } else if (e.target.value == '1') {
+            // to get the active trashes 
+            await axios
+                .get(this.props.url + `/v1/rewards`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    console.log(response.data)
+                    await this.setState({ reward: [], statusReward: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === true) {
+                            const joined = this.state.reward.concat(item);
+                            this.setState({ reward: joined })
+                        }
+                    })
+                    await this.state.reward.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.statusReward.concat('Tidak Aktif');
+                            this.setState({ statusReward: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.statusReward.concat('Aktif');
+                            this.setState({ statusReward: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+        } else if (e.target.value == '2') {
+            // to get the all trashes 
+            self.setState({ reward: [], statusReward: [] })
+            self.componentDidMount();
+        }
+    }
+
     // function operate after renderred, to get the list of trashes and category of trashes
     componentDidMount = async () => {
         const self = this;
@@ -174,10 +247,10 @@ class Reward extends Component {
                 await this.setState({ reward: response.data })
                 await response.data.map((item, index) => {
                     if (item.status === false) {
-                        var joined = this.state.statusReward.concat('Tidak Aktif');
+                        const joined = this.state.statusReward.concat('Tidak Aktif');
                         this.setState({ statusReward: joined })
                     } else if (item.status === true) {
-                        var joined = this.state.statusReward.concat('Aktif');
+                        const joined = this.state.statusReward.concat('Aktif');
                         this.setState({ statusReward: joined })
                     }
                 })
@@ -194,7 +267,6 @@ class Reward extends Component {
                     }
                 })
             .then(response => {
-                console.log("REWARD HISTORY", response.data)
                 this.setState({ rewardHistory: response.data })
             })
             .catch(error => {
@@ -296,6 +368,17 @@ class Reward extends Component {
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
+                                <br />
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Tampilkan Hadiah yang: &nbsp;</p>
+                                <select
+                                    style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
+                                    className="form-control"
+                                    onChange={e => this.statusFilter(e)}
+                                >
+                                    <option value='2'> Semua</option>
+                                    <option value='1'> Aktif</option>
+                                    <option value='0'> Non-Aktif</option>
+                                </select>
                                 <div className="table-responsive">
                                     <table class="table ">
                                         <thead>
