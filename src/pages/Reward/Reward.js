@@ -34,7 +34,8 @@ class Reward extends Component {
             photo: null,
             urlPhoto: "",
             progress: 0,
-            statusReward: []
+            statusReward: [],
+            names: []
         }
     }
 
@@ -165,6 +166,27 @@ class Reward extends Component {
         })
     }
 
+    // Function to pop up user information
+    openUserInformation = async (e, id) => {
+        const self = this;
+        // to get the all trashes 
+        await axios
+            .get(this.props.url + `/v1/users/admin/${id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                    }
+                })
+            .then(async response => {
+                Swal.fire({
+                    html: `<p>Nama: ${response.data.name} <br> No HP: ${response.data.mobile_number} </p>`
+                })
+            })
+            .catch(error => {
+            });
+
+    }
+
     // function to filter the active/non-active rewards
     statusFilter = async e => {
         e.preventDefault();
@@ -268,7 +290,8 @@ class Reward extends Component {
                     }
                 })
             .then(response => {
-                this.setState({ rewardHistory: response.data })
+                const reversedHistory = response.data.sort().reverse().slice(0, 50)
+                this.setState({ rewardHistory: reversedHistory })
             })
             .catch(error => {
             });
@@ -436,8 +459,8 @@ class Reward extends Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">ID Redeem</th>
-                                                <th scope="col">Nama</th>
+                                                <th scope="col">ID Hadiah</th>
+                                                <th scope="col">Penerima</th>
                                                 <th scope="col">Hadiah</th>
                                                 <th scope="col">Waktu</th>
                                             </tr>
@@ -446,11 +469,18 @@ class Reward extends Component {
                                             {this.state.rewardHistory.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td>{item.id}</td>
+                                                        <td>{index + 1}</td>
                                                         <td> {item.reward_id}</td>
-                                                        <td> {item.user_id} </td>
+                                                        <td>
+                                                            <MDBBtn
+                                                                style={{ padding: "4px", textTransform: 'capitalize' }}
+                                                                className="button-white btn btn-lg rounded-pill"
+                                                                onClick={e => this.openUserInformation(e, item.user_id)}
+                                                            >
+                                                                Lihat Penerima
+                                                            </MDBBtn> </td>
                                                         <td> {item.reward_name}</td>
-                                                        <td> {item.created_at}</td>
+                                                        <td> {item.created_at.slice(0, 26)}</td>
                                                     </tr>
                                                 )
                                             })}
