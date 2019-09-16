@@ -20,6 +20,7 @@ class OrderAddDetails extends Component {
         }
     }
 
+    // function that enabled after renderred
     componentDidMount() {
         const self = this;
         let config = {
@@ -31,14 +32,13 @@ class OrderAddDetails extends Component {
         }
         axios(config)
             .then(function (response) {
-                console.log(response.data)
                 self.setState({ trashes: response.data })
             })
             .catch(function (error) {
-                console.log(error)
             })
     }
 
+    // to add more trash details
     addAnother = async e => {
         e.preventDefault();
         if (this.state.qty == null || this.state.qty == '') {
@@ -58,7 +58,6 @@ class OrderAddDetails extends Component {
         }
         this.state.toPut.push(new_put);
         this.state.toDisplay.push(new_display);
-        console.log(this.state.toDisplay, this.state.toPut)
         await this.setState({
             qty: '',
             trash_id: ''
@@ -66,7 +65,7 @@ class OrderAddDetails extends Component {
         this.componentDidMount();
     }
 
-
+    // to checkout ALL the trashes details
     checkOut = e => {
         e.preventDefault();
         const self = this;
@@ -83,11 +82,9 @@ class OrderAddDetails extends Component {
         }
         axios(config)
             .then(function (response) {
-                console.log(response.data)
                 self.props.history.push("/order/checkout/" + self.props.match.params.order_id)
             })
             .catch(function (error) {
-                console.log(error)
             })
     }
 
