@@ -102,6 +102,7 @@ class Trash extends Component {
     doAddTrash = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
         if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
@@ -122,6 +123,13 @@ class Trash extends Component {
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
+            })
+            return;
+        } else if (!regexImage.test(this.stock.urlPhoto)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Pilih file image terlebih dahulu!'
             })
             return;
         }
