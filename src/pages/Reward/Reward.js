@@ -153,7 +153,9 @@ class Reward extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 90vw; max-height: 90vh;' class="text-center">`
+            imageUrl: `${url}`,
+            imageWidth: '100%',
+            width: '80vw'
         })
     }
 
@@ -278,7 +280,7 @@ class Reward extends Component {
                                         <option value='0'> Non-Aktif</option>
                                     </select>
                                     <br />
-                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
+                                    <label for="inputPhotoURL">Unggah Foto:</label>
                                     <br />
                                     <progress
                                         value={this.state.progress}
