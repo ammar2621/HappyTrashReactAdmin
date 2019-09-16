@@ -11,7 +11,10 @@ import {
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import {
+    Redirect,
+    Link
+} from 'react-router-dom'
 import Header from '../../components/Header'
 import './Trash.css'
 import Swal from 'sweetalert2'
@@ -21,7 +24,6 @@ class Trash extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.photo = React.createRef();
         this.price = React.createRef();
         this.point = React.createRef();
         this.category = React.createRef();
@@ -41,6 +43,7 @@ class Trash extends Component {
             this.setState({
                 activeItem: tab
             });
+            this.componentDidMount();
         }
     };
 
@@ -56,55 +59,43 @@ class Trash extends Component {
             })
             return false;
         } else if (e.target.files[0]) {
-            if (e.target.files[0].size < 10000000) {
+            if (e.target.files[0].size < 5000000) {
                 this.setState({ photo: e.target.files[0] })
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    console.log(url)
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
+                }
             } else {
                 Swal.fire({
                     type: 'error',
                     title: 'Oops...',
-                    text: 'Maksimal file 10!'
+                    text: 'Maksimal file 5MB!'
                 })
             }
-        }
-    };
-
-    // function to upload photo to cloud storage
-    handleUploadPhoto = event => {
-        event.preventDefault();
-        if (this.state.photo == "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Silakan pilih file (.jpg , .png atau .gif) terlebih dahulu '
-            })
-            return false;
-        }
-        try {
-            const uploadTask = storage
-                .ref(`images/${this.state.photo.name}`)
-                .put(this.state.photo);
-            uploadTask.on(
-                "state_changed",
-                snapshot => {
-                    //progress Function
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    this.setState({ progress });
-                },
-                error => {
-                },
-                () => {
-                    //Complete Function
-                    storage
-                        .ref("images")
-                        .child(this.state.photo.name)
-                        .getDownloadURL()
-                        .then(url => {
-                            this.setState({ urlPhoto: url });
-                        });
-                }
-            );
-        } catch (err) {
         }
     };
 
@@ -112,17 +103,8 @@ class Trash extends Component {
     doAddTrash = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
-        const regexName = /^[a-zA-Z ]{2,30}$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
-        if (!regexName.test(this.name.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-            })
-            return;
-        } else if (!regexNumber.test(this.point.current.value)) {
+        if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -141,13 +123,6 @@ class Trash extends Component {
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
-            })
-            return;
-        } else if (!regexImage.test(this.state.photo.name)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
             })
             return;
         }
@@ -175,7 +150,6 @@ class Trash extends Component {
                 this.name.current.value = ''
                 this.price.current.value = ''
                 this.point.current.value = ''
-                this.photo.current.value = ''
                 this.setState({ photo: "" })
                 this.componentDidMount();
             })
@@ -187,29 +161,59 @@ class Trash extends Component {
     deleteTrash = (e, id) => {
         e.preventDefault();
         const self = this;
-        let config = {
-            method: "DELETE",
-            url: self.props.url + `/v1/trash/${id}`,
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        // making the confirmaton first before it deleted
+        swalWithBootstrapButtons.fire({
+            title: 'Apakah anda yakin?',
+            text: "Anda tidak bisa mengembalikan ketika sudah dihapus!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus saja!!',
+            cancelButtonText: 'Tidak!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let config = {
+                    method: "DELETE",
+                    url: self.props.url + `/v1/trash/${id}`,
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("admin_token")
+                    }
+                }
+                /* delete with axios */
+                axios(config)
+                    .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Berhasil Menghapus Jenis Sampah!'
+                        })
+                        self.componentDidMount()
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops....',
+                            text: 'Terjadi kesalahan!'
+                        })
+                    })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Tidak Jadi',
+                    'Tetap aman :)',
+                    'error'
+                )
             }
-        }
-        axios(config)
-            .then(function (response) {
-                Swal.fire({
-                    type: 'success',
-                    title: 'Success',
-                    text: 'Berhasil Menghapus Jenis Sampah!'
-                })
-                self.componentDidMount()
-            })
-            .catch(function (error) {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Oops....',
-                    text: 'Terjadi kesalahan!'
-                })
-            })
+        })
     }
 
     // Function to pop up image
@@ -262,14 +266,23 @@ class Trash extends Component {
                         <h2 className="title-of-page">Pengaturan Sampah</h2>
                         <MDBNav className="nav-tabs ">
                             <MDBNavItem>
-                                <MDBNavLink className='black-font' active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >
+                                <MDBNavLink
+                                    className='black-font'
+                                    active={this.state.activeItem === "1"}
+                                    onClick={this.toggle("1")}
+                                    role="tab"
+                                >
                                     Tambah Sampah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                             <MDBNavItem>
-                                <MDBNavLink className='black-font' active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >
+                                <MDBNavLink
+                                    className='black-font'
+                                    active={this.state.activeItem === "2"}
+                                    onClick={this.toggle("2")}
+                                    role="tab" >
                                     List Sampah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem} >
@@ -294,8 +307,9 @@ class Trash extends Component {
                                     <select ref={this.category} class="form-control" id="status pembayaran">
                                         {this.state.category.map((item, index) => {
                                             return (
-                                                <option
-                                                    value={item.id}> {item.category_name}</option>
+                                                <option value={item.id}>
+                                                    {item.category_name}
+                                                </option>
                                             )
                                         })}
                                     </select>
@@ -327,17 +341,25 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
+                                    <label for="inputPhotoURL">Pilih Foto:</label>
                                     <br />
-                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <progress
+                                        value={this.state.progress}
+                                        max="100"
+                                        style={{ width: "100%" }}
+                                    />
                                     <br />
-                                    <input type="file" onChange={this.handleChangePhoto} />
+                                    <input
+                                        type="file"
+                                        onChange={this.handleChangePhoto}
+                                    />
                                     <br />
                                     <br />
-                                    <button onClick={this.handleUploadPhoto}>Upload</button>
-                                    <br />
-                                    <br />
-                                    <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
+                                    <button
+                                        class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill"
+                                        type="submit"
+                                        onClick={e => this.doAddTrash(e)}
+                                    >
                                         Tambah
                                     </button>
                                     <br />
@@ -355,8 +377,6 @@ class Trash extends Component {
                                                 <th scope="col">Gambar</th>
                                                 <th scope="col">Poin</th>
                                                 <th scope="col">Harga</th>
-                                                <th scope="col">Created At</th>
-                                                <th scope="col">Updated At</th>
                                                 <th scope="col">Edit</th>
                                                 <th scope="col">Delete</th>
                                             </tr>
@@ -369,7 +389,8 @@ class Trash extends Component {
                                                         <td valign="bottom"> {item.trash_category_id}</td>
                                                         <td valign="bottom"> {item.trash_name}</td>
                                                         <td valign="bottom">
-                                                            <MDBBtn style={{ padding: "4px" }}
+                                                            <MDBBtn
+                                                                style={{ padding: "4px" }}
                                                                 className="button-white  btn btn-lg btn-block rounded-pill"
                                                                 onClick={e => this.openImage(e, item.photo)}
                                                             >
@@ -378,10 +399,7 @@ class Trash extends Component {
                                                         </td>
                                                         <td valign="bottom"> {item.point}</td>
                                                         <td valign="bottom"> Rp. {item.price}</td>
-                                                        <td valign="bottom"> {item.created_at.slice(0, 26)}</td>
-                                                        <td valign="bottom"> {item.updated_at.slice(0, 26)}</td>
                                                         <td valign="bottom">
-
                                                             <Link to={"/trash/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
                                                             >
                                                                 Edit
@@ -392,9 +410,11 @@ class Trash extends Component {
                                                             <button className="btn btn-lg btn-danger btn-block rounded-pill"
                                                                 type="submit"
                                                                 style={{ padding: "4px" }}
-                                                                onClick={e => this.deleteTrash(e, item.id)}>
+                                                                onClick={e => this.deleteTrash(e, item.id)}
+                                                            >
                                                                 Delete
-                                                </button></td>
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })}
