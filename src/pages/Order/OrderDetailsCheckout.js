@@ -1,18 +1,5 @@
 import React, { Component } from "react";
-import {
-    MDBBtn,
-    MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink,
-    MDBModal,
-    MDBModalBody,
-    MDBModalHeader,
-    MDBModalFooter
-} from "mdbreact";
-
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -42,7 +29,6 @@ class OrderDetailsCheckout extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config)
             .then(async function (response) {
                 console.log(response.data)
@@ -86,10 +72,12 @@ class OrderDetailsCheckout extends Component {
                                 </tbody>
                             </table>
                         </div>
-
-                        <Link to={"/order/invoice/" + this.props.match.params.order_id}><button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
-                            OK
-                                    </button></Link> <br />
+                        <Link to={"/order/invoice/" + this.props.match.params.order_id}>
+                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
+                                OK
+                            </button>
+                        </Link>
+                        <br />
                     </MDBContainer>
                 </div >
             );

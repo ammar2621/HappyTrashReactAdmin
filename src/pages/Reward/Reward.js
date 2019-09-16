@@ -184,7 +184,6 @@ class Reward extends Component {
             })
             .catch(error => {
             });
-
     }
 
     // function to filter the active/non-active rewards

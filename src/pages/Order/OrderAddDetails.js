@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-    MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink
-} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -17,13 +10,6 @@ import './Order.css'
 class OrderAddDetails extends Component {
     constructor(props) {
         super(props);
-        this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
-        this.point = React.createRef();
-        this.categoryID = React.createRef();
-        this.trash_id = React.createRef();
-        this.qty = React.createRef();
         this.state = {
             trashes: [],
             toPut: [],
@@ -43,7 +29,6 @@ class OrderAddDetails extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config)
             .then(function (response) {
                 console.log(response.data)
@@ -56,24 +41,29 @@ class OrderAddDetails extends Component {
 
     addAnother = async e => {
         e.preventDefault();
+        if (this.state.qty == null || this.state.qty == '') {
+            alert('Silakan isi dulu beratnya')
+            return;
+        } else if (this.state.trash_id == '' || this.state.trash_id == null) {
+            alert('Silakan pilih sampah')
+            return;
+        }
         let new_put = await {
             trash_id: this.state.trash_id,
             qty: parseInt(this.state.qty)
-            // trash_id: this.trash_id.current.value,
-            // qty: parseInt(this.qty.current.value)
         }
-
         let new_display = await {
             qty: this.state.qty,
             trash_name: this.state.trash_name
         }
-        // this.refs.trash_id.value = ''
-        // this.refs.qty.value = ''
         this.state.toPut.push(new_put);
         this.state.toDisplay.push(new_display);
         console.log(this.state.toDisplay, this.state.toPut)
-        // e.reset()
-
+        await this.setState({
+            qty: '',
+            trash_id: ''
+        })
+        this.componentDidMount();
     }
 
 
@@ -91,7 +81,6 @@ class OrderAddDetails extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config)
             .then(function (response) {
                 console.log(response.data)
@@ -109,31 +98,13 @@ class OrderAddDetails extends Component {
                     <Header />
                     <MDBContainer id="bodyreward">
                         <br />
-                        {/* <table>
-                            <thead>
-                                <tr>
-                                    <td>Nama Sampah </td>
-                                    <td>Berat </td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.toDisplay.map((elm, key) => {
-                                    return (
-                                        <tr>
-                                            <td>{elm.trash_name}</td>
-                                            <td>{elm.qty}</td>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table> */}
                         <h2 id="titlerewardedit">Tambah Detail Order</h2>
                         <form class="form-signin">
                             <label for="inputName">
                                 Jenis Sampah:
                                     </label>
-
-                            <select class="form-control" id="status pembayaran" ref={this.trash_id}
+                            <select
+                                class="form-control"
                                 onChange={e => {
                                     this.setState({ trash_id: this.state.trashes[e.target.value].id });
                                     this.setState({ trash_name: this.state.trashes[e.target.value].trash_name });
@@ -145,19 +116,18 @@ class OrderAddDetails extends Component {
                                         <option value={key}> {elm.trash_name}</option>
                                     )
                                 })}
-
                             </select>
                             <br />
                             <label for="inputPoint  ">
                                 Berat (kg):
-                                    </label>
+                            </label>
                             <input
                                 type="number"
                                 id="inputPoint  "
                                 class="form-control"
                                 placeholder="Berat"
                                 min="1"
-                                ref={this.qty}
+                                value={this.state.qty}
                                 onChange={e => { this.setState({ qty: e.target.value }) }}
                             />
                             <br />
@@ -167,9 +137,29 @@ class OrderAddDetails extends Component {
 
                             <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.checkOut(e)}>
                                 Checkout
-                                    </button> <br />
-
+                                    </button>
+                            <br />
                         </form>
+                        <div className="table-responsive">
+                            <table class="table ">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nama Sampah</th>
+                                        <th scope="col">Berat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.toDisplay.map((elm, key) => {
+                                        return (
+                                            <tr>
+                                                <td>{elm.trash_name}</td>
+                                                <td>{elm.qty}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
                     </MDBContainer>
                 </div >
             );
