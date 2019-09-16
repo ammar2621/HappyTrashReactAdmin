@@ -102,6 +102,7 @@ class Reward extends Component {
     doAddReward = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the form validation
         if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
@@ -109,14 +110,21 @@ class Reward extends Component {
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Poin!'
             })
-            return false
+            return;
         } else if (!regexNumber.test(this.stock.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
             })
-            return false
+            return;
+        } else if (!regexImage.test(this.stock.urlPhoto)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Pilih file image terlebih dahulu!'
+            })
+            return;
         }
         const self = this;
         await axios
@@ -362,7 +370,7 @@ class Reward extends Component {
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
                                 <br />
-                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Tampilkan Hadiah yang: &nbsp;</p>
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Status Hadiah: &nbsp;</p>
                                 <select
                                     style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
                                     className="form-control"
