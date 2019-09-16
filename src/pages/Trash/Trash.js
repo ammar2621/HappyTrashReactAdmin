@@ -187,7 +187,7 @@ class Trash extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 480px' class="text-center">`
+            html: `<img src=${url} style='max-width: 80vw; max-height: 80vh' class="text-center">`
         })
     }
 
