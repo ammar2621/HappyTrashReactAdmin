@@ -155,11 +155,11 @@ class Trash extends Component {
         await axios
             .post(this.props.url + `/v1/trash`,
                 {
-                    trash_category_id: Number(this.category.current.value),
+                    trash_category_id: Math.abs(this.category.current.value),
                     trash_name: this.name.current.value,
-                    price: Number(this.price.current.value),
+                    price: Math.abs(this.price.current.value),
                     photo: this.state.urlPhoto,
-                    point: Number(this.point.current.value)
+                    point: Math.abs(this.point.current.value)
                 },
                 {
                     headers: {
@@ -332,7 +332,6 @@ class Trash extends Component {
                                     <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <img src={this.state.photo.name} />
                                     <br />
                                     <br />
                                     <button onClick={this.handleUploadPhoto}>Upload</button>
