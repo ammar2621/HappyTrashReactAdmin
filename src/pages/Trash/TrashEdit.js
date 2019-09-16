@@ -142,6 +142,19 @@ class TrashEdit extends Component {
     // function operate after renderred, to get the list of trashes and category of trashes
     componentDidMount = async () => {
         const self = this;
+        // to get all categories
+        await axios
+            .get(this.props.url + '/v1/trash_category',
+                {
+                    headers: {
+                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                    }
+                })
+            .then(response => {
+                this.setState({ category: response.data })
+            })
+            .catch(error => {
+            });
         // to get the all trashes 
         await axios
             .get(this.props.url + `/v1/trash`,
@@ -162,19 +175,6 @@ class TrashEdit extends Component {
                 self.price.current.value = self.state.trash[0].price
                 self.point.current.value = self.state.trash[0].point
                 self.state.urlPhoto = self.state.trash[0].photo
-            })
-            .catch(error => {
-            });
-        // to get all categories
-        await axios
-            .get(this.props.url + '/v1/trash_category',
-                {
-                    headers: {
-                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-                    }
-                })
-            .then(response => {
-                this.setState({ category: response.data })
             })
             .catch(error => {
             });
@@ -245,7 +245,7 @@ class TrashEdit extends Component {
                             />
                             <br />
                             <label for="inputurlPhoto">
-                                Upload Foto (masih dalam pengembangan):
+                                Upload Foto (Pilih File Jika Foto Ingin Diubah):
                                     </label>
                             <progress
                                 value={this.state.progress}
