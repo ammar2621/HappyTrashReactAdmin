@@ -11,7 +11,10 @@ import {
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import {
+    Redirect,
+    Link
+} from 'react-router-dom'
 import Header from '../../components/Header'
 import './Trash.css'
 import Swal from 'sweetalert2'
@@ -41,6 +44,7 @@ class Trash extends Component {
             this.setState({
                 activeItem: tab
             });
+            this.componentDidMount();
         }
     };
 
