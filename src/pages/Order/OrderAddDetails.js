@@ -3,9 +3,10 @@ import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Order.css'
+import Swal from 'sweetalert2'
 
 class OrderAddDetails extends Component {
     constructor(props) {
@@ -42,10 +43,18 @@ class OrderAddDetails extends Component {
     addAnother = async e => {
         e.preventDefault();
         if (this.state.qty == null || this.state.qty == '') {
-            alert('Silakan isi dulu beratnya')
+            Swal.fire({
+                type: 'error',
+                title: 'Oops....',
+                text: 'Silakan isi dulu beratnya!'
+            })
             return;
         } else if (this.state.trash_id == '' || this.state.trash_id == null) {
-            alert('Silakan pilih sampah')
+            Swal.fire({
+                type: 'error',
+                title: 'Oops....',
+                text: 'Silakan pilih kembali sampahnya!'
+            })
             return;
         }
         let new_put = await {

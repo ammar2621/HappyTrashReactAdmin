@@ -102,11 +102,9 @@ class OrderPage extends Component {
         }
         axios(config)
             .then(function (response) {
-                console.log(response);
                 self.componentDidMount();
             })
             .catch(function (error) {
-                console.log(error);
             })
     }
 
@@ -185,7 +183,6 @@ class OrderPage extends Component {
                 self.setState({ confirmedOrder })
                 self.setState({ waitingOrder })
             }).catch(function (error) {
-                console.log(error)
             })
     }
 
