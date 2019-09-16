@@ -29,7 +29,7 @@ class Trash extends Component {
             activeItem: "1",
             trash: [],
             category: [],
-            photo: null,
+            photo: "",
             urlPhoto: "",
             progress: 0
         }
@@ -46,15 +46,39 @@ class Trash extends Component {
 
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
-        if (e.target.files[0]) {
-            this.state.photo = e.target.files[0];
-            console.log(e.target.files[0])
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 10000000) {
+                this.setState({ photo: e.target.files[0] })
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 10!'
+                })
+            }
         }
     };
 
     // function to upload photo to cloud storage
     handleUploadPhoto = event => {
         event.preventDefault();
+        if (this.state.photo == "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Silakan pilih file (.jpg , .png atau .gif) terlebih dahulu '
+            })
+            return false;
+        }
         try {
             const uploadTask = storage
                 .ref(`images/${this.state.photo.name}`)
@@ -68,7 +92,6 @@ class Trash extends Component {
                     this.setState({ progress });
                 },
                 error => {
-                    console.log(error);
                 },
                 () => {
                     //Complete Function
@@ -78,49 +101,55 @@ class Trash extends Component {
                         .getDownloadURL()
                         .then(url => {
                             this.setState({ urlPhoto: url });
-                            console.log(this.state.urlPhoto);
                         });
                 }
             );
         } catch (err) {
-            console.log("File Kosong");
         }
     };
 
     // function to post the trash
     doAddTrash = async e => {
         e.preventDefault();
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
+        const regexNumber = /^\d+$/;
+        const regexName = /^[a-zA-Z ]{2,30}$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
-        if (!regex_name.test(this.name.current.value)) {
+        if (!regexName.test(this.name.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
             })
-            return false
-        } else if (!regex_number.test(this.point.current.value)) {
+            return;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Poin!'
             })
-            return false
-        } else if (!regex_number.test(this.price.current.value)) {
+            return;
+        } else if (!regexNumber.test(this.price.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Harga!'
             })
-            return false
-        } else if (!regex_number.test(this.category.current.value)) {
+            return;
+        } else if (!regexNumber.test(this.category.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
             })
-            return false
+            return;
+        } else if (!regexImage.test(this.state.photo.name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return;
         }
         const self = this;
         await axios
@@ -138,18 +167,17 @@ class Trash extends Component {
                     }
                 })
             .then(response => {
-                console.log(response.data)
                 Swal.fire({
                     type: 'success',
                     title: 'Success',
                     text: 'Berhasil Menambahkan Jenis Sampah!'
                 })
-                this.name.current.value = ' '
-                this.category.current.value = ' '
-                this.price.current.value = ' '
-                this.point.current.value = ' '
-                this.photo.current.value = ' '
-                self.componentDidMount();
+                this.name.current.value = ''
+                this.price.current.value = ''
+                this.point.current.value = ''
+                this.photo.current.value = ''
+                this.setState({ photo: "" })
+                this.componentDidMount();
             })
             .catch(error => {
             });
@@ -187,7 +215,9 @@ class Trash extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 80vw; max-height: 80vh' class="text-center">`
+            imageUrl: `${url}`,
+            imageWidth: '100%',
+            width: '80vw'
         })
     }
 
@@ -302,7 +332,7 @@ class Trash extends Component {
                                     <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <image src={this.state.photo} />
+                                    <img src={this.state.photo.name} />
                                     <br />
                                     <br />
                                     <button onClick={this.handleUploadPhoto}>Upload</button>
