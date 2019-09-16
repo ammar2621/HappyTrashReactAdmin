@@ -34,6 +34,7 @@ class Reward extends Component {
             photo: null,
             urlPhoto: "",
             progress: 0,
+            statusReward: []
         }
     }
 
@@ -48,90 +49,76 @@ class Reward extends Component {
 
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
-        if (e.target.files[0]) {
-            this.state.photo = e.target.files[0];
-            console.log(e.target.files[0])
-        }
-    };
-
-    // function to upload photo to cloud storage
-    handleUploadPhoto = event => {
-        event.preventDefault();
-        try {
-            const uploadTask = storage
-                .ref(`images/${this.state.photo.name}`)
-                .put(this.state.photo);
-            uploadTask.on(
-                "state_changed",
-                snapshot => {
-                    //progress Function
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    this.setState({ progress });
-                },
-                error => {
-                    console.log(error);
-                },
-                () => {
-                    //Complete Function
-                    storage
-                        .ref("images")
-                        .child(this.state.photo.name)
-                        .getDownloadURL()
-                        .then(url => {
-                            this.setState({ urlPhoto: url });
-                            console.log(this.state.urlPhoto);
-                        });
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 5000000) {
+                this.setState({ photo: e.target.files[0] })
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    console.log(url)
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
                 }
-            );
-        } catch (err) {
-            console.log("File Kosong");
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 5MB!'
+                })
+            }
         }
     };
 
     // add the reward (post to API)
     doAddReward = async e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
+        const regexNumber = /^\d+$/;
         // check the name validation
-        // if (!regex_name.test(this.name.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.point.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Poin!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.price.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Harga!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.category.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka untuk Kategori!'
-        //     })
-        //     return false
-        // } else if (!regex_http.test(this.photo.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-        //     })
-        //     return false
-        // }
+        if (!regexNumber.test(this.point.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka Untuk Poin!'
+            })
+            return false
+        } else if (!regexNumber.test(this.stock.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka untuk Kategori!'
+            })
+            return false
+        }
         const self = this;
         await axios
             .post(this.props.url + `/v1/rewards`,
@@ -154,10 +141,9 @@ class Reward extends Component {
                     title: 'Success',
                     text: 'Berhasil Menambahkan Jenis Sampah!'
                 })
-                this.name.current.value = ' '
-                this.status.current.value = ' '
-                this.stock.current.value = ' '
-                this.point.current.value = ' '
+                this.name.current.value = ''
+                this.stock.current.value = ''
+                this.point.current.value = ''
                 self.componentDidMount();
             })
             .catch(error => {
@@ -182,9 +168,18 @@ class Reward extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
+            .then(async response => {
                 console.log(response.data)
-                this.setState({ reward: response.data })
+                await this.setState({ reward: response.data })
+                await response.data.map((item, index) => {
+                    if (item.status === false) {
+                        var joined = this.state.statusReward.concat('Tidak Aktif');
+                        this.setState({ statusReward: joined })
+                    } else if (item.status === true) {
+                        var joined = this.state.statusReward.concat('Aktif');
+                        this.setState({ statusReward: joined })
+                    }
+                })
             })
             .catch(error => {
                 console.log(error)
@@ -274,20 +269,24 @@ class Reward extends Component {
                                     <label for="inputStock">
                                         Status:
                                     </label>
-                                    <select class="form-control" id="status pembayaran">
-                                        <option ref={this.status} value='1'> Aktif</option>
+                                    <select
+                                        ref={this.status}
+                                        class="form-control"
+                                        id="status pembayaran"
+                                    >
+                                        <option value='1'> Aktif</option>
                                         <option value='0'> Non-Aktif</option>
                                     </select>
                                     <br />
                                     <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
                                     <br />
-                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <progress
+                                        value={this.state.progress}
+                                        max="100"
+                                        style={{ width: "100%" }}
+                                    />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <image src={this.state.photo} />
-                                    <br />
-                                    <br />
-                                    <button onClick={this.handleUploadPhoto}>Upload</button>
                                     <br />
                                     <br />
                                     <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddReward(e)}>
@@ -314,12 +313,12 @@ class Reward extends Component {
                                             {this.state.reward.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom"> {item.id} </td>
-                                                        <td valign="bottom"> {item.name}</td>
-                                                        <td valign="bottom"> {item.point_to_claim}</td>
-                                                        <td valign="bottom"> {item.stock} Pcs</td>
-                                                        <td valign="bottom"> {String(item.status)}</td>
-                                                        <td valign="bottom">
+                                                        <td> {item.id} </td>
+                                                        <td> {item.name}</td>
+                                                        <td> {item.point_to_claim}</td>
+                                                        <td> {item.stock} Pcs</td>
+                                                        <td> {this.state.statusReward[index]}</td>
+                                                        <td>
                                                             <MDBBtn style={{ padding: "4px" }}
                                                                 className="button-white  btn btn-lg btn-block rounded-pill"
                                                                 onClick={e => this.openImage(e, item.photo)}
@@ -327,7 +326,7 @@ class Reward extends Component {
                                                                 Lihat
                                                             </MDBBtn>
                                                         </td>
-                                                        <td valign="bottom">
+                                                        <td>
                                                             <Link to={"/reward/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
                                                             >
                                                                 Edit
@@ -357,11 +356,11 @@ class Reward extends Component {
                                             {this.state.rewardHistory.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom">{item.id}</td>
-                                                        <td valign="bottom"> {item.reward_id}</td>
-                                                        <td valign="bottom"> {item.user_id} </td>
-                                                        <td valign="bottom"> {item.reward_name}</td>
-                                                        <td valign="bottom"> {item.created_at}</td>
+                                                        <td>{item.id}</td>
+                                                        <td> {item.reward_id}</td>
+                                                        <td> {item.user_id} </td>
+                                                        <td> {item.reward_name}</td>
+                                                        <td> {item.created_at}</td>
                                                     </tr>
                                                 )
                                             })}

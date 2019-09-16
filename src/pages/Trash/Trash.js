@@ -150,7 +150,7 @@ class Trash extends Component {
                 this.name.current.value = ''
                 this.price.current.value = ''
                 this.point.current.value = ''
-                this.setState({ photo: "" })
+                this.setState({ urlPhoto: "" })
                 this.componentDidMount();
             })
             .catch(error => {
