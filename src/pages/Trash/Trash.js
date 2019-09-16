@@ -38,40 +38,6 @@ class Trash extends Component {
         }
     }
 
-    // const swalWithBootstrapButtons = Swal.mixin({
-    //     customClass: {
-    //         confirmButton: 'btn btn-success',
-    //         cancelButton: 'btn btn-danger'
-    //     },
-    //     buttonsStyling: false
-    // })
-
-    // swalWithBootstrapButtons.fire({
-    //     title: 'Are you sure?',
-    //     text: "You won't be able to revert this!",
-    //     type: 'warning',
-    //     showCancelButton: true,
-    //     confirmButtonText: 'Yes, delete it!',
-    //     cancelButtonText: 'No, cancel!',
-    //     reverseButtons: true
-    //   }).then((result) => {
-    // if (result.value) {
-    //     swalWithBootstrapButtons.fire(
-    //         'Deleted!',
-    //         'Your file has been deleted.',
-    //         'success'
-    //     )
-    // } else if (
-    //     /* Read more about handling dismissals below */
-    //     result.dismiss === Swal.DismissReason.cancel
-    // ) {
-    //     swalWithBootstrapButtons.fire(
-    //         'Cancelled',
-    //         'Your imaginary file is safe :)',
-    //         'error'
-    //     )
-    // }
-
     // function to make modal operate
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
@@ -139,17 +105,9 @@ class Trash extends Component {
     doAddTrash = async e => {
         e.preventDefault();
         const regexNumber = /^\d+$/;
-        const regexName = /^[a-zA-Z ]{2,30}$/;
         const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
-        if (!regexName.test(this.name.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-            })
-            return;
-        } else if (!regexNumber.test(this.point.current.value)) {
+        if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -267,8 +225,6 @@ class Trash extends Component {
                 )
             }
         })
-
-
     }
 
     // Function to pop up image
@@ -321,14 +277,23 @@ class Trash extends Component {
                         <h2 className="title-of-page">Pengaturan Sampah</h2>
                         <MDBNav className="nav-tabs ">
                             <MDBNavItem>
-                                <MDBNavLink className='black-font' active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >
+                                <MDBNavLink
+                                    className='black-font'
+                                    active={this.state.activeItem === "1"}
+                                    onClick={this.toggle("1")}
+                                    role="tab"
+                                >
                                     Tambah Sampah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                             <MDBNavItem>
-                                <MDBNavLink className='black-font' active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >
+                                <MDBNavLink
+                                    className='black-font'
+                                    active={this.state.activeItem === "2"}
+                                    onClick={this.toggle("2")}
+                                    role="tab" >
                                     List Sampah
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem} >
@@ -386,14 +351,25 @@ class Trash extends Component {
                                         ref={this.point}
                                     />
                                     <br />
-                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
+                                    <label for="inputPhotoURL">Pilih Foto:</label>
                                     <br />
-                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <progress
+                                        value={this.state.progress}
+                                        max="100"
+                                        style={{ width: "100%" }}
+                                    />
                                     <br />
-                                    <input type="file" onChange={this.handleChangePhoto} />
+                                    <input
+                                        type="file"
+                                        onChange={this.handleChangePhoto}
+                                    />
                                     <br />
                                     <br />
-                                    <button class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddTrash(e)}>
+                                    <button
+                                        class="add-button-trash btn btn-lg btn-primary btn-block rounded-pill"
+                                        type="submit"
+                                        onClick={e => this.doAddTrash(e)}
+                                    >
                                         Tambah
                                     </button>
                                     <br />
@@ -411,8 +387,6 @@ class Trash extends Component {
                                                 <th scope="col">Gambar</th>
                                                 <th scope="col">Poin</th>
                                                 <th scope="col">Harga</th>
-                                                <th scope="col">Created At</th>
-                                                <th scope="col">Updated At</th>
                                                 <th scope="col">Edit</th>
                                                 <th scope="col">Delete</th>
                                             </tr>
@@ -425,7 +399,8 @@ class Trash extends Component {
                                                         <td valign="bottom"> {item.trash_category_id}</td>
                                                         <td valign="bottom"> {item.trash_name}</td>
                                                         <td valign="bottom">
-                                                            <MDBBtn style={{ padding: "4px" }}
+                                                            <MDBBtn
+                                                                style={{ padding: "4px" }}
                                                                 className="button-white  btn btn-lg btn-block rounded-pill"
                                                                 onClick={e => this.openImage(e, item.photo)}
                                                             >
@@ -434,10 +409,7 @@ class Trash extends Component {
                                                         </td>
                                                         <td valign="bottom"> {item.point}</td>
                                                         <td valign="bottom"> Rp. {item.price}</td>
-                                                        <td valign="bottom"> {item.created_at.slice(0, 26)}</td>
-                                                        <td valign="bottom"> {item.updated_at.slice(0, 26)}</td>
                                                         <td valign="bottom">
-
                                                             <Link to={"/trash/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
                                                             >
                                                                 Edit
@@ -448,9 +420,11 @@ class Trash extends Component {
                                                             <button className="btn btn-lg btn-danger btn-block rounded-pill"
                                                                 type="submit"
                                                                 style={{ padding: "4px" }}
-                                                                onClick={e => this.deleteTrash(e, item.id)}>
+                                                                onClick={e => this.deleteTrash(e, item.id)}
+                                                            >
                                                                 Delete
-                                                </button></td>
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })}

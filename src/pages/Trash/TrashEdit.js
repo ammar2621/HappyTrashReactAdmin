@@ -155,7 +155,7 @@ class TrashEdit extends Component {
                                 ref={this.name}
                             />
                             <br />
-                            <label for="inputPhotoURL" >
+                            {/* <label for="inputPhotoURL" >
                                 PhotoURL:
                                     </label>
                             <input
@@ -166,7 +166,7 @@ class TrashEdit extends Component {
                                 required='required'
                                 ref={this.photo}
                             />
-                            <br />
+                            <br /> */}
                             <label for="inputStock" >
                                 Kategori:
                             </label>
