@@ -25,7 +25,7 @@ class OrderInvoice extends Component {
         super(props);
         this.state = {
             modalPhoto: false,
-            allOrders: JSON.parse(localStorage.getItem('orders'))
+            order_invoice: [{ User: { name: null }, Order: { adress: null }, Details: [] }]
         }
     }
 
@@ -36,9 +36,31 @@ class OrderInvoice extends Component {
         });
     }
 
+    componentDidMount = () => {
+        const self = this;
+        let config = {
+            method: "GET",
+            url: self.props.url + "/v1/orders",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+        axios(config)
+            .then(async function (response) {
+                let order_id = parseInt(self.props.match.params.order_id)
+                let order = response.data.filter(function (obj) {
+                    return obj.Order.id === order_id
+                })
+                self.setState({ order_invoice: order })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
+
+    }
+
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
-            let index = this.props.match.params.order_id
             return (
                 <div style={{ height: "100vh" }}>
                     <Header />
@@ -57,16 +79,16 @@ class OrderInvoice extends Component {
                                             Nama:
                                         </td>
                                         <td >
-                                            {this.state.allOrders[index].User.name}
+                                            {this.state.order_invoice[0].User.name}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Alamat</td>
-                                        <td>{this.state.allOrders[index].Order.adress}</td>
+                                        <td>{this.state.order_invoice[0].Order.adress}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Waktu Penjemputan</td>
-                                        <td>{this.state.allOrders[index].Order.time}</td>
+                                        <td>{this.state.order_invoice[0].Order.time}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Foto</td>
@@ -79,7 +101,7 @@ class OrderInvoice extends Component {
                                             <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
                                                 <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
                                                 <MDBModalBody className="text-center">
-                                                    <img src={this.state.allOrders[index].Order.photo} alt={this.state.allOrders[index].Order.photo} />
+                                                    <img src={this.state.order_invoice[0].Order.photo} alt={this.state.order_invoice[0].Order.photo} />
                                                 </MDBModalBody>
                                             </MDBModal>
                                         </td>
@@ -103,7 +125,7 @@ class OrderInvoice extends Component {
                                 </thead>
                                 <tbody>
 
-                                    {this.state.allOrders[index].Details.map((elm, key) => {
+                                    {this.state.order_invoice[0].Details.map((elm, key) => {
                                         return (
                                             <tr>
                                                 <td valign="bottom">{elm.trash_detail.trash_name}</td>
@@ -116,9 +138,9 @@ class OrderInvoice extends Component {
 
                                     <tr>
                                         <th colSpan="1" className="text-right">Total:</th>
-                                        <td>{this.state.allOrders[index].Order.total_qty}</td>
-                                        <td>{this.state.allOrders[index].Order.total_price}</td>
-                                        <td>{this.state.allOrders[index].Order.total_point}</td>
+                                        <td>{this.state.order_invoice[0].Order.total_qty}</td>
+                                        <td>{this.state.order_invoice[0].Order.total_price}</td>
+                                        <td>{this.state.order_invoice[0].Order.total_point}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -135,4 +157,4 @@ class OrderInvoice extends Component {
         }
     }
 }
-export default OrderInvoice;
+export default connect("url", actions)(OrderInvoice);
