@@ -25,46 +25,24 @@ class RewardEdit extends Component {
     // edit trash to database 
     doEditReward = e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
-        // // check the name validation
-        // if (!regex_name.test(this.name.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.point.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Poin!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.price.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Harga!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.category.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka untuk Kategori!'
-        //     })
-        //     return false
-        // } else if (!regex_http.test(this.photo.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-        //     })
-        //     return false
-        // }
+
+        const regexNumber = /^\d+$/;
+        // check the form validation
+        if (!regexNumber.test(this.point.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka Untuk Poin!'
+            })
+            return false
+        } else if (!regexNumber.test(this.stock.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka untuk Kategori!'
+            })
+            return false
+        }
         const self = this;
         let config = {
             method: "PUT",
