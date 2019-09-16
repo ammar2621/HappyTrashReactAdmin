@@ -221,7 +221,7 @@ class Trash extends Component {
             },
             buttonsStyling: false
         })
-
+        // making the confirmaton first before it deleted
         swalWithBootstrapButtons.fire({
             title: 'Apakah anda yakin?',
             text: "Anda tidak bisa mengembalikan ketika sudah dihapus!",
@@ -239,6 +239,7 @@ class Trash extends Component {
                         Authorization: "Bearer " + localStorage.getItem("admin_token")
                     }
                 }
+                /* delete with axios */
                 axios(config)
                     .then(function (response) {
                         Swal.fire({
