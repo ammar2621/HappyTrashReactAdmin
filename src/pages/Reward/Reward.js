@@ -82,7 +82,6 @@ class Reward extends Component {
                                 .child(this.state.photo.name)
                                 .getDownloadURL()
                                 .then(url => {
-                                    console.log(url)
                                     this.setState({ urlPhoto: url });
                                 });
                         }
@@ -201,7 +200,6 @@ class Reward extends Component {
             .catch(error => {
             });
     }
-
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
@@ -329,10 +327,16 @@ class Reward extends Component {
                                                             </MDBBtn>
                                                         </td>
                                                         <td>
-                                                            <Link to={"/reward/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
-                                                            >
-                                                                Edit
-                                                            </button>
+                                                            <Link
+                                                                to={"/reward/edit/" + item.id}>
+                                                                <button
+                                                                    className="btn btn-lg btn-primary btn-block rounded-pill"
+                                                                    type="submit"
+                                                                    style={{ padding: "4px" }}
+                                                                    valign="center"
+                                                                >
+                                                                    Edit
+                                                                </button>
                                                             </Link>
                                                         </td>
                                                     </tr>

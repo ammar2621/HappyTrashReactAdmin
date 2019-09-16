@@ -82,7 +82,6 @@ class Trash extends Component {
                                 .child(this.state.photo.name)
                                 .getDownloadURL()
                                 .then(url => {
-                                    console.log(url)
                                     this.setState({ urlPhoto: url });
                                 });
                         }

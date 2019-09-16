@@ -119,12 +119,11 @@ class RewardEdit extends Component {
                 self.setState({ reward: rewardThisPage })
                 self.name.current.value = self.state.reward[0].name
                 self.stock.current.value = self.state.reward[0].stock
-                self.status.current.value = self.state.reward[0].status
+                self.status.current.value = String(Number(self.state.reward[0].status))
                 self.point.current.value = self.state.reward[0].point_to_claim
                 self.image.current.value = self.state.reward[0].photo
             })
             .catch(error => {
-                console.log('Salah')
             });
     }
 
@@ -176,9 +175,9 @@ class RewardEdit extends Component {
                             <label for="inputStock">
                                 Status:
                                     </label>
-                            <select class="form-control" id="status pembayaran">
-                                <option ref={this.status} value='1'> Aktif</option>
-                                <option ref={this.status} value='0'> Non-Aktif</option>
+                            <select ref={this.status} class="form-control" >
+                                <option value='1'> Aktif</option>
+                                <option value='0'> Non-Aktif</option>
                             </select>
                             <br />
                             <label for="inputStock" >
