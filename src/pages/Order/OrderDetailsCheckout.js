@@ -10,11 +10,6 @@ import './Order.css'
 class OrderDetailsCheckout extends Component {
     constructor(props) {
         super(props);
-        this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
-        this.point = React.createRef();
-        this.categoryID = React.createRef();
         this.state = {
             order: { User: { name: null }, Order: null, Details: [] }
         }
@@ -31,15 +26,12 @@ class OrderDetailsCheckout extends Component {
         }
         axios(config)
             .then(async function (response) {
-                console.log(response.data)
                 let order = await response.data.filter(function (obj) {
                     return obj.Order.id == self.props.match.params.order_id
                 })
                 self.setState({ order: order[0] })
-                console.log(self.state)
             })
             .catch(function (error) {
-                console.log(error);
             })
     }
 
