@@ -134,7 +134,6 @@ class Reward extends Component {
                     }
                 })
             .then(response => {
-                console.log(response.data)
                 Swal.fire({
                     type: 'success',
                     title: 'Success',
@@ -172,7 +171,6 @@ class Reward extends Component {
                         }
                     })
                 .then(async response => {
-                    console.log(response.data)
                     await this.setState({ reward: [], statusReward: [] })
                     await response.data.map((item, index) => {
                         if (item.status === false) {
@@ -191,7 +189,6 @@ class Reward extends Component {
                     })
                 })
                 .catch(error => {
-                    console.log(error)
                 });
         } else if (e.target.value == '1') {
             // to get the active trashes 
@@ -203,7 +200,6 @@ class Reward extends Component {
                         }
                     })
                 .then(async response => {
-                    console.log(response.data)
                     await this.setState({ reward: [], statusReward: [] })
                     await response.data.map((item, index) => {
                         if (item.status === true) {
@@ -222,7 +218,6 @@ class Reward extends Component {
                     })
                 })
                 .catch(error => {
-                    console.log(error)
                 });
         } else if (e.target.value == '2') {
             // to get the all trashes 
@@ -243,7 +238,6 @@ class Reward extends Component {
                     }
                 })
             .then(async response => {
-                console.log(response.data)
                 await this.setState({ reward: response.data })
                 await response.data.map((item, index) => {
                     if (item.status === false) {
@@ -256,7 +250,6 @@ class Reward extends Component {
                 })
             })
             .catch(error => {
-                console.log(error)
             });
         // to get all categories
         await axios
