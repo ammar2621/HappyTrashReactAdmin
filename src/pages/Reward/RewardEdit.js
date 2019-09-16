@@ -8,6 +8,7 @@ import { actions } from "../../store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import Swal from 'sweetalert2'
+import { storage } from "../../firebase/index";
 
 class RewardEdit extends Component {
     constructor(props) {
@@ -18,53 +19,84 @@ class RewardEdit extends Component {
         this.point = React.createRef();
         this.status = React.createRef();
         this.state = {
-            reward: []
+            reward: [],
+            progress: 0,
+            photo: '',
+            urlPhoto: ''
         }
     }
+
+    // funtion to store photo uploaded by user
+    handleChangePhoto = e => {
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 5000000) {
+                this.setState({ photo: e.target.files[0] })
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
+                }
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 5MB!'
+                })
+            }
+        }
+    };
 
     // edit trash to database 
     doEditReward = e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
-        // // check the name validation
-        // if (!regex_name.test(this.name.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.point.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Poin!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.price.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Harga!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.category.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka untuk Kategori!'
-        //     })
-        //     return false
-        // } else if (!regex_http.test(this.photo.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-        //     })
-        //     return false
-        // }
+        const regexNumber = /^\d+$/;
+        // check the form validation
+        if (!regexNumber.test(this.point.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka Untuk Poin!'
+            })
+            return false
+        } else if (!regexNumber.test(this.stock.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka untuk Kategori!'
+            })
+            return false
+        }
         const self = this;
         let config = {
             method: "PUT",
@@ -73,7 +105,7 @@ class RewardEdit extends Component {
                 point_to_claim: Number(this.point.current.value),
                 name: this.name.current.value,
                 stock: Number(this.stock.current.value),
-                photo: this.image.current.value,
+                photo: this.state.urlPhoto,
                 status: Number(this.status.current.value)
             },
             headers: {
@@ -109,22 +141,19 @@ class RewardEdit extends Component {
                     }
                 })
             .then(response => {
-                console.log('INI', response.data)
                 const rewardThisPage = response.data.filter((item, index) => {
                     if (item.id == this.props.match.params.reward_id) {
                         return item
                     }
                 })
-                console.log(rewardThisPage)
                 self.setState({ reward: rewardThisPage })
                 self.name.current.value = self.state.reward[0].name
                 self.stock.current.value = self.state.reward[0].stock
-                self.status.current.value = self.state.reward[0].status
+                self.status.current.value = String(Number(self.state.reward[0].status))
                 self.point.current.value = self.state.reward[0].point_to_claim
-                self.image.current.value = self.state.reward[0].photo
+                self.state.urlPhoto = self.state.reward[0].photo
             })
             .catch(error => {
-                console.log('Salah')
             });
     }
 
@@ -176,32 +205,33 @@ class RewardEdit extends Component {
                             <label for="inputStock">
                                 Status:
                                     </label>
-                            <select class="form-control" id="status pembayaran">
-                                <option ref={this.status} value='1'> Aktif</option>
-                                <option ref={this.status} value='0'> Non-Aktif</option>
+                            <select ref={this.status} class="form-control" >
+                                <option value='1'> Aktif</option>
+                                <option value='0'> Non-Aktif</option>
                             </select>
                             <br />
-                            <label for="inputStock" >
-                                URL Gambar:
-                                    </label>
-                            <input
-                                type="text"
-                                id="inputStock"
-                                class="form-control"
-                                placeholder="URL Gambar"
-                                min="1"
-                                ref={this.image}
+                            <label for="inputPhoto" >
+                                Upload Foto (Pilih Foto Jika Ingin Diganti):
+                            </label>
+                            <br />
+                            <progress
+                                value={this.state.progress}
+                                max="100"
+                                style={{ width: "100%" }}
                             />
                             <br />
-                            <label for="inputPhoto" >
-                                Upload Foto (masih dalam pengembangan):
-                                    </label> <br />
-                            <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                            <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
-                            <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doEditReward(e)}>
+                            <input type="file" onChange={this.handleChangePhoto} />
+                            <br />
+                            <br />
+                            <button
+                                id="addbuttonreward"
+                                class="btn btn-lg btn-primary btn-block rounded-pill"
+                                type="submit"
+                                onClick={e => this.doEditReward(e)}
+                            >
                                 Edit
-                                    </button> <br />
-
+                            </button>
+                            <br />
                         </form>
 
                     </MDBContainer>

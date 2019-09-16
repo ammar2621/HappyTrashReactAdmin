@@ -34,6 +34,8 @@ class Reward extends Component {
             photo: null,
             urlPhoto: "",
             progress: 0,
+            statusReward: [],
+            names: []
         }
     }
 
@@ -48,90 +50,83 @@ class Reward extends Component {
 
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
-        if (e.target.files[0]) {
-            this.state.photo = e.target.files[0];
-            console.log(e.target.files[0])
-        }
-    };
-
-    // function to upload photo to cloud storage
-    handleUploadPhoto = event => {
-        event.preventDefault();
-        try {
-            const uploadTask = storage
-                .ref(`images/${this.state.photo.name}`)
-                .put(this.state.photo);
-            uploadTask.on(
-                "state_changed",
-                snapshot => {
-                    //progress Function
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    this.setState({ progress });
-                },
-                error => {
-                    console.log(error);
-                },
-                () => {
-                    //Complete Function
-                    storage
-                        .ref("images")
-                        .child(this.state.photo.name)
-                        .getDownloadURL()
-                        .then(url => {
-                            this.setState({ urlPhoto: url });
-                            console.log(this.state.urlPhoto);
-                        });
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 5000000) {
+                this.setState({ photo: e.target.files[0] })
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
                 }
-            );
-        } catch (err) {
-            console.log("File Kosong");
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 5MB!'
+                })
+            }
         }
     };
 
     // add the reward (post to API)
     doAddReward = async e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
-        // check the name validation
-        // if (!regex_name.test(this.name.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.point.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Poin!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.price.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Harga!'
-        //     })
-        //     return false
-        // } else if (!regex_number.test(this.category.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka untuk Kategori!'
-        //     })
-        //     return false
-        // } else if (!regex_http.test(this.photo.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
-        //     })
-        //     return false
-        // }
+        const regexNumber = /^\d+$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        // check the form validation
+        if (!regexNumber.test(this.point.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka Untuk Poin!'
+            })
+            return;
+        } else if (!regexNumber.test(this.stock.current.value)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan Angka untuk Kategori!'
+            })
+            return;
+        } else if (!regexImage.test(this.stock.urlPhoto)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Pilih file image terlebih dahulu!'
+            })
+            return;
+        }
         const self = this;
         await axios
             .post(this.props.url + `/v1/rewards`,
@@ -148,16 +143,14 @@ class Reward extends Component {
                     }
                 })
             .then(response => {
-                console.log(response.data)
                 Swal.fire({
                     type: 'success',
                     title: 'Success',
                     text: 'Berhasil Menambahkan Jenis Sampah!'
                 })
-                this.name.current.value = ' '
-                this.status.current.value = ' '
-                this.stock.current.value = ' '
-                this.point.current.value = ' '
+                this.name.current.value = ''
+                this.stock.current.value = ''
+                this.point.current.value = ''
                 self.componentDidMount();
             })
             .catch(error => {
@@ -167,8 +160,100 @@ class Reward extends Component {
     // Function to pop up image
     openImage = (e, url) => {
         Swal.fire({
-            html: `<img src=${url} style='max-width: 90vw; max-height: 90vh;' class="text-center">`
+            imageUrl: `${url}`,
+            imageWidth: '100%',
+            width: '80vw'
         })
+    }
+
+    // Function to pop up user information
+    openUserInformation = async (e, id) => {
+        const self = this;
+        // to get the all trashes 
+        await axios
+            .get(this.props.url + `/v1/users/admin/${id}`,
+                {
+                    headers: {
+                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                    }
+                })
+            .then(async response => {
+                Swal.fire({
+                    html: `<p>Nama: ${response.data.name} <br> No HP: ${response.data.mobile_number} </p>`
+                })
+            })
+            .catch(error => {
+            });
+
+    }
+
+    // function to filter the active/non-active rewards
+    statusFilter = async e => {
+        e.preventDefault();
+        const self = this;
+        if (e.target.value == '0') {
+            // to get the non-active trashes 
+            await axios
+                .get(this.props.url + `/v1/rewards`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ reward: [], statusReward: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.reward.concat(item);
+                            this.setState({ reward: joined })
+                        }
+                    })
+                    await this.state.reward.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.statusReward.concat('Tidak Aktif');
+                            this.setState({ statusReward: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.statusReward.concat('Aktif');
+                            this.setState({ statusReward: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '1') {
+            // to get the active trashes 
+            await axios
+                .get(this.props.url + `/v1/rewards`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ reward: [], statusReward: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === true) {
+                            const joined = this.state.reward.concat(item);
+                            this.setState({ reward: joined })
+                        }
+                    })
+                    await this.state.reward.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.statusReward.concat('Tidak Aktif');
+                            this.setState({ statusReward: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.statusReward.concat('Aktif');
+                            this.setState({ statusReward: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '2') {
+            // to get the all trashes 
+            self.setState({ reward: [], statusReward: [] })
+            self.componentDidMount();
+        }
     }
 
     // function operate after renderred, to get the list of trashes and category of trashes
@@ -182,12 +267,19 @@ class Reward extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
-                console.log(response.data)
-                this.setState({ reward: response.data })
+            .then(async response => {
+                await this.setState({ reward: response.data })
+                await response.data.map((item, index) => {
+                    if (item.status === false) {
+                        const joined = this.state.statusReward.concat('Tidak Aktif');
+                        this.setState({ statusReward: joined })
+                    } else if (item.status === true) {
+                        const joined = this.state.statusReward.concat('Aktif');
+                        this.setState({ statusReward: joined })
+                    }
+                })
             })
             .catch(error => {
-                console.log(error)
             });
         // to get all categories
         await axios
@@ -198,13 +290,12 @@ class Reward extends Component {
                     }
                 })
             .then(response => {
-                console.log("REWARD HISTORY", response.data)
-                this.setState({ rewardHistory: response.data })
+                const reversedHistory = response.data.sort().reverse().slice(0, 50)
+                this.setState({ rewardHistory: reversedHistory })
             })
             .catch(error => {
             });
     }
-
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
@@ -274,20 +365,24 @@ class Reward extends Component {
                                     <label for="inputStock">
                                         Status:
                                     </label>
-                                    <select class="form-control" id="status pembayaran">
-                                        <option ref={this.status} value='1'> Aktif</option>
+                                    <select
+                                        ref={this.status}
+                                        class="form-control"
+                                        id="status pembayaran"
+                                    >
+                                        <option value='1'> Aktif</option>
                                         <option value='0'> Non-Aktif</option>
                                     </select>
                                     <br />
-                                    <label for="inputPhotoURL">Pilih Foto Lalu Klik Upload</label>
+                                    <label for="inputPhotoURL">Unggah Foto:</label>
                                     <br />
-                                    <progress value={this.state.progress} max="100" style={{ width: "100%" }} />
+                                    <progress
+                                        value={this.state.progress}
+                                        max="100"
+                                        style={{ width: "100%" }}
+                                    />
                                     <br />
                                     <input type="file" onChange={this.handleChangePhoto} />
-                                    <image src={this.state.photo} />
-                                    <br />
-                                    <br />
-                                    <button onClick={this.handleUploadPhoto}>Upload</button>
                                     <br />
                                     <br />
                                     <button id="addbuttonreward" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doAddReward(e)}>
@@ -297,6 +392,17 @@ class Reward extends Component {
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
+                                <br />
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Status Hadiah: &nbsp;</p>
+                                <select
+                                    style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
+                                    className="form-control"
+                                    onChange={e => this.statusFilter(e)}
+                                >
+                                    <option value='2'> Semua</option>
+                                    <option value='1'> Aktif</option>
+                                    <option value='0'> Non-Aktif</option>
+                                </select>
                                 <div className="table-responsive">
                                     <table class="table ">
                                         <thead>
@@ -314,12 +420,12 @@ class Reward extends Component {
                                             {this.state.reward.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom"> {item.id} </td>
-                                                        <td valign="bottom"> {item.name}</td>
-                                                        <td valign="bottom"> {item.point_to_claim}</td>
-                                                        <td valign="bottom"> {item.stock} Pcs</td>
-                                                        <td valign="bottom"> {String(item.status)}</td>
-                                                        <td valign="bottom">
+                                                        <td> {item.id} </td>
+                                                        <td> {item.name}</td>
+                                                        <td> {item.point_to_claim}</td>
+                                                        <td> {item.stock} Pcs</td>
+                                                        <td> {this.state.statusReward[index]}</td>
+                                                        <td>
                                                             <MDBBtn style={{ padding: "4px" }}
                                                                 className="button-white  btn btn-lg btn-block rounded-pill"
                                                                 onClick={e => this.openImage(e, item.photo)}
@@ -327,11 +433,17 @@ class Reward extends Component {
                                                                 Lihat
                                                             </MDBBtn>
                                                         </td>
-                                                        <td valign="bottom">
-                                                            <Link to={"/reward/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
-                                                            >
-                                                                Edit
-                                                            </button>
+                                                        <td>
+                                                            <Link
+                                                                to={"/reward/edit/" + item.id}>
+                                                                <button
+                                                                    className="btn btn-lg btn-primary btn-block rounded-pill"
+                                                                    type="submit"
+                                                                    style={{ padding: "4px" }}
+                                                                    valign="center"
+                                                                >
+                                                                    Edit
+                                                                </button>
                                                             </Link>
                                                         </td>
                                                     </tr>
@@ -347,8 +459,8 @@ class Reward extends Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">ID Redeem</th>
-                                                <th scope="col">Nama</th>
+                                                <th scope="col">ID Hadiah</th>
+                                                <th scope="col">Penerima</th>
                                                 <th scope="col">Hadiah</th>
                                                 <th scope="col">Waktu</th>
                                             </tr>
@@ -357,11 +469,18 @@ class Reward extends Component {
                                             {this.state.rewardHistory.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom">{item.id}</td>
-                                                        <td valign="bottom"> {item.reward_id}</td>
-                                                        <td valign="bottom"> {item.user_id} </td>
-                                                        <td valign="bottom"> {item.reward_name}</td>
-                                                        <td valign="bottom"> {item.created_at}</td>
+                                                        <td>{index + 1}</td>
+                                                        <td> {item.reward_id}</td>
+                                                        <td>
+                                                            <MDBBtn
+                                                                style={{ padding: "4px", textTransform: 'capitalize' }}
+                                                                className="button-white btn btn-lg rounded-pill"
+                                                                onClick={e => this.openUserInformation(e, item.user_id)}
+                                                            >
+                                                                Lihat Penerima
+                                                            </MDBBtn> </td>
+                                                        <td> {item.reward_name}</td>
+                                                        <td> {item.created_at.slice(0, 26)}</td>
                                                     </tr>
                                                 )
                                             })}

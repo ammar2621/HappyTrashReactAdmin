@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import {
-    MDBContainer
-} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -9,61 +7,99 @@ import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import Swal from 'sweetalert2'
 import './Trash.css'
+import { storage } from "../../firebase/index";
 
 class TrashEdit extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
-        this.photo = React.createRef();
         this.price = React.createRef();
         this.point = React.createRef();
         this.category = React.createRef();
         this.state = {
             category: [],
-            trash: []
+            trash: [],
+            urlPhoto: '',
+            progress: 0
         }
     }
+
+    // funtion to store photo uploaded by user
+    handleChangePhoto = e => {
+        e.preventDefault();
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        if (!regexImage.test(e.target.files[0].name)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+            })
+            return false;
+        } else if (e.target.files[0]) {
+            if (e.target.files[0].size < 5000000) {
+                this.setState({ photo: e.target.files[0] })
+                try {
+                    const uploadTask = storage
+                        .ref(`images/${e.target.files[0].name}`)
+                        .put(e.target.files[0]);
+                    uploadTask.on(
+                        "state_changed",
+                        snapshot => {
+                            //progress Function
+                            const progress =
+                                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            this.setState({ progress });
+                        },
+                        error => {
+                        },
+                        () => {
+                            //Complete Function
+                            storage
+                                .ref("images")
+                                .child(this.state.photo.name)
+                                .getDownloadURL()
+                                .then(url => {
+                                    console.log(url)
+                                    this.setState({ urlPhoto: url });
+                                });
+                        }
+                    );
+                } catch (err) {
+                }
+            } else {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'Maksimal file 5MB!'
+                })
+            }
+        }
+    };
 
     // edit trash to database 
     editTrash = e => {
         e.preventDefault();
-        const regex_http = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const regex_number = /^\d+$/;
-        const regex_name = /^[a-zA-Z ]{2,30}$/;;
+        const regexNumber = /^\d+$/;
         // check the name validation
-        if (!regex_name.test(this.name.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Huruf Untuk Nama (Minimal 2 Huruf)!'
-            })
-            return false
-        } else if (!regex_number.test(this.point.current.value)) {
+        if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Poin!'
             })
             return false
-        } else if (!regex_number.test(this.price.current.value)) {
+        } else if (!regexNumber.test(this.price.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Harga!'
             })
             return false
-        } else if (!regex_number.test(this.category.current.value)) {
+        } else if (!regexNumber.test(this.category.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
-            })
-            return false
-        } else if (!regex_http.test(this.photo.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Format URL yang Benar! (https://blabla.com/contoh.png)'
             })
             return false
         }
@@ -76,7 +112,7 @@ class TrashEdit extends Component {
                 trash_category_id: self.category.current.value,
                 price: self.price.current.value,
                 point: self.point.current.value,
-                photo: self.photo.current.value
+                photo: self.state.urlPhoto
             },
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
@@ -96,6 +132,19 @@ class TrashEdit extends Component {
     // function operate after renderred, to get the list of trashes and category of trashes
     componentDidMount = async () => {
         const self = this;
+        // to get all categories
+        await axios
+            .get(this.props.url + '/v1/trash_category',
+                {
+                    headers: {
+                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                    }
+                })
+            .then(response => {
+                this.setState({ category: response.data })
+            })
+            .catch(error => {
+            });
         // to get the all trashes 
         await axios
             .get(this.props.url + `/v1/trash`,
@@ -115,20 +164,7 @@ class TrashEdit extends Component {
                 self.category.current.value = self.state.trash[0].trash_category_id
                 self.price.current.value = self.state.trash[0].price
                 self.point.current.value = self.state.trash[0].point
-                self.photo.current.value = self.state.trash[0].photo
-            })
-            .catch(error => {
-            });
-        // to get all categories
-        await axios
-            .get(this.props.url + '/v1/trash_category',
-                {
-                    headers: {
-                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-                    }
-                })
-            .then(response => {
-                this.setState({ category: response.data })
+                self.state.urlPhoto = self.state.trash[0].photo
             })
             .catch(error => {
             });
@@ -145,7 +181,7 @@ class TrashEdit extends Component {
                         <form class="form-signin">
                             <label for="inputName" >
                                 Nama:
-                                    </label>
+                            </label>
                             <input
                                 type="text"
                                 id="inputName"
@@ -155,26 +191,17 @@ class TrashEdit extends Component {
                                 ref={this.name}
                             />
                             <br />
-                            <label for="inputPhotoURL" >
-                                PhotoURL:
-                                    </label>
-                            <input
-                                type="text"
-                                id="inputPhotoURL"
-                                class="form-control"
-                                placeholder="URL Gambar"
-                                required='required'
-                                ref={this.photo}
-                            />
-                            <br />
                             <label for="inputStock" >
                                 Kategori:
                             </label>
-                            <select class="form-control" id="status pembayaran" ref={this.category}>
+                            <select
+                                ref={this.category}
+                                class="form-control"
+                                id="status pembayaran"
+                            >
                                 {this.state.category.map((item, index) => {
                                     return (
                                         <option
-                                            ref={this.category}
                                             value={item.id}> {item.category_name}</option>
                                     )
                                 })}
@@ -189,6 +216,8 @@ class TrashEdit extends Component {
                                 class="form-control"
                                 placeholder="Harga"
                                 required='required'
+                                min="0"
+                                step="100"
                                 ref={this.price}
                             />
                             <br />
@@ -201,14 +230,25 @@ class TrashEdit extends Component {
                                 class="form-control"
                                 placeholder="Poin"
                                 required='required'
+                                min="1"
                                 ref={this.point}
                             />
                             <br />
-                            <label for="inputPhotoURL">
-                                Upload Foto (masih dalam pengembangan):
+                            <label for="inputurlPhoto">
+                                Upload Foto (Pilih File Jika Foto Ingin Diubah):
                                     </label>
-                            <progress value="30" max="100" style={{ width: "100%" }} /> <br />
-                            <input className="" type="file" placeholder="Upload Gambar" /> <br />  <br />
+                            <progress
+                                value={this.state.progress}
+                                max="100"
+                                style={{ width: "100%" }}
+                            />
+                            <br />
+                            <input
+                                type="file"
+                                onChange={this.handleChangePhoto}
+                            />
+                            <br />
+                            <br />
                             <button class="btn btn-lg btn-primary btn-block rounded-pill"
                                 type="submit"
                                 style={{ padding: "6px" }}
