@@ -61,7 +61,6 @@ class Trash extends Component {
         } else if (e.target.files[0]) {
             if (e.target.files[0].size < 5000000) {
                 this.setState({ photo: e.target.files[0] })
-                console.log(e.target.files[0])
                 try {
                     const uploadTask = storage
                         .ref(`images/${e.target.files[0].name}`)

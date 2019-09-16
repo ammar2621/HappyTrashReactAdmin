@@ -36,9 +36,8 @@ class TrashEdit extends Component {
             })
             return false;
         } else if (e.target.files[0]) {
-            if (e.target.files[0].size < 10000000) {
+            if (e.target.files[0].size < 5000000) {
                 this.setState({ photo: e.target.files[0] })
-                console.log(e.target.files[0])
                 try {
                     const uploadTask = storage
                         .ref(`images/${e.target.files[0].name}`)
@@ -71,7 +70,7 @@ class TrashEdit extends Component {
                 Swal.fire({
                     type: 'error',
                     title: 'Oops...',
-                    text: 'Maksimal file 10!'
+                    text: 'Maksimal file 5MB!'
                 })
             }
         }
@@ -182,7 +181,7 @@ class TrashEdit extends Component {
                         <form class="form-signin">
                             <label for="inputName" >
                                 Nama:
-                                    </label>
+                            </label>
                             <input
                                 type="text"
                                 id="inputName"
