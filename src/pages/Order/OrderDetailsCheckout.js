@@ -1,18 +1,5 @@
 import React, { Component } from "react";
-import {
-    MDBBtn,
-    MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink,
-    MDBModal,
-    MDBModalBody,
-    MDBModalHeader,
-    MDBModalFooter
-} from "mdbreact";
-
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -23,11 +10,6 @@ import './Order.css'
 class OrderDetailsCheckout extends Component {
     constructor(props) {
         super(props);
-        this.name = React.createRef();
-        this.imageURL = React.createRef();
-        this.price = React.createRef();
-        this.point = React.createRef();
-        this.categoryID = React.createRef();
         this.state = {
             order: { User: { name: null }, Order: null, Details: [] }
         }
@@ -42,18 +24,14 @@ class OrderDetailsCheckout extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config)
             .then(async function (response) {
-                console.log(response.data)
                 let order = await response.data.filter(function (obj) {
                     return obj.Order.id == self.props.match.params.order_id
                 })
                 self.setState({ order: order[0] })
-                console.log(self.state)
             })
             .catch(function (error) {
-                console.log(error);
             })
     }
 
@@ -86,10 +64,12 @@ class OrderDetailsCheckout extends Component {
                                 </tbody>
                             </table>
                         </div>
-
-                        <Link to={"/order/invoice/" + this.props.match.params.order_id}><button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
-                            OK
-                                    </button></Link> <br />
+                        <Link to={"/order/invoice/" + this.props.match.params.order_id}>
+                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" >
+                                OK
+                            </button>
+                        </Link>
+                        <br />
                     </MDBContainer>
                 </div >
             );
