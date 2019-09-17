@@ -1,36 +1,19 @@
 import React, { Component } from "react";
-import {
-    MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink
-} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
+import './Category.css'
 
 class CategoryEdit extends Component {
-    state = {
-        activeItem: "1"
-    }
     constructor(props) {
         super(props);
         this.name = React.createRef();
     }
 
-
-    toggle = tab => e => {
-        if (this.state.activeItem !== tab) {
-            this.setState({
-                activeItem: tab
-            });
-        }
-    };
-
+    // to edit/put the new category name
     editCategory = (e, id) => {
         e.preventDefault();
         const self = this;
@@ -44,12 +27,29 @@ class CategoryEdit extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config).then(function (response) {
-            console.log(response)
             self.props.history.push('/category')
         }).catch(function (error) {
-            console.log(error)
+        })
+    }
+
+    // function that works after the dom renderred
+    componentDidMount() {
+        const self = this;
+        let config = {
+            method: "GET",
+            url: self.props.url + "/v1/trash_category",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("admin_token")
+            }
+        }
+        axios(config).then(function (response) {
+            const categoryThisPage = response.data.filter(category => {
+                return category.id == self.props.match.params.category_id
+            })
+            self.name.current.value = categoryThisPage[0].category_name
+        }).catch(function (error) {
+
         })
     }
 
@@ -74,11 +74,10 @@ class CategoryEdit extends Component {
 
                             />
                             <br />
-                            <button class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}
+                            <button class="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}
                                 onClick={e => this.editCategory(e, this.props.match.params.category_id)}>
                                 Edit
-                  </button>
-
+                            </button>
                         </form>
                     </MDBContainer>
                 </div >
@@ -88,4 +87,5 @@ class CategoryEdit extends Component {
         }
     }
 }
+
 export default connect("url", actions)(CategoryEdit);

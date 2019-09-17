@@ -5,6 +5,7 @@ import {
     MDBContainer,
     MDBRow
 } from 'mdbreact';
+import { Redirect } from 'react-router-dom'
 import axios from 'axios';
 import { connect } from 'unistore/react';
 import { actions } from '../../store';
@@ -72,48 +73,52 @@ class LogIn extends Component {
     };
 
     render() {
-        return (
-            <div style={{ height: '100vh' }} id='login'>
-                <MDBContainer >
-                    <MDBRow center='true' className='justify-content-center'>
-                        <MDBCol md='6' >
-                            <br />
-                            <br />
-                            <br />
-                            <h1 className='text-center'>Dasbor Admin</h1>
-                            <br />
-                            <form>
-                                <p className='h4 text-center mb-4'>Login</p>
-                                <label htmlFor='defaultFormLoginEmailEx' className='grey-text'>
-                                    Email:
-                                </label>
-                                <input
-                                    type='email'
-                                    id='defaultFormLoginEmailEx'
-                                    className='form-control'
-                                    ref={this.email}
-                                    required='required'
-                                />
+        if (localStorage.getItem('admin_logged_in') == 'true') {
+            return <Redirect to="/" />
+        } else {
+            return (
+                <div style={{ height: '100vh' }} id='login'>
+                    <MDBContainer >
+                        <MDBRow center='true' className='justify-content-center'>
+                            <MDBCol md='6' >
                                 <br />
-                                <label htmlFor='defaultFormLoginPasswordEx' className='grey-text'>
-                                    Password:
+                                <br />
+                                <br />
+                                <h1 className='text-center'>Dasbor Admin</h1>
+                                <br />
+                                <form>
+                                    <p className='h4 text-center mb-4'>Login</p>
+                                    <label htmlFor='defaultFormLoginEmailEx' className='grey-text'>
+                                        Email:
                                 </label>
-                                <input
-                                    type='password'
-                                    id='defaultFormLoginPasswordEx'
-                                    className='form-control'
-                                    ref={this.password}
-                                    required='required'
-                                />
-                                <div className='text-center mt-4'>
-                                    <MDBBtn className='rounded-pill' style={{ width: '145px', fontWeight: '700' }} onClick={this.doLogIn} id='LoginButton' type='submit'>Masuk</MDBBtn>
-                                </div>
-                            </form>
-                        </MDBCol>
-                    </MDBRow>
-                </MDBContainer >
-            </div >
-        );
+                                    <input
+                                        type='email'
+                                        id='defaultFormLoginEmailEx'
+                                        className='form-control'
+                                        ref={this.email}
+                                        required='required'
+                                    />
+                                    <br />
+                                    <label htmlFor='defaultFormLoginPasswordEx' className='grey-text'>
+                                        Password:
+                                </label>
+                                    <input
+                                        type='password'
+                                        id='defaultFormLoginPasswordEx'
+                                        className='form-control'
+                                        ref={this.password}
+                                        required='required'
+                                    />
+                                    <div className='text-center mt-4'>
+                                        <MDBBtn className='rounded-pill' style={{ width: '145px', fontWeight: '700' }} onClick={this.doLogIn} id='LoginButton' type='submit'>Masuk</MDBBtn>
+                                    </div>
+                                </form>
+                            </MDBCol>
+                        </MDBRow>
+                    </MDBContainer >
+                </div >
+            );
+        }
     }
 }
 

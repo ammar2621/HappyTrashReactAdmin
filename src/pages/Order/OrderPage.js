@@ -230,7 +230,7 @@ class OrderPage extends Component {
                                                 this.state.waitingOrder.map((elm, key) => {
                                                     return (
                                                         <tr>
-                                                            <td valign="bottom"> <button className="btn btn-lg btn-success btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" onClick={e => this.confirmOrder(e, elm.Order.id)} >
+                                                            <td valign="bottom"> <button className="btn btn-lg button-green btn-success btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" onClick={e => this.confirmOrder(e, elm.Order.id)} >
                                                                 Terima
                                                         </button>
                                                             </td>
@@ -382,7 +382,7 @@ class OrderPage extends Component {
                                                                     Lihat
                                                                 </MDBBtn>
                                                             </td>
-                                                            <td valign="bottom"> <Link to={"/order/invoice/" + elm.Order.id}> <button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
+                                                            <td valign="bottom"> <Link to={"/order/invoice/" + elm.Order.id}> <button className="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center" >
                                                                 Lihat Detail
                                                         </button></Link>
                                                             </td>

@@ -4,6 +4,11 @@ div {
     font-family: 'Muli', sans-serif;
 }
 
+.button-green {
+    background-color: #49B462 !important;
+    padding: 4px !important;
+}
+
 #addbuttonreward, #addbuttonrewardedit {
     font-weight: 700;
     padding: 6px;

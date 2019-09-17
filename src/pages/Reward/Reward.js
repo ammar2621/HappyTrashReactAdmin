@@ -119,7 +119,7 @@ class Reward extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return;
-        } else if (!regexImage.test(this.stock.urlPhoto)) {
+        } else if (!regexImage.test(this.state.urlPhoto)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -436,7 +436,7 @@ class Reward extends Component {
                                                             <Link
                                                                 to={"/reward/edit/" + item.id}>
                                                                 <button
-                                                                    className="btn btn-lg btn-primary btn-block rounded-pill"
+                                                                    className="button-green btn btn-lg btn-primary btn-block rounded-pill"
                                                                     type="submit"
                                                                     style={{ padding: "4px" }}
                                                                     valign="center"

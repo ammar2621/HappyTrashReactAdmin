@@ -19,6 +19,7 @@ import Header from '../../components/Header'
 import './Trash.css'
 import Swal from 'sweetalert2'
 import { storage } from "../../firebase/index";
+import Garbage from '../Category/img/garbage.png'
 
 class Trash extends Component {
     constructor(props) {
@@ -407,20 +408,16 @@ class Trash extends Component {
                                                         <td valign="bottom"> {item.point}</td>
                                                         <td valign="bottom"> Rp. {item.price}</td>
                                                         <td valign="bottom">
-                                                            <Link to={"/trash/edit/" + item.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
+                                                            <Link to={"/trash/edit/" + item.id}><button className="button-green btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
                                                             >
                                                                 Edit
                                                         </button>
                                                             </Link>
                                                         </td>
                                                         <td valign="bottom">
-                                                            <button className="btn btn-lg btn-danger btn-block rounded-pill"
-                                                                type="submit"
-                                                                style={{ padding: "4px" }}
-                                                                onClick={e => this.deleteTrash(e, item.id)}
-                                                            >
-                                                                Delete
-                                                            </button>
+                                                            <a onClick={e => this.deleteTrash(e, item.id)}>
+                                                                <img src={Garbage} style={{ height: '30px' }} />
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 )
