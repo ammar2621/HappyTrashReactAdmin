@@ -15,12 +15,12 @@ import Header from '../../components/Header'
 import './Category.css'
 
 class CategoryEdit extends Component {
-
     constructor(props) {
         super(props);
         this.name = React.createRef();
     }
 
+    // to edit/put the new category name
     editCategory = (e, id) => {
         e.preventDefault();
         const self = this;
@@ -40,6 +40,7 @@ class CategoryEdit extends Component {
         })
     }
 
+    // function that works after the dom renderred
     componentDidMount() {
         const self = this;
         let config = {
@@ -49,7 +50,6 @@ class CategoryEdit extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-
         axios(config).then(function (response) {
             const categoryThisPage = response.data.filter(category => {
                 return category.id == self.props.match.params.category_id
@@ -59,7 +59,6 @@ class CategoryEdit extends Component {
 
         })
     }
-
 
     render() {
         if (localStorage.getItem('admin_logged_in') == 'true') {
@@ -85,8 +84,7 @@ class CategoryEdit extends Component {
                             <button class="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}
                                 onClick={e => this.editCategory(e, this.props.match.params.category_id)}>
                                 Edit
-                  </button>
-
+                            </button>
                         </form>
                     </MDBContainer>
                 </div >
@@ -96,4 +94,5 @@ class CategoryEdit extends Component {
         }
     }
 }
+
 export default connect("url", actions)(CategoryEdit);
