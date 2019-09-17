@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
 class OrderAddDetails extends Component {
     constructor(props) {
         super(props);
+        this.trash_id = React.createRef();
         this.state = {
             trashes: [],
             toPut: [],
@@ -71,6 +72,7 @@ class OrderAddDetails extends Component {
             qty: '',
             trash_id: ''
         })
+        this.trash_id.current.value = null
         this.componentDidMount();
     }
 
@@ -110,6 +112,7 @@ class OrderAddDetails extends Component {
                                 Jenis Sampah:
                                     </label>
                             <select
+                                ref={this.trash_id}
                                 class="form-control"
                                 onChange={e => {
                                     this.setState({ trash_id: this.state.trashes[e.target.value].id });

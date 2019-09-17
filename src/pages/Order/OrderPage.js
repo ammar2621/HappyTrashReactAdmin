@@ -214,12 +214,12 @@ class OrderPage extends Component {
                         <MDBTabContent activeItem={this.state.activeItem} >
                             <MDBTabPane tabId="1" role="tabpanel">
                                 <div className="table-responsive">
-                                    <table class="table ">
+                                    <table class="table table-hover ">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Terima</th>
                                                 <th scope="col">Tolak</th>
-                                                <th scope="col">Waktu Penjemputan</th>
+                                                <th scope="col">Penjemputan</th>
                                                 <th scope="col">User ID</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
@@ -274,7 +274,7 @@ class OrderPage extends Component {
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
                                 <div className="table-responsive">
-                                    <table class="table ">
+                                    <table class="table table-hover ">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Isi Detail</th>
@@ -340,7 +340,7 @@ class OrderPage extends Component {
                             </MDBTabPane>
                             <MDBTabPane tabId="3" role="tabpanel">
                                 <div className="table-responsive">
-                                    <table class="table ">
+                                    <table class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th scope="col">User ID</th>
