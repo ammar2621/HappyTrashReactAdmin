@@ -1,6 +1,6 @@
 {
-  "short_name": "Admin",
-  "name": "Admin",
+  "short_name": "Admin Loakin",
+  "name": "Admin Loakin",
   "icons": [
     {
       "src": "output-onlinepngtools.png",
@@ -8,18 +8,18 @@
       "type": "image/x-icon"
     },
     {
-      "src": "output-onlinepngtools.png",
+      "src": "output-onlinepngtools.jpg",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "output-onlinepngtools.png",
+      "src": "output-onlinepngtools.jpg",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#ffffff",
   "background_color": "#ffffff"
 }
