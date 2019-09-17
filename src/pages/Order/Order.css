@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,700&display=swap');
 
+.button-green {
+    background-color: #49B462 !important;
+    padding: 4px !important;
+    color:white !important;
+}
+
 div {
     font-family: 'Muli', sans-serif;
 }

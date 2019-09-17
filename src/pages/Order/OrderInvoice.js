@@ -2,17 +2,10 @@ import React, { Component } from "react";
 import {
     MDBBtn,
     MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink,
     MDBModal,
     MDBModalBody,
-    MDBModalHeader,
-    MDBModalFooter
+    MDBModalHeader
 } from "mdbreact";
-
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
@@ -88,7 +81,7 @@ class OrderInvoice extends Component {
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Waktu Penjemputan</td>
-                                        <td>{this.state.order_invoice[0].Order.time}</td>
+                                        <td>{String(this.state.order_invoice[0].Order.time).slice(0, 26)}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Foto</td>
@@ -118,7 +111,7 @@ class OrderInvoice extends Component {
                                     </tr>
                                     <tr className='thead-white'>
                                         <th scope="col" className="bold-text">Jenis</th>
-                                        <th scope="col" className="bold-text">Berat</th>
+                                        <th scope="col" className="bold-text">Berat (kg)</th>
                                         <th scope="col" className="bold-text">Harga</th>
                                         <th scope="col" className="bold-text">Point</th>
                                     </tr>
@@ -129,8 +122,8 @@ class OrderInvoice extends Component {
                                         return (
                                             <tr>
                                                 <td valign="bottom">{elm.trash_detail.trash_name}</td>
-                                                <td valign="bottom">{elm.qty}</td>
-                                                <td valign="bottom">{elm.total_price}</td>
+                                                <td valign="bottom">{elm.qty} kg</td>
+                                                <td valign="bottom">Rp. {elm.total_price}</td>
                                                 <td valign="bottom">{elm.point}</td>
                                             </tr>
                                         )
@@ -138,17 +131,21 @@ class OrderInvoice extends Component {
 
                                     <tr>
                                         <th colSpan="1" className="text-right">Total:</th>
-                                        <td>{this.state.order_invoice[0].Order.total_qty}</td>
-                                        <td>{this.state.order_invoice[0].Order.total_price}</td>
+                                        <td>{this.state.order_invoice[0].Order.total_qty} kg</td>
+                                        <td>Rp. {this.state.order_invoice[0].Order.total_price}</td>
                                         <td>{this.state.order_invoice[0].Order.total_point}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <Link to="/order"> <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit">
-                            OK
-                                    </button></Link> <br />
+                        <Link to="/order">
+                            <button class="btn btn-lg button-green btn-block rounded-pill" type="submit">
+                                OK
+                            </button>
+                        </Link>
+                        <br />
+                        <br />
                     </MDBContainer>
                 </div >
             );
