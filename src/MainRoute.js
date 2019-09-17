@@ -24,6 +24,7 @@ class MainRoute extends React.Component {
                 <Switch>
                     <Route exact path='/login' component={LogIn} />
                     <Route exact path='/' component={Home} />
+                    <Route exact path='/index.html' component={Home} />
                     <Route exact path='/trash' component={Trash} />
                     <Route exact path='/trash/edit/:trash_id' component={TrashEdit} />
                     <Route exact path='/category' component={Category} />
