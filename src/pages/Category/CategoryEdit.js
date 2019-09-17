@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import {
-    MDBContainer,
-    MDBTabPane,
-    MDBTabContent,
-    MDBNav,
-    MDBNavItem,
-    MDBNavLink
-} from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
 
