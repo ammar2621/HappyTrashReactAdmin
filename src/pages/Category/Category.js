@@ -12,6 +12,9 @@ import { connect } from "unistore/react";
 import { actions } from "../../store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
+import './Category.css'
+import Garbage from './img/garbage.png'
+import Swal from 'sweetalert2'
 
 class Category extends Component {
 
@@ -25,7 +28,7 @@ class Category extends Component {
         }
     }
 
-
+    // function to make tab works
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
             this.setState({
@@ -34,8 +37,8 @@ class Category extends Component {
         }
     };
 
+    // function to submit/add category to database
     doSubmit = e => {
-
         e.preventDefault();
         const self = this;
         let config = {
@@ -49,16 +52,14 @@ class Category extends Component {
             }
         };
         axios(config).then(function (response) {
-            console.log(response)
             self.componentDidMount()
         }).catch(function (error) {
-            console.log(error)
         })
     }
 
+    // function that works after react rendered/mounted
     componentDidMount = () => {
         const self = this;
-
         let config = {
             method: "GET",
             url: self.props.url + "/v1/trash_category",
@@ -68,30 +69,56 @@ class Category extends Component {
         }
         axios(config).then(function (response) {
             self.setState({ categories: response.data })
-
         }).catch(function (error) {
-            console.log(error)
         })
     }
 
+    // function to delete category from database
     deleteCategory = (e, id) => {
         e.preventDefault();
         const self = this;
-        let config = {
-            method: "DELETE",
-            url: self.props.url + "/v1/trash_category/" + id,
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+        // making the confirmaton first before it deleted
+        swalWithBootstrapButtons.fire({
+            title: 'Apakah anda yakin?',
+            text: "Anda tidak bisa mengembalikan ketika sudah dihapus",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus saja!!',
+            cancelButtonText: 'Tidak!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let config = {
+                    method: "DELETE",
+                    url: self.props.url + "/v1/trash_category/" + id,
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("admin_token")
+                    }
+                }
+                axios(config)
+                    .then(function (response) {
+                        self.componentDidMount()
+                    })
+                    .catch(function (error) {
+                    })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Tidak Jadi',
+                    'Tetap aman :)',
+                    'error'
+                )
             }
-        }
-        axios(config)
-            .then(function (response) {
-                console.log(response)
-                self.componentDidMount()
-            })
-            .catch(function (error) {
-                console.log(error)
-            })
+        })
     }
 
     render() {
@@ -101,17 +128,27 @@ class Category extends Component {
                     <Header />
                     <MDBContainer>
                         <br />
-                        <h2>Pengaturan Kategori</h2>
+                        <h2 style={{ fontWeight: '700' }}>Pengaturan Kategori</h2>
                         <MDBNav className="nav-tabs ">
                             <MDBNavItem>
-                                <MDBNavLink active={this.state.activeItem === "1"} onClick={this.toggle("1")} role="tab" >
+                                <MDBNavLink
+                                    style={{ color: 'black' }}
+                                    active={this.state.activeItem === "1"}
+                                    onClick={this.toggle("1")}
+                                    role="tab"
+                                >
                                     Tambah Kategori
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                             <MDBNavItem>
-                                <MDBNavLink active={this.state.activeItem === "2"} onClick={this.toggle("2")} role="tab" >
+                                <MDBNavLink
+                                    style={{ color: 'black' }}
+                                    active={this.state.activeItem === "2"}
+                                    onClick={this.toggle("2")}
+                                    role="tab"
+                                >
                                     List Kategori
-            </MDBNavLink>
+                                </MDBNavLink>
                             </MDBNavItem>
                         </MDBNav>
                         <MDBTabContent activeItem={this.state.activeItem} >
@@ -130,10 +167,9 @@ class Category extends Component {
 
                                     />
                                     <br />
-                                    <button style={{ padding: "4px" }} class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
+                                    <button class="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.doSubmit(e)}>
                                         Tambah
-                  </button>
-
+                                    </button>
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
@@ -143,45 +179,35 @@ class Category extends Component {
                                             <tr>
                                                 <th scope="col">ID Kategori</th>
                                                 <th scope="col">Nama</th>
-                                                <th scope="col">Created At</th>
-                                                <th scope="col">Updated At</th>
                                                 <th scope="col">Edit</th>
                                                 <th scope="col">Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
-
                                             {this.state.categories.map((elm, key) => {
                                                 return (
                                                     <tr>
                                                         <td valign="bottom"> {elm.id}</td>
                                                         <td valign="bottom"> {elm.category_name}</td>
-                                                        <td valign="bottom"> {elm.created_at}</td>
-                                                        <td valign="bottom"> {elm.updated_at}</td>
                                                         <td valign="bottom">
-                                                            <Link to={"/category/edit/" + elm.id}><button className="btn btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
-                                                            >
-                                                                Edit
+                                                            <Link to={"/category/edit/" + elm.id}>
+                                                                <button className="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
+                                                                >
+                                                                    Edit
                                                         </button>
                                                             </Link>
                                                         </td>
-                                                        <td valign="bottom"> <button className="btn btn-lg btn-danger btn-block rounded-pill" type="submit" style={{ padding: "4px" }}
-                                                            onClick={e => this.deleteCategory(e, elm.id)}
-                                                        >
-                                                            Hapus
-                                                </button></td>
+                                                        <td valign="bottom">
+                                                            <a onClick={e => this.deleteCategory(e, elm.id)}>
+                                                                <img src={Garbage} style={{ height: '30px' }} />
+                                                            </a>
+                                                        </td>
                                                     </tr>
                                                 )
                                             })}
-
-
-
-
                                         </tbody>
                                     </table>
                                 </div>
-
                             </MDBTabPane>
                         </MDBTabContent>
                     </MDBContainer>
@@ -192,4 +218,5 @@ class Category extends Component {
         }
     }
 }
+
 export default connect("url", actions)(Category);
