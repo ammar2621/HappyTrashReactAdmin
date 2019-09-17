@@ -436,7 +436,7 @@ class Reward extends Component {
                                                             <Link
                                                                 to={"/reward/edit/" + item.id}>
                                                                 <button
-                                                                    className="btn btn-lg btn-primary btn-block rounded-pill"
+                                                                    className="button-green btn btn-lg btn-primary btn-block rounded-pill"
                                                                     type="submit"
                                                                     style={{ padding: "4px" }}
                                                                     valign="center"
