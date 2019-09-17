@@ -119,7 +119,7 @@ class Reward extends Component {
                 text: 'Gunakan Angka untuk Kategori!'
             })
             return;
-        } else if (!regexImage.test(this.stock.urlPhoto)) {
+        } else if (!regexImage.test(this.state.urlPhoto)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
