@@ -63,7 +63,7 @@ class Header extends Component {
                                 onClick={this.doLogOut}
                             >
                                 Keluar
-                                </MDBNavLink>
+                            </MDBNavLink>
                         </MDBNavItem>
                     </MDBNavbarNav>
                 </MDBCollapse>

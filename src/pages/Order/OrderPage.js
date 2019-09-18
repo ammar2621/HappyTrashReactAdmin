@@ -18,6 +18,7 @@ import {
 import Header from '../../components/Header'
 import './Order.css'
 import Swal from 'sweetalert2'
+import { async } from "q";
 
 class OrderPage extends Component {
     constructor(props) {
@@ -29,7 +30,9 @@ class OrderPage extends Component {
             modalPhoto: false,
             allOrder: [],
             waitingOrder: [],
-            confirmedOrder: []
+            confirmedOrder: [],
+            notFoundWaiting: "",
+            notFoundConfirmed: ""
         }
     }
 
@@ -106,6 +109,7 @@ class OrderPage extends Component {
             })
             .catch(function (error) {
             })
+        self.componentDidMount();
     }
 
 
@@ -161,7 +165,7 @@ class OrderPage extends Component {
     }
 
     // function that happens after renderred
-    componentDidMount() {
+    componentDidMount = async () => {
         const self = this;
         let config = {
             method: "GET",
@@ -170,9 +174,8 @@ class OrderPage extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-        axios(config)
+        await axios(config)
             .then(function (response) {
-                localStorage.setItem('orders', JSON.stringify(response.data))
                 let waitingOrder = response.data.filter(function (order) {
                     return order.Order.status == 'waiting'
                 })
@@ -184,6 +187,25 @@ class OrderPage extends Component {
                 self.setState({ waitingOrder })
             }).catch(function (error) {
             })
+        if (this.state.waitingOrder.length === 0) {
+            this.setState({
+                notFoundWaiting: '---Tabel Kosong---'
+            })
+        } else {
+            this.setState({
+                notFoundWaiting: ""
+            })
+        }
+        if (this.state.confirmedOrder.length === 0) {
+            this.setState({
+                notFoundConfirmed: '---Tabel Kosong---'
+            })
+        } else {
+            this.setState({
+                notFoundConfirmed: ""
+            })
+        }
+        console.log(this.state.confirmedOrder)
     }
 
     render() {
@@ -270,6 +292,12 @@ class OrderPage extends Component {
                                             }
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundWaiting}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
@@ -336,6 +364,12 @@ class OrderPage extends Component {
                                             }
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundConfirmed}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                             <MDBTabPane tabId="3" role="tabpanel">
