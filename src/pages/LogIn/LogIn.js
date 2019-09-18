@@ -123,7 +123,7 @@ class LogIn extends Component {
                                         <label
                                             htmlFor='defaultFormLoginPasswordEx'
                                             className='grey-text'
-                                            style={{ width: '90%' }}
+                                            style={{ width: '80%' }}
                                         >
                                             Password:
                                         <input
@@ -135,7 +135,7 @@ class LogIn extends Component {
                                             />
                                         </label>
                                         <button
-                                            style={{ width: '10%', height: '38px', backgroundColor: 'white' }}
+                                            style={{ width: '20%', height: '38px', backgroundColor: 'white' }}
                                             onClick={this.showHide}
                                         >
                                             {this.state.statusHide}
