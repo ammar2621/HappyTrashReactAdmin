@@ -122,23 +122,20 @@ class LogIn extends Component {
                                     <div style={{ width: '100%' }}>
                                         <label
                                             htmlFor='defaultFormLoginPasswordEx'
-                                            className='password'
+                                            className='grey-text'
                                             style={{ width: '90%' }}
                                         >
                                             Password:
-
                                         <input
                                                 type='password'
                                                 id='defaultFormLoginPasswordEx'
                                                 className='form-control password__input'
                                                 ref={this.password}
                                                 required='required'
-                                                style={{ width: '90 %' }}
                                             />
                                         </label>
                                         <button
                                             style={{ width: '10%', height: '38px', backgroundColor: 'white' }}
-                                            className="password__show"
                                             onClick={this.showHide}
                                         >
                                             {this.state.statusHide}
