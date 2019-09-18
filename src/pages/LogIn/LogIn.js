@@ -18,6 +18,26 @@ class LogIn extends Component {
         this.doLogIn = this.doLogIn.bind(this);
         this.email = React.createRef();
         this.password = React.createRef();
+        this.state = {
+            statusHide: 'hide'
+        }
+    }
+
+    // to show/unshow the password visibility
+    showHide = async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.password.current.type === 'password') {
+            this.password.current.type = 'text'
+            this.setState({
+                statusHide: 'hide'
+            })
+        } else {
+            this.password.current.type = 'password'
+            this.setState({
+                statusHide: 'show'
+            })
+        }
     }
 
     // post action to API to login
@@ -99,16 +119,31 @@ class LogIn extends Component {
                                         required='required'
                                     />
                                     <br />
-                                    <label htmlFor='defaultFormLoginPasswordEx' className='grey-text'>
-                                        Password:
-                                </label>
-                                    <input
-                                        type='password'
-                                        id='defaultFormLoginPasswordEx'
-                                        className='form-control'
-                                        ref={this.password}
-                                        required='required'
-                                    />
+                                    <div style={{ width: '100%' }}>
+                                        <label
+                                            htmlFor='defaultFormLoginPasswordEx'
+                                            className='password'
+                                            style={{ width: '90%' }}
+                                        >
+                                            Password:
+
+                                        <input
+                                                type='password'
+                                                id='defaultFormLoginPasswordEx'
+                                                className='form-control password__input'
+                                                ref={this.password}
+                                                required='required'
+                                                style={{ width: '90 %' }}
+                                            />
+                                        </label>
+                                        <button
+                                            style={{ width: '10%', height: '38px', backgroundColor: 'white' }}
+                                            className="password__show"
+                                            onClick={this.showHide}
+                                        >
+                                            {this.state.statusHide}
+                                        </button>
+                                    </div>
                                     <div className='text-center mt-4'>
                                         <MDBBtn className='rounded-pill' style={{ width: '145px', fontWeight: '700' }} onClick={this.doLogIn} id='LoginButton' type='submit'>Masuk</MDBBtn>
                                     </div>
