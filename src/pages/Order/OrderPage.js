@@ -208,25 +208,53 @@ class OrderPage extends Component {
     confirmOrder = (e, id) => {
         e.preventDefault();
         const self = this;
-        let config = {
-            method: "PUT",
-            url: self.props.url + "/v1/orders/" + id,
-            data: {
-                "status": "confirmed"
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
             },
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
-            }
-        }
-        axios(config)
-            .then(function (response) {
+            buttonsStyling: false
+        })
+        // making the confirmaton first before it deleted
+        swalWithBootstrapButtons.fire({
+            title: 'Apakah anda yakin?',
+            text: "",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, konfirmasi saja!!',
+            cancelButtonText: 'Tidak!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                let config = {
+                    method: "PUT",
+                    url: self.props.url + "/v1/orders/" + id,
+                    data: {
+                        "status": "confirmed"
+                    },
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("admin_token")
+                    }
+                }
+                axios(config)
+                    .then(function (response) {
+                        self.componentDidMount();
+                    })
+                    .catch(function (error) {
+                    })
                 self.componentDidMount();
-            })
-            .catch(function (error) {
-            })
-        self.componentDidMount();
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Tidak Jadi',
+                    'Tetap aman :)',
+                    'error'
+                )
+            }
+        })
     }
-
 
     // function to reject order
     rejectOrder = (e, id) => {
