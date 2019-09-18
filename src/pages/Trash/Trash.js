@@ -257,8 +257,13 @@ class Trash extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
-                this.setState({ category: response.data })
+            .then(async response => {
+                await response.data.map((item, index) => {
+                    if (item.status === true) {
+                        const joined = this.state.category.concat(item);
+                        this.setState({ category: joined })
+                    }
+                })
             })
             .catch(error => {
             });
