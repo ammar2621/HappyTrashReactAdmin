@@ -51,7 +51,7 @@ class OrderPage extends Component {
         const self = this;
         if (e.target.value == '0') {
             // to get all orders
-            self.setState({ reward: [], statusReward: [] })
+            self.setState({ allOrder: [], statusOrder: [] })
             self.componentDidMount();
         } else if (e.target.value == '1') {
             // to get the done order 
