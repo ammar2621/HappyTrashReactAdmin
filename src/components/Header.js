@@ -31,7 +31,7 @@ class Header extends Component {
     // to log out from account
     doLogOut = async e => {
         localStorage.setItem('admin_logged_in', '')
-        localStorage.setItem('user_token', '')
+        localStorage.setItem('admin_token', '')
         Swal.fire({
             type: 'success',
             title: 'Success',
