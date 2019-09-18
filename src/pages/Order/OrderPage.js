@@ -18,7 +18,6 @@ import {
 import Header from '../../components/Header'
 import './Order.css'
 import Swal from 'sweetalert2'
-import { async } from "q";
 
 class OrderPage extends Component {
     constructor(props) {
@@ -32,7 +31,8 @@ class OrderPage extends Component {
             waitingOrder: [],
             confirmedOrder: [],
             notFoundWaiting: "",
-            notFoundConfirmed: ""
+            notFoundConfirmed: "",
+            statusOrder: []
         }
     }
 
@@ -43,6 +43,121 @@ class OrderPage extends Component {
             imageWidth: '100%',
             width: '80vw'
         })
+    }
+
+    // function to filter the order status
+    statusFilter = async e => {
+        e.preventDefault();
+        const self = this;
+        if (e.target.value == '0') {
+            // to get all orders
+            self.setState({ reward: [], statusReward: [] })
+            self.componentDidMount();
+        } else if (e.target.value == '1') {
+            // to get the done order 
+            await axios
+                .get(this.props.url + `/v1/orders`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ allOrder: [], statusOrder: [] })
+                    await response.data.map((item, index) => {
+                        if (item.Order.status === 'done') {
+                            const joined = this.state.allOrder.concat(item);
+                            this.setState({ allOrder: joined })
+                        }
+                    })
+                    await this.state.allOrder.map((item, index) => {
+                        if (item.Order.status === 'done') {
+                            const joined = this.state.statusOrder.concat('Selesai');
+                            this.setState({ statusOrder: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '2') {
+            // to get the rejected order 
+            await axios
+                .get(this.props.url + `/v1/orders`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ allOrder: [], statusOrder: [] })
+                    await response.data.map((item, index) => {
+                        if (item.Order.status === 'rejected') {
+                            const joined = this.state.allOrder.concat(item);
+                            this.setState({ allOrder: joined })
+                        }
+                    })
+                    await this.state.allOrder.map((item, index) => {
+                        if (item.Order.status === 'rejected') {
+                            const joined = this.state.statusOrder.concat('Ditolak');
+                            this.setState({ statusOrder: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '3') {
+            // to get the cancelled order
+            await axios
+                .get(this.props.url + `/v1/orders`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ allOrder: [], statusOrder: [] })
+                    await response.data.map((item, index) => {
+                        if (item.Order.status === 'cancelled') {
+                            const joined = this.state.allOrder.concat(item);
+                            this.setState({ allOrder: joined })
+                        }
+                    })
+                    await this.state.allOrder.map((item, index) => {
+                        if (item.Order.status === 'cancelled') {
+                            const joined = this.state.statusOrder.concat('Dibatalkan');
+                            this.setState({ statusOrder: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '4') {
+            // to get the waiting orders
+            await axios
+                .get(this.props.url + `/v1/orders`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ allOrder: [], statusOrder: [] })
+                    await response.data.map((item, index) => {
+                        if (item.Order.status === 'waiting') {
+                            const joined = this.state.allOrder.concat(item);
+                            this.setState({ allOrder: joined })
+                        }
+                    })
+                    await this.state.allOrder.map((item, index) => {
+                        if (item.Order.status === 'waiting') {
+                            const joined = this.state.statusOrder.concat('Menunggu');
+                            this.setState({ statusOrder: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        }
     }
 
     // Function to pop up user information
@@ -185,6 +300,21 @@ class OrderPage extends Component {
                 self.setState({ allOrder: response.data })
                 self.setState({ confirmedOrder })
                 self.setState({ waitingOrder })
+                response.data.map((item, index) => {
+                    if (item.Order.status === 'cancelled') {
+                        const joined = self.state.statusOrder.concat('Dibatalkan');
+                        self.setState({ statusOrder: joined })
+                    } else if (item.Order.status === 'waiting') {
+                        const joined = self.state.statusOrder.concat('Menunggu');
+                        self.setState({ statusOrder: joined })
+                    } else if (item.Order.status === 'done') {
+                        const joined = self.state.statusOrder.concat('Selesai');
+                        self.setState({ statusOrder: joined })
+                    } else if (item.Order.status === 'rejected') {
+                        const joined = self.state.statusOrder.concat('Ditolak');
+                        self.setState({ statusOrder: joined })
+                    }
+                })
             }).catch(function (error) {
             })
         if (this.state.waitingOrder.length === 0) {
@@ -205,7 +335,6 @@ class OrderPage extends Component {
                 notFoundConfirmed: ""
             })
         }
-        console.log(this.state.confirmedOrder)
     }
 
     render() {
@@ -373,6 +502,19 @@ class OrderPage extends Component {
                                 </div>
                             </MDBTabPane>
                             <MDBTabPane tabId="3" role="tabpanel">
+                                <br />
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Status Order: &nbsp;</p>
+                                <select
+                                    style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
+                                    className="form-control"
+                                    onChange={e => this.statusFilter(e)}
+                                >
+                                    <option value='0'> Semua</option>
+                                    <option value='1'> Selesai</option>
+                                    <option value='2'> Ditolak</option>
+                                    <option value='3'> Dibatalkan</option>
+                                    <option value='4'> Menunggu</option>
+                                </select>
                                 <div className="table-responsive">
                                     <table class="table table-hover">
                                         <thead>
@@ -380,6 +522,7 @@ class OrderPage extends Component {
                                                 <th scope="col">User ID</th>
                                                 <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Waktu Dibuat</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
                                                 <th scope="col">Lihat Detail</th>
@@ -400,6 +543,7 @@ class OrderPage extends Component {
                                                             </td>
                                                             <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {elm.Order.created_at.slice(0, 26)}</td>
+                                                            <td valign="bottom"> {this.state.statusOrder[key]}</td>
                                                             <td valign="bottom">
                                                                 <MDBBtn style={{ padding: "4px" }}
                                                                     className="button-white  btn btn-lg btn-block rounded-pill"
