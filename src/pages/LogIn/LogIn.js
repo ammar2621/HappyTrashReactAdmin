@@ -19,7 +19,7 @@ class LogIn extends Component {
         this.email = React.createRef();
         this.password = React.createRef();
         this.state = {
-            statusHide: 'hide'
+            statusHide: 'show'
         }
     }
 
