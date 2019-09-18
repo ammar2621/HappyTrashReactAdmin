@@ -15,7 +15,6 @@ import Header from '../../components/Header'
 import './Category.css'
 import Garbage from './img/garbage.png'
 import Swal from 'sweetalert2'
-import { async } from "q";
 
 class Category extends Component {
 
@@ -154,7 +153,6 @@ class Category extends Component {
             }
         }
         axios(config).then(async (response) => {
-            console.log(response.data)
             await self.setState({ categories: response.data })
             await response.data.map((item, index) => {
                 if (item.status === false) {
@@ -165,7 +163,6 @@ class Category extends Component {
                     this.setState({ status: joined })
                 }
             })
-
         }).catch(function (error) {
         })
     }
