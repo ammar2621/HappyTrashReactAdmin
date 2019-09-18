@@ -32,6 +32,7 @@ class OrderPage extends Component {
             confirmedOrder: [],
             notFoundWaiting: "",
             notFoundConfirmed: "",
+            notFoundOrder: "",
             statusOrder: []
         }
     }
@@ -76,6 +77,11 @@ class OrderPage extends Component {
                             this.setState({ statusOrder: joined })
                         }
                     })
+                    if (this.state.allOrder.length === 0) {
+                        this.setState({ notFoundOrder: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundOrder: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -102,6 +108,11 @@ class OrderPage extends Component {
                             this.setState({ statusOrder: joined })
                         }
                     })
+                    if (this.state.allOrder.length === 0) {
+                        this.setState({ notFoundOrder: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundOrder: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -128,6 +139,11 @@ class OrderPage extends Component {
                             this.setState({ statusOrder: joined })
                         }
                     })
+                    if (this.state.allOrder.length === 0) {
+                        this.setState({ notFoundOrder: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundOrder: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -154,6 +170,11 @@ class OrderPage extends Component {
                             this.setState({ statusOrder: joined })
                         }
                     })
+                    if (this.state.allOrder.length === 0) {
+                        this.setState({ notFoundOrder: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundOrder: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -361,6 +382,15 @@ class OrderPage extends Component {
         } else {
             this.setState({
                 notFoundConfirmed: ""
+            })
+        }
+        if (this.state.allOrder.length === 0) {
+            this.setState({
+                notFoundOrder: '---Tabel Kosong---'
+            })
+        } else {
+            this.setState({
+                notFoundOrder: ""
             })
         }
     }
@@ -598,6 +628,12 @@ class OrderPage extends Component {
                                             }
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundOrder}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>
