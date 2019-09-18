@@ -93,7 +93,7 @@ class OrderAddDetails extends Component {
         }
         axios(config)
             .then(function (response) {
-                self.props.history.push("/order/checkout/" + self.props.match.params.order_id)
+                self.props.history.push("/order/invoice/" + self.props.match.params.order_id)
             })
             .catch(function (error) {
             })
@@ -155,6 +155,7 @@ class OrderAddDetails extends Component {
                                     <tr>
                                         <th scope="col">Nama Sampah</th>
                                         <th scope="col">Berat</th>
+                                        <th scope="col" style={{ width: '40px' }}>Hapus</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,6 +164,7 @@ class OrderAddDetails extends Component {
                                             <tr>
                                                 <td>{elm.trash_name}</td>
                                                 <td>{elm.qty}</td>
+                                                <td><a><p className="text-danger h6">X</p></a></td>
                                             </tr>
                                         )
                                     })}
