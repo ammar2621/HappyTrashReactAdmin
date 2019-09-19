@@ -51,12 +51,12 @@ class Reward extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         e.preventDefault();
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+                text: 'Gunakan ekstensi .jpg .jpeg .png atau .gif saja! '
             })
             return false;
         } else if (e.target.files[0]) {
@@ -102,10 +102,18 @@ class Reward extends Component {
     // add the reward (post to API)
     doAddReward = async e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the form validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Nama tidak boleh spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -151,6 +159,7 @@ class Reward extends Component {
                 this.name.current.value = ''
                 this.stock.current.value = ''
                 this.point.current.value = ''
+                this.setState({ urlPhoto: "", progress: 0 })
                 self.componentDidMount();
             })
             .catch(error => {

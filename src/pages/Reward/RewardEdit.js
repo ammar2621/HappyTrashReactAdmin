@@ -29,7 +29,7 @@ class RewardEdit extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         e.preventDefault();
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
             Swal.fire({
                 type: 'error',
@@ -80,22 +80,38 @@ class RewardEdit extends Component {
     // edit trash to database 
     doEditReward = e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the form validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Nama tidak boleh spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Poin!'
             })
-            return false
+            return;
         } else if (!regexNumber.test(this.stock.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan Angka untuk Kategori!'
+                text: 'Gunakan Angka untuk Stok!'
             })
-            return false
+            return;
+        } else if (!regexImage.test(this.state.urlPhoto)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Pilih file image terlebih dahulu!'
+            })
+            return;
         }
         const self = this;
         let config = {
