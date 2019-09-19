@@ -12,6 +12,7 @@ class OrderAddDetails extends Component {
     constructor(props) {
         super(props);
         this.trash_id = React.createRef();
+        this.weight = React.createRef();
         this.state = {
             trashes: [],
             toPut: [],
@@ -62,7 +63,7 @@ class OrderAddDetails extends Component {
         }
         let new_put = await {
             trash_id: this.state.trash_id,
-            qty: Math.abs(parseInt(this.state.qty))
+            qty: Math.abs(this.state.qty)
         }
         let new_display = await {
             qty: Math.abs(this.state.qty),
@@ -163,7 +164,7 @@ class OrderAddDetails extends Component {
                                 min="0"
                                 step="0.1"
                                 value={this.state.qty}
-                                onChange={e => { this.setState({ qty: e.target.value }) }}
+                                onChange={e => this.setState({ qty: e.target.value })}
                             />
                             <br />
                             <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.addAnother(e)}>
