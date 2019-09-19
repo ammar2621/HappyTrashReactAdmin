@@ -211,9 +211,8 @@ class OrderPage extends Component {
     };
 
     // function to open user information
-    openUser = (e, name, contact) => {
+    openUser = (e, contact) => {
         Swal.fire(
-            'Nama : ' + name,
             'Kontak : ' + contact
         )
     }
@@ -340,6 +339,7 @@ class OrderPage extends Component {
         }
         await axios(config)
             .then(function (response) {
+                console.log(response.data)
                 let waitingOrder = response.data.filter(function (order) {
                     return order.Order.status == 'waiting'
                 })
@@ -429,7 +429,7 @@ class OrderPage extends Component {
                                                 <th scope="col">Terima</th>
                                                 <th scope="col">Tolak</th>
                                                 <th scope="col">Penjemputan</th>
-                                                <th scope="col">User ID</th>
+                                                <th scope="col">Nama</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
                                             </tr>
@@ -450,12 +450,9 @@ class OrderPage extends Component {
                                                             </td>
                                                             <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom">
-                                                                <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
-                                                                >
-                                                                    {elm.Order.user_id}
-                                                                </MDBBtn>
+                                                                <a onClick={e => this.openUser(e, elm.User.mobile_number)}>
+                                                                    {elm.User.name}
+                                                                </a>
                                                             </td>
                                                             <td valign="bottom">
                                                                 <MDBBtn style={{ padding: "4px" }}
