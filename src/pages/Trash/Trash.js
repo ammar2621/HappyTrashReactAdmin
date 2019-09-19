@@ -111,7 +111,7 @@ class Trash extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         e.preventDefault();
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
             Swal.fire({
                 type: 'error',
