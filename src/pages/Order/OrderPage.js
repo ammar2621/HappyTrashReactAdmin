@@ -492,7 +492,7 @@ class OrderPage extends Component {
                                                 <th scope="col">Isi Detail</th>
                                                 <th scope="col">Batal</th>
                                                 <th scope="col">Waktu Penjemputan</th>
-                                                <th scope="col">User ID</th>
+                                                <th scope="col">Nama</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
                                             </tr>
@@ -519,12 +519,9 @@ class OrderPage extends Component {
                                                             </td>
                                                             <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom">
-                                                                <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
-                                                                >
-                                                                    {elm.Order.user_id}
-                                                                </MDBBtn>
+                                                                <a onClick={e => this.openUser(e, elm.User.mobile_number)}>
+                                                                    {elm.User.name}
+                                                                </a>
                                                             </td>
                                                             <td valign="bottom">
                                                                 <MDBBtn style={{ padding: "4px" }}
@@ -574,7 +571,8 @@ class OrderPage extends Component {
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th scope="col">User ID</th>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama</th>
                                                 <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Waktu Dibuat</th>
                                                 <th scope="col">Status</th>
@@ -588,13 +586,11 @@ class OrderPage extends Component {
                                                 this.state.allOrder.map((elm, key) => {
                                                     return (
                                                         <tr>
+                                                            <td>{key + 1}</td>
                                                             <td valign="bottom">
-                                                                <MDBBtn style={{ padding: "4px" }}
-                                                                    className="button-white  btn btn-lg btn-block rounded-pill"
-                                                                    onClick={e => this.openUser(e, elm.User.name, elm.User.mobile_number)}
-                                                                >
-                                                                    {elm.Order.user_id}
-                                                                </MDBBtn>
+                                                                <a onClick={e => this.openUser(e, elm.User.mobile_number)}>
+                                                                    {elm.User.name}
+                                                                </a>
                                                             </td>
                                                             <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {elm.Order.created_at.slice(0, 26)}</td>
