@@ -82,7 +82,6 @@ class RewardEdit extends Component {
         e.preventDefault();
         const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the form validation
         if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
             Swal.fire({
@@ -103,13 +102,6 @@ class RewardEdit extends Component {
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Stok!'
-            })
-            return;
-        } else if (!regexImage.test(this.state.urlPhoto)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Pilih file image terlebih dahulu!'
             })
             return;
         }
