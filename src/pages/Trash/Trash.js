@@ -169,10 +169,18 @@ class Trash extends Component {
     // function to post the trash
     doAddTrash = async e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
         const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
         // check the name validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Jangan spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -334,6 +342,7 @@ class Trash extends Component {
                     }
                 })
             .then(async response => {
+                // self.setState({ category: [] })
                 await response.data.map((item, index) => {
                     if (item.status === true) {
                         const joined = this.state.category.concat(item);
