@@ -124,7 +124,7 @@ class Reward extends Component {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan Angka untuk Kategori!'
+                text: 'Gunakan Angka untuk Stok!'
             })
             return;
         } else if (!regexImage.test(this.state.urlPhoto)) {
@@ -467,8 +467,8 @@ class Reward extends Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">ID Hadiah</th>
                                                 <th scope="col">Penerima</th>
+                                                <th scope="col">Kontak</th>
                                                 <th scope="col">Hadiah</th>
                                                 <th scope="col">Waktu</th>
                                             </tr>
@@ -478,15 +478,8 @@ class Reward extends Component {
                                                 return (
                                                     <tr>
                                                         <td>{index + 1}</td>
-                                                        <td> {item.reward_id}</td>
-                                                        <td>
-                                                            <MDBBtn
-                                                                style={{ padding: "4px", textTransform: 'capitalize' }}
-                                                                className="button-white btn btn-lg rounded-pill"
-                                                                onClick={e => this.openUserInformation(e, item.user_id)}
-                                                            >
-                                                                Lihat Penerima
-                                                            </MDBBtn> </td>
+                                                        <td>{item.user.name}</td>
+                                                        <td>{item.user.mobile_number}</td>
                                                         <td> {item.reward_name}</td>
                                                         <td> {item.created_at.slice(0, 26)}</td>
                                                     </tr>
