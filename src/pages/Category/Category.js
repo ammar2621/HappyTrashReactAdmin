@@ -25,7 +25,8 @@ class Category extends Component {
         this.state = {
             activeItem: "1",
             categories: [],
-            status: []
+            status: [],
+            notFoundCategory: "---Tabel Kosong---"
         }
     }
 
@@ -163,6 +164,11 @@ class Category extends Component {
                     this.setState({ status: joined })
                 }
             })
+            if (this.state.categories.length === 0) {
+                this.setState({ notFoundCategory: "---Tabel Kosong---" })
+            } else {
+                this.setState({ notFoundCategory: "" })
+            }
         }).catch(function (error) {
         })
     }
@@ -313,6 +319,12 @@ class Category extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundCategory}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>

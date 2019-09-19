@@ -35,7 +35,9 @@ class Reward extends Component {
             urlPhoto: "",
             progress: 0,
             statusReward: [],
-            names: []
+            names: [],
+            notFoundReward: "---Tabel Kosong---",
+            notFoundRewardHistory: "---Tabel Kosong---"
         }
     }
 
@@ -225,6 +227,11 @@ class Reward extends Component {
                             this.setState({ statusReward: joined })
                         }
                     })
+                    if (this.state.reward.length === 0) {
+                        this.setState({ notFoundReward: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundReward: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -254,6 +261,11 @@ class Reward extends Component {
                             this.setState({ statusReward: joined })
                         }
                     })
+                    if (this.state.reward.length === 0) {
+                        this.setState({ notFoundReward: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundReward: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -286,6 +298,11 @@ class Reward extends Component {
                         this.setState({ statusReward: joined })
                     }
                 })
+                if (this.state.reward.length === 0) {
+                    this.setState({ notFoundReward: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundReward: "" })
+                }
             })
             .catch(error => {
             });
@@ -300,6 +317,11 @@ class Reward extends Component {
             .then(response => {
                 const reversedHistory = response.data.sort().reverse().slice(0, 50)
                 this.setState({ rewardHistory: reversedHistory })
+                if (this.state.rewardHistory.length === 0) {
+                    this.setState({ notFoundRewardHistory: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundRewardHistory: "" })
+                }
             })
             .catch(error => {
             });
@@ -459,6 +481,12 @@ class Reward extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundReward}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                             <MDBTabPane tabId="3" role="tabpanel">
@@ -487,6 +515,12 @@ class Reward extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundRewardHistory}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>

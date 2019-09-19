@@ -35,7 +35,8 @@ class Trash extends Component {
             photo: "",
             urlPhoto: "",
             progress: 0,
-            statusTrash: []
+            statusTrash: [],
+            notFoundTrash: "---Tabel Kosong---"
         }
     }
 
@@ -64,6 +65,11 @@ class Trash extends Component {
                         const joined = this.state.statusTrash.concat('Tidak Aktif');
                         this.setState({ statusTrash: joined })
                     })
+                    if (this.state.trash.length === 0) {
+                        this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundTrash: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -88,6 +94,11 @@ class Trash extends Component {
                         const joined = this.state.statusTrash.concat('Aktif');
                         this.setState({ statusTrash: joined })
                     })
+                    if (this.state.trash.length === 0) {
+                        this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundTrash: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -323,6 +334,11 @@ class Trash extends Component {
                         this.setState({ statusTrash: joined })
                     }
                 })
+                if (this.state.trash.length === 0) {
+                    this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundTrash: "" })
+                }
             })
             .catch(error => {
             });
@@ -518,6 +534,12 @@ class Trash extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundTrash}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>
