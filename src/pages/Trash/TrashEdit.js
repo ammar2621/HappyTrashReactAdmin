@@ -81,8 +81,7 @@ class TrashEdit extends Component {
         e.preventDefault();
         const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
-        // check the name validation
+        // check the form validation
         if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
             Swal.fire({
                 type: 'error',
@@ -109,13 +108,6 @@ class TrashEdit extends Component {
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
-            })
-            return;
-        } else if (!regexImage.test(this.state.urlPhoto)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Pilih file image terlebih dahulu!'
             })
             return;
         }
