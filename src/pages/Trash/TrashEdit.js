@@ -32,7 +32,7 @@ class TrashEdit extends Component {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+                text: 'Gunakan ekstensi .jpg .jpeg .png atau .gif saja! '
             })
             return false;
         } else if (e.target.files[0]) {
@@ -79,29 +79,45 @@ class TrashEdit extends Component {
     // edit trash to database 
     editTrash = e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the name validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Nama tidak boleh spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Poin!'
             })
-            return false
+            return;
         } else if (!regexNumber.test(this.price.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka Untuk Harga!'
             })
-            return false
+            return;
         } else if (!regexNumber.test(this.category.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
                 text: 'Gunakan Angka untuk Kategori!'
             })
-            return false
+            return;
+        } else if (!regexImage.test(this.state.urlPhoto)) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Pilih file image terlebih dahulu!'
+            })
+            return;
         }
         const self = this;
         let config = {
@@ -217,7 +233,7 @@ class TrashEdit extends Component {
                                 placeholder="Harga"
                                 required='required'
                                 min="0"
-                                step="100"
+                                step="1"
                                 ref={this.price}
                             />
                             <br />

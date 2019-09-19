@@ -164,7 +164,7 @@ class Trash extends Component {
         e.preventDefault();
         const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the name validation
         if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
             Swal.fire({
@@ -414,7 +414,7 @@ class Trash extends Component {
                                         class="form-control"
                                         placeholder="Harga"
                                         min="0"
-                                        step="100"
+                                        step="1"
                                         required='required'
                                         ref={this.price}
                                     />
