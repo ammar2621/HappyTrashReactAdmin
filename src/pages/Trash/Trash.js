@@ -61,10 +61,8 @@ class Trash extends Component {
                         }
                     })
                     await this.state.trash.map((item, index) => {
-                        if (item.status === false) {
-                            const joined = this.state.statusTrash.concat('Tidak Aktif');
-                            this.setState({ statusTrash: joined })
-                        }
+                        const joined = this.state.statusTrash.concat('Tidak Aktif');
+                        this.setState({ statusTrash: joined })
                     })
                 })
                 .catch(error => {
@@ -87,13 +85,8 @@ class Trash extends Component {
                         }
                     })
                     await this.state.trash.map((item, index) => {
-                        if (item.status === false) {
-                            const joined = this.state.statusTrash.concat('Tidak Aktif');
-                            this.setState({ statusTrash: joined })
-                        } else if (item.statusTrash === true) {
-                            const joined = this.state.statusTrasj.concat('Aktif');
-                            this.setState({ statusTrash: joined })
-                        }
+                        const joined = this.state.statusTrash.concat('Aktif');
+                        this.setState({ statusTrash: joined })
                     })
                 })
                 .catch(error => {
@@ -342,7 +335,7 @@ class Trash extends Component {
                     }
                 })
             .then(async response => {
-                // self.setState({ category: [] })
+                self.setState({ category: [] })
                 await response.data.map((item, index) => {
                     if (item.status === true) {
                         const joined = this.state.category.concat(item);
