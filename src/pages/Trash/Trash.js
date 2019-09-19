@@ -170,7 +170,7 @@ class Trash extends Component {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Jangan spasi/kosong!!'
+                text: 'Nama tidak boleh spasi/kosong!!'
             })
             return false;
         } else if (!regexNumber.test(this.point.current.value)) {
@@ -226,7 +226,7 @@ class Trash extends Component {
                 this.name.current.value = ''
                 this.price.current.value = ''
                 this.point.current.value = ''
-                this.setState({ urlPhoto: "" })
+                this.setState({ urlPhoto: "", progress: 0 })
                 this.componentDidMount();
             })
             .catch(error => {
@@ -406,7 +406,7 @@ class Trash extends Component {
                                     </select>
                                     <br />
                                     <label for="inputPrice">
-                                        Harga (dalam rupiah):
+                                        Harga (rupiah per kilogram):
                                     </label>
                                     <input
                                         type="number"
