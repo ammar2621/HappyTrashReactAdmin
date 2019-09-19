@@ -1,7 +1,7 @@
 import createStore from 'unistore';
 
 export const store = createStore({
-  url: 'http://backend.fikriamri.xyz',
+  url: 'https://api.loakin.online',
   // url: 'http://localhost:5000',
 });
 

@@ -6,6 +6,7 @@ import { actions } from "../../store";
 import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
+import Swal from 'sweetalert2'
 
 class CategoryEdit extends Component {
     constructor(props) {
@@ -16,6 +17,15 @@ class CategoryEdit extends Component {
     // to edit/put the new category name
     editCategory = (e, id) => {
         e.preventDefault();
+        const regex = /^[^\s]+(\s+[^\s]+)*$/;
+        if (!regex.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Jangan spasi/kosong!!'
+            })
+            return false;
+        }
         const self = this;
         let config = {
             method: "PUT",

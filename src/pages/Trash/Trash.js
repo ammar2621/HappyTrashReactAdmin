@@ -34,7 +34,78 @@ class Trash extends Component {
             category: [],
             photo: "",
             urlPhoto: "",
-            progress: 0
+            progress: 0,
+            statusTrash: [],
+            notFoundTrash: "---Tabel Kosong---"
+        }
+    }
+
+    // function to filter the active/non-active category
+    statusFilter = async e => {
+        e.preventDefault();
+        const self = this;
+        if (e.target.value == '0') {
+            // to get the non-active trashes 
+            await axios
+                .get(this.props.url + `/v1/trash`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ trash: [], statusTrash: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.trash.concat(item);
+                            this.setState({ trash: joined })
+                        }
+                    })
+                    await this.state.trash.map((item, index) => {
+                        const joined = this.state.statusTrash.concat('Tidak Aktif');
+                        this.setState({ statusTrash: joined })
+                    })
+                    if (this.state.trash.length === 0) {
+                        this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundTrash: "" })
+                    }
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '1') {
+            // to get the active trashes 
+            await axios
+                .get(this.props.url + `/v1/trash`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ trash: [], statusTrash: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === true) {
+                            const joined = this.state.trash.concat(item);
+                            this.setState({ trash: joined })
+                        }
+                    })
+                    await this.state.trash.map((item, index) => {
+                        const joined = this.state.statusTrash.concat('Aktif');
+                        this.setState({ statusTrash: joined })
+                    })
+                    if (this.state.trash.length === 0) {
+                        this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundTrash: "" })
+                    }
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '2') {
+            // to get the all trashes 
+            self.setState({ trash: [], statusTrash: [] })
+            self.componentDidMount();
         }
     }
 
@@ -51,7 +122,7 @@ class Trash extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         e.preventDefault();
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
             Swal.fire({
                 type: 'error',
@@ -102,10 +173,18 @@ class Trash extends Component {
     // function to post the trash
     doAddTrash = async e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the name validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Nama tidak boleh spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -158,7 +237,7 @@ class Trash extends Component {
                 this.name.current.value = ''
                 this.price.current.value = ''
                 this.point.current.value = ''
-                this.setState({ urlPhoto: "" })
+                this.setState({ urlPhoto: "", progress: 0 })
                 this.componentDidMount();
             })
             .catch(error => {
@@ -244,8 +323,22 @@ class Trash extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
+            .then(async response => {
                 this.setState({ trash: response.data })
+                await response.data.map((item, index) => {
+                    if (item.status === false) {
+                        const joined = this.state.statusTrash.concat('Tidak Aktif');
+                        this.setState({ statusTrash: joined })
+                    } else if (item.status === true) {
+                        const joined = this.state.statusTrash.concat('Aktif');
+                        this.setState({ statusTrash: joined })
+                    }
+                })
+                if (this.state.trash.length === 0) {
+                    this.setState({ notFoundTrash: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundTrash: "" })
+                }
             })
             .catch(error => {
             });
@@ -257,8 +350,14 @@ class Trash extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
-                this.setState({ category: response.data })
+            .then(async response => {
+                self.setState({ category: [] })
+                await response.data.map((item, index) => {
+                    if (item.status === true) {
+                        const joined = this.state.category.concat(item);
+                        this.setState({ category: joined })
+                    }
+                })
             })
             .catch(error => {
             });
@@ -323,7 +422,7 @@ class Trash extends Component {
                                     </select>
                                     <br />
                                     <label for="inputPrice">
-                                        Harga (dalam rupiah):
+                                        Harga (rupiah per kilogram):
                                     </label>
                                     <input
                                         type="number"
@@ -331,7 +430,7 @@ class Trash extends Component {
                                         class="form-control"
                                         placeholder="Harga"
                                         min="0"
-                                        step="100"
+                                        step="1"
                                         required='required'
                                         ref={this.price}
                                     />
@@ -375,13 +474,24 @@ class Trash extends Component {
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
+                                <br />
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Status Sampah: &nbsp;</p>
+                                <select
+                                    style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
+                                    className="form-control"
+                                    onChange={e => this.statusFilter(e)}
+                                >
+                                    <option value='2'> Semua</option>
+                                    <option value='1'> Aktif</option>
+                                    <option value='0'> Non-Aktif</option>
+                                </select>
                                 <div className="table-responsive">
                                     <table class="table ">
                                         <thead>
                                             <tr>
-                                                <th scope="col">ID Sampah</th>
-                                                <th scope="col">ID Kategori</th>
+                                                <th scope="col">No</th>
                                                 <th scope="col">Nama</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Gambar</th>
                                                 <th scope="col">Poin</th>
                                                 <th scope="col">Harga</th>
@@ -393,9 +503,9 @@ class Trash extends Component {
                                             {this.state.trash.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom"> {item.id}</td>
-                                                        <td valign="bottom"> {item.trash_category_id}</td>
+                                                        <td valign="bottom"> {index + 1}</td>
                                                         <td valign="bottom"> {item.trash_name}</td>
+                                                        <td valign="bottom"> {this.state.statusTrash[index]}</td>
                                                         <td valign="bottom">
                                                             <MDBBtn
                                                                 style={{ padding: "4px" }}
@@ -424,6 +534,12 @@ class Trash extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundTrash}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>

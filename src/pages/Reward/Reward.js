@@ -35,7 +35,9 @@ class Reward extends Component {
             urlPhoto: "",
             progress: 0,
             statusReward: [],
-            names: []
+            names: [],
+            notFoundReward: "---Tabel Kosong---",
+            notFoundRewardHistory: "---Tabel Kosong---"
         }
     }
 
@@ -51,12 +53,12 @@ class Reward extends Component {
     // funtion to store photo uploaded by user
     handleChangePhoto = e => {
         e.preventDefault();
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .png atau .gif saja! '
+                text: 'Gunakan ekstensi .jpg .jpeg .png atau .gif saja! '
             })
             return false;
         } else if (e.target.files[0]) {
@@ -102,10 +104,18 @@ class Reward extends Component {
     // add the reward (post to API)
     doAddReward = async e => {
         e.preventDefault();
+        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
         const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|gif|png)/;
+        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         // check the form validation
-        if (!regexNumber.test(this.point.current.value)) {
+        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Nama tidak boleh spasi/kosong!!'
+            })
+            return false;
+        } else if (!regexNumber.test(this.point.current.value)) {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
@@ -116,7 +126,7 @@ class Reward extends Component {
             Swal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'Gunakan Angka untuk Kategori!'
+                text: 'Gunakan Angka untuk Stok!'
             })
             return;
         } else if (!regexImage.test(this.state.urlPhoto)) {
@@ -151,6 +161,7 @@ class Reward extends Component {
                 this.name.current.value = ''
                 this.stock.current.value = ''
                 this.point.current.value = ''
+                this.setState({ urlPhoto: "", progress: 0 })
                 self.componentDidMount();
             })
             .catch(error => {
@@ -216,6 +227,11 @@ class Reward extends Component {
                             this.setState({ statusReward: joined })
                         }
                     })
+                    if (this.state.reward.length === 0) {
+                        this.setState({ notFoundReward: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundReward: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -245,6 +261,11 @@ class Reward extends Component {
                             this.setState({ statusReward: joined })
                         }
                     })
+                    if (this.state.reward.length === 0) {
+                        this.setState({ notFoundReward: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundReward: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -277,6 +298,11 @@ class Reward extends Component {
                         this.setState({ statusReward: joined })
                     }
                 })
+                if (this.state.reward.length === 0) {
+                    this.setState({ notFoundReward: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundReward: "" })
+                }
             })
             .catch(error => {
             });
@@ -291,6 +317,11 @@ class Reward extends Component {
             .then(response => {
                 const reversedHistory = response.data.sort().reverse().slice(0, 50)
                 this.setState({ rewardHistory: reversedHistory })
+                if (this.state.rewardHistory.length === 0) {
+                    this.setState({ notFoundRewardHistory: "---Tabel Kosong---" })
+                } else {
+                    this.setState({ notFoundRewardHistory: "" })
+                }
             })
             .catch(error => {
             });
@@ -450,6 +481,12 @@ class Reward extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundReward}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                             <MDBTabPane tabId="3" role="tabpanel">
@@ -458,8 +495,8 @@ class Reward extends Component {
                                         <thead>
                                             <tr>
                                                 <th scope="col">No</th>
-                                                <th scope="col">ID Hadiah</th>
                                                 <th scope="col">Penerima</th>
+                                                <th scope="col">Kontak</th>
                                                 <th scope="col">Hadiah</th>
                                                 <th scope="col">Waktu</th>
                                             </tr>
@@ -469,15 +506,8 @@ class Reward extends Component {
                                                 return (
                                                     <tr>
                                                         <td>{index + 1}</td>
-                                                        <td> {item.reward_id}</td>
-                                                        <td>
-                                                            <MDBBtn
-                                                                style={{ padding: "4px", textTransform: 'capitalize' }}
-                                                                className="button-white btn btn-lg rounded-pill"
-                                                                onClick={e => this.openUserInformation(e, item.user_id)}
-                                                            >
-                                                                Lihat Penerima
-                                                            </MDBBtn> </td>
+                                                        <td>{item.user.name}</td>
+                                                        <td>{item.user.mobile_number}</td>
                                                         <td> {item.reward_name}</td>
                                                         <td> {item.created_at.slice(0, 26)}</td>
                                                     </tr>
@@ -485,6 +515,12 @@ class Reward extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundRewardHistory}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>

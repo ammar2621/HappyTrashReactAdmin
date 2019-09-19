@@ -59,6 +59,7 @@ class OrderInvoice extends Component {
                     <Header />
                     <MDBContainer id="bodyreward">
                         <br />
+                        <h2 style={{ textAlign: 'center' }}>Invoice</h2>
                         <div className="table-responsive">
                             <table class="table ">
                                 <thead className="thead-green">

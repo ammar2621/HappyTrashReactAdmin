@@ -24,7 +24,78 @@ class Category extends Component {
         this.doSubmit = this.doSubmit.bind(this);
         this.state = {
             activeItem: "1",
-            categories: []
+            categories: [],
+            status: [],
+            notFoundCategory: "---Tabel Kosong---"
+        }
+    }
+
+    // function to filter the active/non-active category
+    statusFilter = async e => {
+        e.preventDefault();
+        const self = this;
+        if (e.target.value == '0') {
+            // to get the non-active trashes 
+            await axios
+                .get(this.props.url + `/v1/trash_category`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ categories: [], status: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.categories.concat(item);
+                            this.setState({ categories: joined })
+                        }
+                    })
+                    await this.state.categories.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.status.concat('Tidak Aktif');
+                            this.setState({ status: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.status.concat('Aktif');
+                            this.setState({ status: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '1') {
+            // to get the active trashes 
+            await axios
+                .get(this.props.url + `/v1/trash_category`,
+                    {
+                        headers: {
+                            Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
+                        }
+                    })
+                .then(async response => {
+                    await this.setState({ categories: [], status: [] })
+                    await response.data.map((item, index) => {
+                        if (item.status === true) {
+                            const joined = this.state.categories.concat(item);
+                            this.setState({ categories: joined })
+                        }
+                    })
+                    await this.state.categories.map((item, index) => {
+                        if (item.status === false) {
+                            const joined = this.state.status.concat('Tidak Aktif');
+                            this.setState({ status: joined })
+                        } else if (item.status === true) {
+                            const joined = this.state.status.concat('Aktif');
+                            this.setState({ status: joined })
+                        }
+                    })
+                })
+                .catch(error => {
+                });
+        } else if (e.target.value == '2') {
+            // to get the all trashes 
+            self.setState({ categories: [], status: [] })
+            self.componentDidMount();
         }
     }
 
@@ -40,6 +111,15 @@ class Category extends Component {
     // function to submit/add category to database
     doSubmit = e => {
         e.preventDefault();
+        const regex = /^[^\s]+(\s+[^\s]+)*$/;
+        if (!regex.test(this.name.current.value) | this.name.current.value === "") {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Jangan spasi/kosong!!'
+            })
+            return false;
+        }
         const self = this;
         let config = {
             method: "POST",
@@ -52,6 +132,12 @@ class Category extends Component {
             }
         };
         axios(config).then(function (response) {
+            Swal.fire({
+                type: 'success',
+                title: 'Success',
+                text: 'Berhasil Menambahkan Kategori'
+            })
+            self.name.current.value = ""
             self.componentDidMount()
         }).catch(function (error) {
         })
@@ -67,8 +153,22 @@ class Category extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-        axios(config).then(function (response) {
-            self.setState({ categories: response.data })
+        axios(config).then(async (response) => {
+            await self.setState({ categories: response.data })
+            await response.data.map((item, index) => {
+                if (item.status === false) {
+                    const joined = this.state.status.concat('Tidak Aktif');
+                    this.setState({ status: joined })
+                } else if (item.status === true) {
+                    const joined = this.state.status.concat('Aktif');
+                    this.setState({ status: joined })
+                }
+            })
+            if (this.state.categories.length === 0) {
+                this.setState({ notFoundCategory: "---Tabel Kosong---" })
+            } else {
+                this.setState({ notFoundCategory: "" })
+            }
         }).catch(function (error) {
         })
     }
@@ -173,12 +273,24 @@ class Category extends Component {
                                 </form>
                             </MDBTabPane>
                             <MDBTabPane tabId="2" role="tabpanel">
+                                <br />
+                                <p style={{ fontWeight: '700', display: 'inline-block' }} > Status Kategori: &nbsp;</p>
+                                <select
+                                    style={{ maxWidth: '120px', display: 'inline-block', fontWeight: '700' }}
+                                    className="form-control"
+                                    onChange={e => this.statusFilter(e)}
+                                >
+                                    <option value='2'> Semua</option>
+                                    <option value='1'> Aktif</option>
+                                    <option value='0'> Non-Aktif</option>
+                                </select>
                                 <div className="table-responsive">
                                     <table class="table ">
                                         <thead>
                                             <tr>
-                                                <th scope="col">ID Kategori</th>
+                                                <th scope="col">No</th>
                                                 <th scope="col">Nama</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Edit</th>
                                                 <th scope="col">Delete</th>
                                             </tr>
@@ -187,8 +299,8 @@ class Category extends Component {
                                             {this.state.categories.map((elm, key) => {
                                                 return (
                                                     <tr>
-                                                        <td valign="bottom"> {elm.id}</td>
-                                                        <td valign="bottom"> {elm.category_name}</td>
+                                                        <td valign="bottom"> {key + 1}</td>
+                                                        <td valign="bottom"> {elm.category_name}</td>                                                                                    <td valign="bottom"> {this.state.status[key]}</td>
                                                         <td valign="bottom">
                                                             <Link to={"/category/edit/" + elm.id}>
                                                                 <button className="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "4px" }} valign="center"
@@ -207,6 +319,12 @@ class Category extends Component {
                                             })}
                                         </tbody>
                                     </table>
+                                    <p
+                                        className="text-center"
+                                        style={{ fontSize: '20px' }}
+                                    >
+                                        {this.state.notFoundCategory}
+                                    </p>
                                 </div>
                             </MDBTabPane>
                         </MDBTabContent>

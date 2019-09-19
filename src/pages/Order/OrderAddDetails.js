@@ -12,13 +12,15 @@ class OrderAddDetails extends Component {
     constructor(props) {
         super(props);
         this.trash_id = React.createRef();
+        this.weight = React.createRef();
         this.state = {
             trashes: [],
             toPut: [],
             toDisplay: [],
             trash_id: null,
             trash_name: null,
-            qty: null
+            qty: null,
+            notFoundDetail: "---Tabel Kosong---"
         }
     }
 
@@ -43,6 +45,7 @@ class OrderAddDetails extends Component {
     // to add more trash details
     addAnother = async e => {
         e.preventDefault();
+        this.setState({ notFoundDetail: "" })
         if (this.state.qty == null || this.state.qty == '') {
             Swal.fire({
                 type: 'error',
@@ -60,10 +63,10 @@ class OrderAddDetails extends Component {
         }
         let new_put = await {
             trash_id: this.state.trash_id,
-            qty: parseInt(this.state.qty)
+            qty: Math.abs(this.state.qty)
         }
         let new_display = await {
-            qty: this.state.qty,
+            qty: Math.abs(this.state.qty),
             trash_name: this.state.trash_name
         }
         this.state.toPut.push(new_put);
@@ -76,9 +79,32 @@ class OrderAddDetails extends Component {
         this.componentDidMount();
     }
 
+    // delete one detail
+    deleteDetailUnit = async (e, index) => {
+        e.preventDefault()
+        const toDisplay = this.state.toDisplay
+        const toPut = this.state.toPut
+        const deleteDisplay = toDisplay.splice(index, index + 1)
+        const deletePut = toPut.splice(index, index + 1)
+        this.setState({ toDisplay, toPut })
+        if (toDisplay.length === 0 | toPut === 0) {
+            this.setState({
+                notFoundDetail: "---Tabel Kosong---"
+            })
+        }
+    }
+
     // to checkout ALL the trashes details
     checkOut = e => {
         e.preventDefault();
+        if (this.state.toDisplay.length === 0 | this.state.toPut === 0) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops....',
+                text: 'Tidak boleh kosong!'
+            })
+            return;
+        }
         const self = this;
         let config = {
             method: "PUT",
@@ -93,7 +119,7 @@ class OrderAddDetails extends Component {
         }
         axios(config)
             .then(function (response) {
-                self.props.history.push("/order/checkout/" + self.props.match.params.order_id)
+                self.props.history.push("/order/invoice/" + self.props.match.params.order_id)
             })
             .catch(function (error) {
             })
@@ -135,19 +161,15 @@ class OrderAddDetails extends Component {
                                 id="inputPoint  "
                                 class="form-control"
                                 placeholder="Berat"
-                                min="1"
+                                min="0"
+                                step="0.1"
                                 value={this.state.qty}
-                                onChange={e => { this.setState({ qty: e.target.value }) }}
+                                onChange={e => this.setState({ qty: e.target.value })}
                             />
                             <br />
                             <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.addAnother(e)}>
                                 Tambahkan Sampah
                                     </button> <br />
-
-                            <button id="checkout-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.checkOut(e)}>
-                                Checkout
-                                    </button>
-                            <br />
                         </form>
                         <div className="table-responsive">
                             <table class="table ">
@@ -155,6 +177,7 @@ class OrderAddDetails extends Component {
                                     <tr>
                                         <th scope="col">Nama Sampah</th>
                                         <th scope="col">Berat</th>
+                                        <th scope="col" style={{ width: '40px' }}>Hapus</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,11 +186,22 @@ class OrderAddDetails extends Component {
                                             <tr>
                                                 <td>{elm.trash_name}</td>
                                                 <td>{elm.qty}</td>
+                                                <td><a onClick={e => this.deleteDetailUnit(e, key)}><p className="text-danger h6">X</p></a></td>
                                             </tr>
                                         )
                                     })}
                                 </tbody>
                             </table>
+                            <p
+                                className="text-center"
+                                style={{ fontSize: '20px' }}
+                            >
+                                {this.state.notFoundDetail}
+                            </p>
+                            <button id="add-button-order" class="btn btn-lg btn-primary btn-block rounded-pill" type="submit" onClick={e => this.checkOut(e)}>
+                                Checkout
+                                    </button>
+                            <br />
                         </div>
                     </MDBContainer>
                 </div >
