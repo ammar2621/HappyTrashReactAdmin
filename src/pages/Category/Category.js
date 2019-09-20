@@ -292,7 +292,7 @@ class Category extends Component {
                                                 <th scope="col">Nama</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Edit</th>
-                                                <th scope="col">Delete</th>
+                                                <th scope="col">Hapus</th>
                                             </tr>
                                         </thead>
                                         <tbody>
