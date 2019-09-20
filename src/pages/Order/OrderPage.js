@@ -196,24 +196,33 @@ class OrderPage extends Component {
 
     // function to pop up user address
     openAddress = (e, address) => {
-        const jsonAdress = JSON.parse(address)
-        const lat = jsonAdress["lat"]
-        const lng = jsonAdress["lng"]
-        const adress = jsonAdress["adress"]
-        const additialNotes = jsonAdress["additialNotes"]
-        Swal.fire({
-            html: `<iframe 
-            width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
-            scrolling="no" marginheight="0" marginwidth="0" 
-            src="https://maps.google.com/maps?q=${lat},${lng}&hl=es;z=17&amp;output=embed"
-            >
-            </iframe>
-            <br>
-            <p>${adress}
-            <br>
-            <br>
-            Catatan: ${additialNotes}</p>`
-        })
+        try {
+            const jsonAdress = JSON.parse(address)
+            const lat = jsonAdress["lat"]
+            const lng = jsonAdress["lng"]
+            const adress = jsonAdress["adress"]
+            const additialNotes = jsonAdress["additialNotes"]
+            Swal.fire({
+                html: `<iframe 
+                width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
+                scrolling="no" marginheight="0" marginwidth="0" 
+                src="https://maps.google.com/maps?q=${lat},${lng}&hl=es;z=17&amp;output=embed"
+                >
+                </iframe>
+                <br>
+                <p>${adress}
+                <br>
+                <br>
+                Catatan: ${additialNotes}</p>`
+            })
+        } catch (error) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Data input tidak sesuai format! Tidak bisa menampilkan alamat'
+            })
+        }
+
     }
 
     // function to make order status become confirmed
