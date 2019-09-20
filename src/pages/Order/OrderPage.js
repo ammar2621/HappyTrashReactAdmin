@@ -24,9 +24,6 @@ class OrderPage extends Component {
         super(props);
         this.state = {
             activeItem: "1",
-            modalUser: false,
-            modalAddress: false,
-            modalPhoto: false,
             allOrder: [],
             waitingOrder: [],
             confirmedOrder: [],
