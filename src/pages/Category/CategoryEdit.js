@@ -33,7 +33,7 @@ class CategoryEdit extends Component {
             url: self.props.url + "/v1/trash_category/" + id,
             data: {
                 category_name: self.name.current.value,
-                status: !!(self.status.current.value)
+                status: !!Number(self.status.current.value)
             },
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
