@@ -199,8 +199,28 @@ class OrderPage extends Component {
 
     // function to pop up user address
     openAddress = (e, address) => {
+        const jsonAdress = JSON.parse(address)
+        console.log(address)
+        console.log(jsonAdress["adress"])
+        const lat = jsonAdress["lat"]
+        const lng = jsonAdress["lng"]
+        const adress = jsonAdress["adress"]
+        const additionalNotes = jsonAdress["additionalNotes"]
         Swal.fire({
-            html: `<p>Map sedang dalam proses pembuatan ${address} </p>`
+            html: `<iframe 
+            width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
+            style:"max-width:480px; min-width:300px; max-height:500px; min-height: 400px;" 
+            frameborder="0" 
+            scrolling="no" 
+            marginheight="0" 
+            marginwidth="0" 
+            src="https://maps.google.com/maps?q=${lat},${lng}&hl=es;z=17&amp;output=embed"
+           >
+           </iframe>
+           <br>
+           <p>Alamat:${lat}
+           <br>
+        Catatan: ${additionalNotes}</p>`
         })
     }
 
@@ -563,8 +583,8 @@ class OrderPage extends Component {
                                             <tr>
                                                 <th scope="col">No</th>
                                                 <th scope="col">Nama</th>
-                                                <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Waktu Dibuat</th>
+                                                <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
@@ -582,8 +602,8 @@ class OrderPage extends Component {
                                                                     {elm.User.name}
                                                                 </a>
                                                             </td>
-                                                            <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {elm.Order.created_at.slice(0, 26)}</td>
+                                                            <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {this.state.statusOrder[key]}</td>
                                                             <td valign="bottom">
                                                                 <MDBBtn style={{ padding: "4px" }}
