@@ -215,7 +215,7 @@ class OrderPage extends Component {
             },
             buttonsStyling: false
         })
-        // making the confirmaton first before it deleted
+        // making the confirmaton first before it added
         swalWithBootstrapButtons.fire({
             title: 'Apakah anda yakin?',
             text: "",
@@ -238,6 +238,11 @@ class OrderPage extends Component {
                 }
                 axios(config)
                     .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Telah mengonfirmasi order!'
+                        })
                         self.componentDidMount();
                     })
                     .catch(function (error) {
@@ -290,6 +295,11 @@ class OrderPage extends Component {
                 }
                 axios(config)
                     .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Order berhasil ditolak! '
+                        })
                         self.componentDidMount();
                     })
                     .catch(function (error) {
