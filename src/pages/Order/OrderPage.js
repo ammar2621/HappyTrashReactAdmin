@@ -200,12 +200,10 @@ class OrderPage extends Component {
     // function to pop up user address
     openAddress = (e, address) => {
         const jsonAdress = JSON.parse(address)
-        console.log(address)
-        console.log(jsonAdress["adress"])
         const lat = jsonAdress["lat"]
         const lng = jsonAdress["lng"]
         const adress = jsonAdress["adress"]
-        const additionalNotes = jsonAdress["additionalNotes"]
+        const additialNotes = jsonAdress["additialNotes"]
         Swal.fire({
             html: `<iframe 
             width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
@@ -218,9 +216,9 @@ class OrderPage extends Component {
            >
            </iframe>
            <br>
-           <p>Alamat:${lat}
+           <p>Alamat:${adress}
            <br>
-        Catatan: ${additionalNotes}</p>`
+           Catatan: ${additialNotes}</p>`
         })
     }
 
@@ -349,7 +347,6 @@ class OrderPage extends Component {
         }
         await axios(config)
             .then(function (response) {
-                console.log(response.data)
                 let waitingOrder = response.data.filter(function (order) {
                     return order.Order.status == 'waiting'
                 })
