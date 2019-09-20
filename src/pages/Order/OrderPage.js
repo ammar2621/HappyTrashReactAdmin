@@ -207,18 +207,15 @@ class OrderPage extends Component {
         Swal.fire({
             html: `<iframe 
             width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
-            style:"max-width:480px; min-width:300px; max-height:500px; min-height: 400px;" 
-            frameborder="0" 
-            scrolling="no" 
-            marginheight="0" 
-            marginwidth="0" 
+            scrolling="no" marginheight="0" marginwidth="0" 
             src="https://maps.google.com/maps?q=${lat},${lng}&hl=es;z=17&amp;output=embed"
-           >
-           </iframe>
-           <br>
-           <p>Alamat:${adress}
-           <br>
-           Catatan: ${additialNotes}</p>`
+            >
+            </iframe>
+            <br>
+            <p>${adress}
+            <br>
+            <br>
+            Catatan: ${additialNotes}</p>`
         })
     }
 
