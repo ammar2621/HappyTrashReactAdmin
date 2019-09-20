@@ -16,6 +16,7 @@ class TrashEdit extends Component {
         this.price = React.createRef();
         this.point = React.createRef();
         this.category = React.createRef();
+        this.status = React.createRef();
         this.state = {
             category: [],
             trash: [],
@@ -59,7 +60,6 @@ class TrashEdit extends Component {
                                 .child(this.state.photo.name)
                                 .getDownloadURL()
                                 .then(url => {
-                                    console.log(url)
                                     this.setState({ urlPhoto: url });
                                 });
                         }
@@ -120,7 +120,8 @@ class TrashEdit extends Component {
                 trash_category_id: self.category.current.value,
                 price: self.price.current.value,
                 point: self.point.current.value,
-                photo: self.state.urlPhoto
+                photo: self.state.urlPhoto,
+                status: !!Number(self.status.current.value)
             },
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
@@ -173,6 +174,7 @@ class TrashEdit extends Component {
                 self.price.current.value = self.state.trash[0].price
                 self.point.current.value = self.state.trash[0].point
                 self.state.urlPhoto = self.state.trash[0].photo
+                self.status.current.value = String(Number(self.state.trash[0].status))
             })
             .catch(error => {
             });
@@ -241,6 +243,14 @@ class TrashEdit extends Component {
                                 min="1"
                                 ref={this.point}
                             />
+                            <br />
+                            <label for="inputStatus">
+                                Status:
+                                    </label>
+                            <select ref={this.status} class="form-control" >
+                                <option value='1'> Aktif</option>
+                                <option value='0'> Non-Aktif</option>
+                            </select>
                             <br />
                             <label for="inputurlPhoto">
                                 Upload Foto (Pilih File Jika Foto Ingin Diubah):

@@ -87,7 +87,7 @@ class CategoryEdit extends Component {
 
                             />
                             <br />
-                            <label for="inputStock">
+                            <label for="inputStatus">
                                 Status:
                                     </label>
                             <select ref={this.status} class="form-control" >
