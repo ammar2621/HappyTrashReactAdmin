@@ -181,26 +181,6 @@ class OrderPage extends Component {
         }
     }
 
-    // Function to pop up user information
-    openUserInformation = async (e, id) => {
-        const self = this;
-        // to get the all trashes 
-        await axios
-            .get(this.props.url + `/v1/users/admin/${id}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-                    }
-                })
-            .then(async response => {
-                Swal.fire({
-                    html: `<p>Nama: ${response.data.name} <br> No HP: ${response.data.mobile_number} </p>`
-                })
-            })
-            .catch(error => {
-            });
-    }
-
     // making the tab enabled
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
