@@ -204,6 +204,11 @@ class Category extends Component {
                 }
                 axios(config)
                     .then(function (response) {
+                        swalWithBootstrapButtons.fire(
+                            'Terhapus',
+                            'Berhasil dihapus',
+                            'success'
+                        )
                         self.componentDidMount()
                     })
                     .catch(function (error) {
