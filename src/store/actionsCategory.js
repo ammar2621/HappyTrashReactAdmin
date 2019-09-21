@@ -98,7 +98,6 @@ const actionsCategory = (store) => ({
     }).catch((error) => {
     });
   },
-
 });
 
 export default actionsCategory;

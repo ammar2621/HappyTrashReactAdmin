@@ -19,6 +19,8 @@ import Header from '../../components/Header'
 import './Reward.css'
 import Swal from 'sweetalert2'
 import { storage } from "../../firebase/index";
+import { swalError, swalSuccess } from "../../store/Swal"
+import actionsReward from "../../store/actionsReward";
 
 class Reward extends Component {
     constructor(props) {
@@ -55,11 +57,7 @@ class Reward extends Component {
         e.preventDefault();
         const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
         if (!regexImage.test(e.target.files[0].name)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan ekstensi .jpg .jpeg .png atau .gif saja! '
-            })
+            swalError('Gunakan ekstensi .jpg .jpeg .png atau .gif saja! ')
             return false;
         } else if (e.target.files[0]) {
             if (e.target.files[0].size < 5000000) {
@@ -92,11 +90,7 @@ class Reward extends Component {
                 } catch (err) {
                 }
             } else {
-                Swal.fire({
-                    type: 'error',
-                    title: 'Oops...',
-                    text: 'Maksimal file 5MB!'
-                })
+                swalError('Maksimal file 5MB!')
             }
         }
     };
@@ -104,64 +98,14 @@ class Reward extends Component {
     // add the reward (post to API)
     doAddReward = async e => {
         e.preventDefault();
-        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
-        const regexNumber = /^\d+$/;
-        const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
-        // check the form validation
-        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Nama tidak boleh spasi/kosong!!'
-            })
-            return false;
-        } else if (!regexNumber.test(this.point.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Angka Untuk Poin!'
-            })
-            return;
-        } else if (!regexNumber.test(this.stock.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Angka untuk Stok!'
-            })
-            return;
-        } else if (!regexImage.test(this.state.urlPhoto)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Pilih file image terlebih dahulu!'
-            })
-            return;
+        const data = {
+            point_to_claim: Number(this.point.current.value),
+            name: this.name.current.value,
+            stock: Number(this.stock.current.value),
+            photo: this.state.urlPhoto,
+            status: Number(this.status.current.value)
         }
-        const self = this;
-        await axios
-            .post(this.props.url + `/v1/rewards`,
-                {
-                    point_to_claim: Number(this.point.current.value),
-                    name: this.name.current.value,
-                    stock: Number(this.stock.current.value),
-                    photo: this.state.urlPhoto,
-                    status: Number(this.status.current.value)
-                },
-                {
-                    headers: {
-                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-                    }
-                })
-            .then(async response => {
-                Swal.fire({
-                    type: 'success',
-                    title: 'Success',
-                    text: 'Berhasil Menambahkan Hadiah!'
-                })
-                window.location.reload();
-            })
-            .catch(error => {
-            });
+        this.props.doAddReward(data)
     }
 
     // Function to pop up image
@@ -529,4 +473,4 @@ class Reward extends Component {
     }
 }
 
-export default connect('url', actions)(Reward);
+export default connect('url', actions, actionsReward)(Reward);
