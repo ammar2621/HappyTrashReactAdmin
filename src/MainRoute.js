@@ -16,6 +16,7 @@ import OrderPage from './pages/Order/OrderPage'
 import OrderAddDetails from './pages/Order/OrderAddDetails'
 import OrderDetailsCheckout from './pages/Order/OrderDetailsCheckout'
 import OrderInvoice from './pages/Order/OrderInvoice';
+import NotFound from './pages/NotFound/NotFound';
 
 class MainRoute extends React.Component {
     render() {
@@ -34,6 +35,7 @@ class MainRoute extends React.Component {
                     <Route exact path='/order/create/:order_id' component={OrderAddDetails} />
                     <Route exact path='/order/checkout/:order_id' component={OrderDetailsCheckout} />
                     <Route exact path='/order/invoice/:order_id' component={OrderInvoice} />
+                    <Route component={NotFound} />
                 </Switch>
             </Router>
         );
