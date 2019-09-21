@@ -10,16 +10,16 @@ const actionsReward = (store) => ({
     const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
     // check the form validation
     if (!regexName.test(data.name) | data.name === '') {
-      swalError('Nama tidak boleh spasi/kosong!!');
+      await swalError('Nama tidak boleh spasi/kosong!!');
       return false;
     } if (!regexNumber.test(data.point_to_claim)) {
-      swalError('Gunakan Angka Untuk Poin!');
+      await swalError('Gunakan Angka Untuk Poin!');
       return;
     } if (!regexNumber.test(data.stock)) {
-      swalError('Gunakan Angka untuk Stok!');
+      await swalError('Gunakan Angka untuk Stok!');
       return;
     } if (!regexImage.test(data.photo)) {
-      swalError('Pilih file image terlebih dahulu!');
+      await swalError('Pilih file image terlebih dahulu!');
       return;
     }
     const self = this;
@@ -33,7 +33,7 @@ const actionsReward = (store) => ({
         })
       .then(async (response) => {
         await swalSuccess('Berhasil Menambahkan Hadiah!');
-        window.location.reload();
+        await window.location.reload();
       })
       .catch((error) => {
       });
@@ -67,10 +67,10 @@ const actionsReward = (store) => ({
         Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     };
-    await axios(config).then((response) => {
-      swalSuccess('Berhasil Menggnanti Hadiah!');
-    }).catch((error) => {
-      swalError('Gagal Menambahkan');
+    await axios(config).then(async (response) => {
+      await swalSuccess('Berhasil Menggnanti Hadiah!');
+    }).catch(async (error) => {
+      await swalError('Gagal Menambahkan');
     });
   },
 });

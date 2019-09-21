@@ -104,7 +104,7 @@ class Reward extends Component {
             photo: this.state.urlPhoto,
             status: Number(this.status.current.value)
         }
-        this.props.doAddReward(data)
+        await this.props.doAddReward(data)
     }
 
     // Function to pop up image
