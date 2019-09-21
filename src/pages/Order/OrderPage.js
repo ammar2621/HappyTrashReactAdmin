@@ -18,6 +18,7 @@ import {
 import Header from '../../components/Header'
 import './Order.css'
 import Swal from 'sweetalert2'
+import actionsOrder from "../../store/actionsOrder";
 
 class OrderPage extends Component {
     constructor(props) {
@@ -226,116 +227,17 @@ class OrderPage extends Component {
     }
 
     // function to make order status become confirmed
-    confirmOrder = (e, id) => {
+    confirmOrder = async (e, id) => {
         e.preventDefault();
-        const self = this;
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-        // making the confirmaton first before it added
-        swalWithBootstrapButtons.fire({
-            title: 'Apakah anda yakin?',
-            text: "",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, konfirmasi saja!!',
-            cancelButtonText: 'Tidak!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                let config = {
-                    method: "PUT",
-                    url: self.props.url + "/v1/orders/" + id,
-                    data: {
-                        "status": "confirmed"
-                    },
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("admin_token")
-                    }
-                }
-                axios(config)
-                    .then(function (response) {
-                        Swal.fire({
-                            type: 'success',
-                            title: 'Success',
-                            text: 'Telah mengonfirmasi order!'
-                        })
-                        self.componentDidMount();
-                    })
-                    .catch(function (error) {
-                    })
-                self.componentDidMount();
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Tidak Jadi',
-                    'Tetap aman :)',
-                    'error'
-                )
-            }
-        })
+        await this.props.confirmOrder(id)
+        this.componentDidMount();
     }
 
     // function to reject order
-    rejectOrder = (e, id) => {
+    rejectOrder = async (e, id) => {
         e.preventDefault();
-        const self = this;
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-        // making the confirmaton first before it deleted
-        swalWithBootstrapButtons.fire({
-            title: 'Apakah anda yakin?',
-            text: "Anda tidak bisa mengembalikan ketika sudah dicancel",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, cancel saja!!',
-            cancelButtonText: 'Tidak!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                let config = {
-                    method: "PUT",
-                    url: self.props.url + "/v1/orders/" + id,
-                    data: {
-                        "status": "rejected"
-                    },
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("admin_token")
-                    }
-                }
-                axios(config)
-                    .then(function (response) {
-                        Swal.fire({
-                            type: 'success',
-                            title: 'Success',
-                            text: 'Order berhasil ditolak! '
-                        })
-                        self.componentDidMount();
-                    })
-                    .catch(function (error) {
-                    })
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Tidak Jadi',
-                    'Tetap aman :)',
-                    'error'
-                )
-            }
-        })
+        await this.props.rejectOrder(id)
+        this.componentDidMount();
     }
 
     // function that happens after renderred
@@ -648,4 +550,4 @@ class OrderPage extends Component {
         }
     }
 }
-export default connect("url", actions)(OrderPage);
+export default connect("url", actionsOrder)(OrderPage);
