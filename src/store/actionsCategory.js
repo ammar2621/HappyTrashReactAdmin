@@ -5,9 +5,9 @@ import { swalWithBootstrapButtons, swalError, swalSuccess } from './Swal';
 
 const actionsCategory = (store) => ({
   // function to delete category from database
-  deleteCategory(state, id) {
+  async deleteCategory(state, id) {
     const self = this;
-    swalWithBootstrapButtons.fire({
+    await swalWithBootstrapButtons.fire({
       title: 'Apakah anda yakin?',
       text: 'Anda tidak bisa mengembalikan ketika sudah dihapus',
       type: 'warning',
@@ -15,7 +15,7 @@ const actionsCategory = (store) => ({
       confirmButtonText: 'Ya, hapus saja!!',
       cancelButtonText: 'Tidak!',
       reverseButtons: true,
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.value) {
         const config = {
           method: 'DELETE',
@@ -24,9 +24,9 @@ const actionsCategory = (store) => ({
             Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
           },
         };
-        axios(config)
-          .then((response) => {
-            swalWithBootstrapButtons.fire(
+        await axios(config)
+          .then(async (response) => {
+            await swalWithBootstrapButtons.fire(
               'Terhapus',
               'Berhasil dihapus',
               'success',
@@ -35,10 +35,10 @@ const actionsCategory = (store) => ({
           .catch((error) => {
           });
       } else if (
-      /* Read more about handling dismissals below */
+        /* Read more about handling dismissals below */
         result.dismiss === Swal.DismissReason.cancel
       ) {
-        swalWithBootstrapButtons.fire(
+        await swalWithBootstrapButtons.fire(
           'Tidak Jadi',
           'Tetap aman :)',
           'error',
@@ -48,7 +48,7 @@ const actionsCategory = (store) => ({
   },
 
   //   to submit / add the category to database
-  doSubmit(state, string) {
+  async doSubmit(state, string) {
     const regex = /^[^\s]+(\s+[^\s]+)*$/;
     if (!regex.test(string) | string === '') {
       swalError('Jangan spasi/kosong!!');
@@ -65,7 +65,7 @@ const actionsCategory = (store) => ({
         Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     };
-    axios(config).then((response) => {
+    await axios(config).then((response) => {
       swalSuccess('Berhasil Menambahkan Kategori');
     }).catch((error) => {
     });

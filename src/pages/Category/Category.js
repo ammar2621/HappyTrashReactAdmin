@@ -122,7 +122,7 @@ class Category extends Component {
         e.preventDefault();
         await this.props.doSubmit(this.name.current.value)
         this.name.current.value = ""
-        await this.componentDidMount();
+        this.componentDidMount();
     }
 
     // function that works after react rendered/mounted
@@ -157,9 +157,9 @@ class Category extends Component {
     }
 
     // function to delete category from database
-    deleteCategory = (e, id) => {
+    deleteCategory = async (e, id) => {
         e.preventDefault();
-        this.props.deleteCategory(id)
+        await this.props.deleteCategory(id)
         this.componentDidMount();
     }
 
