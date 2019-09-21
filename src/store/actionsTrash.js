@@ -6,9 +6,9 @@ const actionsTrash = (store) => ({
 
   // function to post the trash
   async doAddTrash(state, data) {
-    const regexName = /^[^\s]+(\s+[^\s]+)*$/;
-    const regexNumber = /^\d+$/;
-    const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
+    const regexName = await /^[^\s]+(\s+[^\s]+)*$/;
+    const regexNumber = await /^\d+$/;
+    const regexImage = await /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
     // check the name validation
     if (!regexName.test(data.trash_name) | data.trash_name === '') {
       swalError('Nama tidak boleh spasi/kosong!!');
