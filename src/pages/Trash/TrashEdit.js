@@ -150,9 +150,16 @@ class TrashEdit extends Component {
                     }
                 })
             .then(response => {
-                this.setState({ category: response.data })
+                console.log(response.data)
+                response.data.map((item, index) => {
+                    if (item.status === true) {
+                        const joined = this.state.category.concat(item);
+                        this.setState({ category: joined })
+                    }
+                })
             })
             .catch(error => {
+                console.log(error)
             });
         // to get the all trashes 
         await axios

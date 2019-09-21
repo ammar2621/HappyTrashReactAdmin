@@ -136,7 +136,7 @@ class Category extends Component {
             }
         }
         axios(config).then(async (response) => {
-            self.setState({ categories: [], status: [] })
+            await self.setState({ categories: [], status: [] })
             await self.setState({ categories: response.data })
             await response.data.map((item, index) => {
                 if (item.status === false) {

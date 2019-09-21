@@ -181,72 +181,8 @@ class Trash extends Component {
             photo: this.state.urlPhoto,
             point: Math.abs(this.point.current.value)
         }
-        this.props.doAddTrash(data)
-        // const regexName = /^[^\s]+(\s+[^\s]+)*$/;
-        // const regexNumber = /^\d+$/;
-        // const regexImage = /([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png)/;
-        // // check the name validation
-        // if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Nama tidak boleh spasi/kosong!!'
-        //     })
-        //     return false;
-        // } else if (!regexNumber.test(this.point.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Poin!'
-        //     })
-        //     return;
-        // } else if (!regexNumber.test(this.price.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka Untuk Harga!'
-        //     })
-        //     return;
-        // } else if (!regexNumber.test(this.category.current.value)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Gunakan Angka untuk Kategori!'
-        //     })
-        //     return;
-        // } else if (!regexImage.test(this.state.urlPhoto)) {
-        //     Swal.fire({
-        //         type: 'error',
-        //         title: 'Oops...',
-        //         text: 'Pilih file image terlebih dahulu!'
-        //     })
-        //     return;
-        // }
-        // const self = this;
-        // await axios
-        //     .post(this.props.url + `/v1/trash`,
-        //         {
-        //             trash_category_id: Math.abs(this.category.current.value),
-        //             trash_name: this.name.current.value,
-        //             price: Math.abs(this.price.current.value),
-        //             photo: this.state.urlPhoto,
-        //             point: Math.abs(this.point.current.value)
-        //         },
-        //         {
-        //             headers: {
-        //                 Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-        //             }
-        //         })
-        //     .then(async response => {
-        //         await Swal.fire({
-        //             type: 'success',
-        //             title: 'Success',
-        //             text: 'Berhasil Menambahkan Jenis Sampah!'
-        //         })
-        //         window.location.reload();
-        //     })
-        //     .catch(error => {
-        //     });
+        await this.props.doAddTrash(data)
+        window.location.reload();
     }
 
     // function to delete trash from database

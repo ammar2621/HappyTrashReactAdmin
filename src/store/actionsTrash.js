@@ -37,7 +37,6 @@ const actionsTrash = (store) => ({
         })
       .then(async (response) => {
         await swalSuccess('Berhasil Menambahkan Jenis Sampah!');
-        window.location.reload();
       })
       .catch((error) => {
       });
