@@ -59,6 +59,11 @@ class Category extends Component {
                             this.setState({ status: joined })
                         }
                     })
+                    if (this.state.categories.length === 0) {
+                        this.setState({ notFoundCategory: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundCategory: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -88,6 +93,11 @@ class Category extends Component {
                             this.setState({ status: joined })
                         }
                     })
+                    if (this.state.categories.length === 0) {
+                        this.setState({ notFoundCategory: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundCategory: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -126,6 +136,7 @@ class Category extends Component {
             }
         }
         axios(config).then(async (response) => {
+            self.setState({ categories: [], status: [] })
             await self.setState({ categories: response.data })
             await response.data.map((item, index) => {
                 if (item.status === false) {

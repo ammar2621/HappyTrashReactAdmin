@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
 import actionsCategory from "../../store/actionsCategory"
-
+import { withRouter } from "react-router-dom"
 
 class CategoryEdit extends Component {
     constructor(props) {
@@ -86,4 +86,4 @@ class CategoryEdit extends Component {
     }
 }
 
-export default connect("url", actionsCategory)(CategoryEdit);
+export default connect("url", actionsCategory)(withRouter(CategoryEdit));
