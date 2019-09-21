@@ -72,10 +72,10 @@ const actionsCategory = (store) => ({
   },
 
   // to edit/put the new category name
-  editCategory(state, id, name, status) {
+  async editCategory(state, id, name, status) {
     const regex = /^[^\s]+(\s+[^\s]+)*$/;
     if (!regex.test(name) | name === '') {
-      Swal.fire({
+      await Swal.fire({
         type: 'error',
         title: 'Oops...',
         text: 'Jangan spasi/kosong!!',
@@ -94,7 +94,7 @@ const actionsCategory = (store) => ({
         Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
       },
     };
-    axios(config).then((response) => {
+    await axios(config).then(async (response) => {
     }).catch((error) => {
     });
   },

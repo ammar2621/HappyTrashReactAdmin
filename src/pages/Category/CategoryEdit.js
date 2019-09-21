@@ -16,9 +16,9 @@ class CategoryEdit extends Component {
     }
 
     // to edit/put the new category name
-    editCategory = (e, id) => {
+    editCategory = async (e, id) => {
         e.preventDefault();
-        this.props.editCategory(id, this.name.current.value, !!Number(this.status.current.value))
+        await this.props.editCategory(id, this.name.current.value, !!Number(this.status.current.value))
         this.props.history.push("/category")
     }
 
