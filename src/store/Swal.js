@@ -9,19 +9,17 @@ export const swalWithBootstrapButtons = Swal.mixin({
 });
 
 
-export const swalStore = (string) => ({
-  swalSuccess(string) {
-    Swal.fire({
-      type: 'success',
-      title: 'Success',
-      text: `${string}`,
-    });
-  },
-  swalError(string) {
-    Swal.fire({
-      type: 'error',
-      title: 'Oops...',
-      text: `${string}`,
-    });
-  },
-});
+export function swalSuccess(string) {
+  Swal.fire({
+    type: 'success',
+    title: 'Success',
+    text: `${string}`,
+  });
+}
+export function swalError(string) {
+  Swal.fire({
+    type: 'error',
+    title: 'Oops...',
+    text: `${string}`,
+  });
+}

@@ -9,13 +9,11 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store/store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
 import Garbage from './img/garbage.png'
-import Swal from 'sweetalert2'
-import actionsCategory from "../../store/actionsCategory";
+import actionsCategory from "../../store/actionsCategory"
 
 class Category extends Component {
 
@@ -110,38 +108,11 @@ class Category extends Component {
     };
 
     // function to submit/add category to database
-    doSubmit = e => {
+    doSubmit = async e => {
         e.preventDefault();
-        const regex = /^[^\s]+(\s+[^\s]+)*$/;
-        if (!regex.test(this.name.current.value) | this.name.current.value === "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Jangan spasi/kosong!!'
-            })
-            return false;
-        }
-        const self = this;
-        let config = {
-            method: "POST",
-            url: self.props.url + "/v1/trash_category",
-            data: {
-                category_name: self.name.current.value
-            },
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
-            }
-        };
-        axios(config).then(function (response) {
-            Swal.fire({
-                type: 'success',
-                title: 'Success',
-                text: 'Berhasil Menambahkan Kategori'
-            })
-            self.name.current.value = ""
-            self.componentDidMount()
-        }).catch(function (error) {
-        })
+        await this.props.doSubmit(this.name.current.value)
+        this.name.current.value = ""
+        await this.componentDidMount();
     }
 
     // function that works after react rendered/mounted
@@ -297,4 +268,4 @@ class Category extends Component {
     }
 }
 
-export default connect("url", actions, actionsCategory)(Category);
+export default connect("url", actionsCategory)(Category);
