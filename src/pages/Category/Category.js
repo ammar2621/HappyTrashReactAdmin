@@ -15,6 +15,7 @@ import Header from '../../components/Header'
 import './Category.css'
 import Garbage from './img/garbage.png'
 import Swal from 'sweetalert2'
+import actionsCategory from "../../store/actionsCategory";
 
 class Category extends Component {
 
@@ -176,54 +177,8 @@ class Category extends Component {
     // function to delete category from database
     deleteCategory = (e, id) => {
         e.preventDefault();
-        const self = this;
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-        // making the confirmaton first before it deleted
-        swalWithBootstrapButtons.fire({
-            title: 'Apakah anda yakin?',
-            text: "Anda tidak bisa mengembalikan ketika sudah dihapus",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus saja!!',
-            cancelButtonText: 'Tidak!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                let config = {
-                    method: "DELETE",
-                    url: self.props.url + "/v1/trash_category/" + id,
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("admin_token")
-                    }
-                }
-                axios(config)
-                    .then(function (response) {
-                        swalWithBootstrapButtons.fire(
-                            'Terhapus',
-                            'Berhasil dihapus',
-                            'success'
-                        )
-                        self.componentDidMount()
-                    })
-                    .catch(function (error) {
-                    })
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Tidak Jadi',
-                    'Tetap aman :)',
-                    'error'
-                )
-            }
-        })
+        this.props.deleteCategory(id)
+        this.componentDidMount();
     }
 
     render() {
@@ -342,4 +297,4 @@ class Category extends Component {
     }
 }
 
-export default connect("url", actions)(Category);
+export default connect("url", actions, actionsCategory)(Category);
