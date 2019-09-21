@@ -12,6 +12,7 @@ class CategoryEdit extends Component {
     constructor(props) {
         super(props);
         this.name = React.createRef();
+        this.status = React.createRef();
     }
 
     // to edit/put the new category name
@@ -31,7 +32,8 @@ class CategoryEdit extends Component {
             method: "PUT",
             url: self.props.url + "/v1/trash_category/" + id,
             data: {
-                category_name: self.name.current.value
+                category_name: self.name.current.value,
+                status: !!Number(self.status.current.value)
             },
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
@@ -58,6 +60,7 @@ class CategoryEdit extends Component {
                 return category.id == self.props.match.params.category_id
             })
             self.name.current.value = categoryThisPage[0].category_name
+            self.status.current.value = String(Number(categoryThisPage[0].status))
         }).catch(function (error) {
 
         })
@@ -83,6 +86,14 @@ class CategoryEdit extends Component {
                                 ref={this.name}
 
                             />
+                            <br />
+                            <label for="inputStatus">
+                                Status:
+                                    </label>
+                            <select ref={this.status} class="form-control" >
+                                <option value='1'> Aktif</option>
+                                <option value='0'> Non-Aktif</option>
+                            </select>
                             <br />
                             <button class="btn button-green btn-lg btn-primary btn-block rounded-pill" type="submit" style={{ padding: "6px" }}
                                 onClick={e => this.editCategory(e, this.props.match.params.category_id)}>

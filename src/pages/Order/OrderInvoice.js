@@ -1,35 +1,53 @@
 import React, { Component } from "react";
 import {
     MDBBtn,
-    MDBContainer,
-    MDBModal,
-    MDBModalBody,
-    MDBModalHeader
+    MDBContainer
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
 import { actions } from "../../store";
-import { Redirect, Link } from 'react-router-dom'
+import {
+    Redirect,
+    Link
+} from 'react-router-dom'
 import Header from '../../components/Header'
 import './Order.css'
+import Swal from 'sweetalert2'
 
 class OrderInvoice extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalPhoto: false,
-            order_invoice: [{ User: { name: null }, Order: { adress: null }, Details: [] }]
+            order_invoice: [{ User: { name: null }, Order: { adress: null }, Details: [] }],
+            lat: "",
+            lng: "",
+            adress: "",
+            additialNotes: ""
         }
     }
 
-
-    toggleModalPhoto = () => {
-        this.setState({
-            modalPhoto: !this.state.modalPhoto
-        });
+    // function to pop up user address
+    openGoogleMap = (e) => {
+        Swal.fire({
+            html: `<iframe 
+                width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
+                scrolling="no" marginheight="0" marginwidth="0" 
+                src="https://maps.google.com/maps?q=${this.state.lat},${this.state.lng}&hl=es;z=17&amp;output=embed"
+                >
+                </iframe>`
+        })
     }
 
-    componentDidMount = () => {
+    // Function to pop up image
+    openImage = (e, url) => {
+        Swal.fire({
+            imageUrl: `${url}`,
+            imageWidth: '100%',
+            width: '80vw'
+        })
+    }
+
+    componentDidMount = async () => {
         const self = this;
         let config = {
             method: "GET",
@@ -38,7 +56,7 @@ class OrderInvoice extends Component {
                 Authorization: "Bearer " + localStorage.getItem("admin_token")
             }
         }
-        axios(config)
+        await axios(config)
             .then(async function (response) {
                 let order_id = parseInt(self.props.match.params.order_id)
                 let order = response.data.filter(function (obj) {
@@ -49,6 +67,12 @@ class OrderInvoice extends Component {
             .catch(function (error) {
                 console.log(error)
             })
+        const jsonAdress = JSON.parse(this.state.order_invoice[0].Order.adress)
+        const lat = jsonAdress["lat"]
+        const lng = jsonAdress["lng"]
+        const adress = jsonAdress["adress"]
+        const additialNotes = jsonAdress["additialNotes"]
+        this.setState({ lat, lng, adress, additialNotes })
 
     }
 
@@ -77,33 +101,40 @@ class OrderInvoice extends Component {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="bold-text">Alamat</td>
-                                        <td>{this.state.order_invoice[0].Order.adress}</td>
-                                    </tr>
-                                    <tr>
                                         <td className="bold-text">Waktu Penjemputan</td>
                                         <td>{String(this.state.order_invoice[0].Order.time).slice(0, 26)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="bold-text">Alamat</td>
+                                        <td>{this.state.adress}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="bold-text">Catatan</td>
+                                        <td>{this.state.additialNotes}</td>
                                     </tr>
                                     <tr>
                                         <td className="bold-text">Foto</td>
                                         <td>
                                             <MDBBtn style={{ padding: "4px" }}
                                                 className="button-white  btn btn-lg btn-block rounded-pill"
-                                                onClick={this.toggleModalPhoto}>
+                                                onClick={e => this.openImage(e, this.state.order_invoice[0].Order.photo)}>
                                                 Lihat
-                                                    </MDBBtn>
-                                            <MDBModal isOpen={this.state.modalPhoto} toggle={this.toggleModalPhoto} centered>
-                                                <MDBModalHeader toggle={this.toggleModalPhoto} ></MDBModalHeader>
-                                                <MDBModalBody className="text-center">
-                                                    <img src={this.state.order_invoice[0].Order.photo} alt={this.state.order_invoice[0].Order.photo} />
-                                                </MDBModalBody>
-                                            </MDBModal>
+                                            </MDBBtn>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="bold-text">Google Map</td>
+                                        <td>
+                                            <MDBBtn style={{ padding: "4px" }}
+                                                className="button-white  btn btn-lg btn-block rounded-pill"
+                                                onClick={e => this.openGoogleMap(e)}>
+                                                Lihat
+                                            </MDBBtn>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-
                         <div className="table-responsive">
                             <table class="table ">
                                 <thead className="thead-green">
@@ -118,7 +149,6 @@ class OrderInvoice extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     {this.state.order_invoice[0].Details.map((elm, key) => {
                                         return (
                                             <tr>
@@ -129,7 +159,6 @@ class OrderInvoice extends Component {
                                             </tr>
                                         )
                                     })}
-
                                     <tr>
                                         <th colSpan="1" className="text-right">Total:</th>
                                         <td>{this.state.order_invoice[0].Order.total_qty} kg</td>

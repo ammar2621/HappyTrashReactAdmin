@@ -152,17 +152,13 @@ class Reward extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
+            .then(async response => {
                 Swal.fire({
                     type: 'success',
                     title: 'Success',
-                    text: 'Berhasil Menambahkan Jenis Sampah!'
+                    text: 'Berhasil Menambahkan Hadiah!'
                 })
-                this.name.current.value = ''
-                this.stock.current.value = ''
-                this.point.current.value = ''
-                this.setState({ urlPhoto: "", progress: 0 })
-                self.componentDidMount();
+                window.location.reload();
             })
             .catch(error => {
             });

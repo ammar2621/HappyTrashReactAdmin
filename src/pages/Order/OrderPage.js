@@ -24,9 +24,6 @@ class OrderPage extends Component {
         super(props);
         this.state = {
             activeItem: "1",
-            modalUser: false,
-            modalAddress: false,
-            modalPhoto: false,
             allOrder: [],
             waitingOrder: [],
             confirmedOrder: [],
@@ -181,26 +178,6 @@ class OrderPage extends Component {
         }
     }
 
-    // Function to pop up user information
-    openUserInformation = async (e, id) => {
-        const self = this;
-        // to get the all trashes 
-        await axios
-            .get(this.props.url + `/v1/users/admin/${id}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
-                    }
-                })
-            .then(async response => {
-                Swal.fire({
-                    html: `<p>Nama: ${response.data.name} <br> No HP: ${response.data.mobile_number} </p>`
-                })
-            })
-            .catch(error => {
-            });
-    }
-
     // making the tab enabled
     toggle = tab => e => {
         if (this.state.activeItem !== tab) {
@@ -219,9 +196,33 @@ class OrderPage extends Component {
 
     // function to pop up user address
     openAddress = (e, address) => {
-        Swal.fire({
-            html: `<p>Map sedang dalam proses pembuatan ${address} </p>`
-        })
+        try {
+            const jsonAdress = JSON.parse(address)
+            const lat = jsonAdress["lat"]
+            const lng = jsonAdress["lng"]
+            const adress = jsonAdress["adress"]
+            const additialNotes = jsonAdress["additialNotes"]
+            Swal.fire({
+                html: `<iframe 
+                width="300" height="450" frameborder="0" style="border:0;" allowfullscreen=""
+                scrolling="no" marginheight="0" marginwidth="0" 
+                src="https://maps.google.com/maps?q=${lat},${lng}&hl=es;z=17&amp;output=embed"
+                >
+                </iframe>
+                <br>
+                <p>${adress}
+                <br>
+                <br>
+                Catatan: ${additialNotes}</p>`
+            })
+        } catch (error) {
+            Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'Data input tidak sesuai format! Tidak bisa menampilkan alamat'
+            })
+        }
+
     }
 
     // function to make order status become confirmed
@@ -235,7 +236,7 @@ class OrderPage extends Component {
             },
             buttonsStyling: false
         })
-        // making the confirmaton first before it deleted
+        // making the confirmaton first before it added
         swalWithBootstrapButtons.fire({
             title: 'Apakah anda yakin?',
             text: "",
@@ -258,6 +259,11 @@ class OrderPage extends Component {
                 }
                 axios(config)
                     .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Telah mengonfirmasi order!'
+                        })
                         self.componentDidMount();
                     })
                     .catch(function (error) {
@@ -310,6 +316,11 @@ class OrderPage extends Component {
                 }
                 axios(config)
                     .then(function (response) {
+                        Swal.fire({
+                            type: 'success',
+                            title: 'Success',
+                            text: 'Order berhasil ditolak! '
+                        })
                         self.componentDidMount();
                     })
                     .catch(function (error) {
@@ -339,7 +350,6 @@ class OrderPage extends Component {
         }
         await axios(config)
             .then(function (response) {
-                console.log(response.data)
                 let waitingOrder = response.data.filter(function (order) {
                     return order.Order.status == 'waiting'
                 })
@@ -573,8 +583,8 @@ class OrderPage extends Component {
                                             <tr>
                                                 <th scope="col">No</th>
                                                 <th scope="col">Nama</th>
-                                                <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Waktu Dibuat</th>
+                                                <th scope="col">Waktu Penjemputan</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Alamat</th>
                                                 <th scope="col">Foto</th>
@@ -592,8 +602,8 @@ class OrderPage extends Component {
                                                                     {elm.User.name}
                                                                 </a>
                                                             </td>
-                                                            <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {elm.Order.created_at.slice(0, 26)}</td>
+                                                            <td valign="bottom"> {elm.Order.time.slice(0, 26)}</td>
                                                             <td valign="bottom"> {this.state.statusOrder[key]}</td>
                                                             <td valign="bottom">
                                                                 <MDBBtn style={{ padding: "4px" }}

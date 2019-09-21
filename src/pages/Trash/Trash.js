@@ -228,17 +228,13 @@ class Trash extends Component {
                         Authorization: "Bearer " + String(localStorage.getItem('admin_token'))
                     }
                 })
-            .then(response => {
-                Swal.fire({
+            .then(async response => {
+                await Swal.fire({
                     type: 'success',
                     title: 'Success',
                     text: 'Berhasil Menambahkan Jenis Sampah!'
                 })
-                this.name.current.value = ''
-                this.price.current.value = ''
-                this.point.current.value = ''
-                this.setState({ urlPhoto: "", progress: 0 })
-                this.componentDidMount();
+                window.location.reload();
             })
             .catch(error => {
             });
