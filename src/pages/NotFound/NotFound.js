@@ -21,7 +21,7 @@ class NotFound extends React.Component {
                 >
                     <div style={{ padding: "200px 0px 0px 0px" }}>
                         <h1
-                            className="text-center animated fadeInDown"
+                            className="text-center"
                             style={{
                                 fontSize: "32px"
                             }}
@@ -31,7 +31,7 @@ class NotFound extends React.Component {
                             Halaman Tidak Ada
                     </h1>
                         <h5
-                            className="text-center animated fadeInDown"
+                            className="text-center"
                         >
                             Klik <Link to="/">disini</Link> untuk ke beranda
                         </h5>
