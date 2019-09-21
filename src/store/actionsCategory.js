@@ -70,6 +70,35 @@ const actionsCategory = (store) => ({
     }).catch((error) => {
     });
   },
+
+  // to edit/put the new category name
+  editCategory(state, id, name, status) {
+    const regex = /^[^\s]+(\s+[^\s]+)*$/;
+    if (!regex.test(name) | name === '') {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Jangan spasi/kosong!!',
+      });
+      return false;
+    }
+    const self = this;
+    const config = {
+      method: 'PUT',
+      url: `${store.getState().url}/v1/trash_category/${id}`,
+      data: {
+        category_name: name,
+        status,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('admin_token')}`,
+      },
+    };
+    axios(config).then((response) => {
+    }).catch((error) => {
+    });
+  },
+
 });
 
 export default actionsCategory;
