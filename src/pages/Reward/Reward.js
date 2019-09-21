@@ -10,7 +10,6 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store/store";
 import {
     Redirect,
     Link
@@ -19,7 +18,7 @@ import Header from '../../components/Header'
 import './Reward.css'
 import Swal from 'sweetalert2'
 import { storage } from "../../firebase/index";
-import { swalError, swalSuccess } from "../../store/Swal"
+import { swalError } from "../../store/Swal"
 import actionsReward from "../../store/actionsReward";
 
 class Reward extends Component {
@@ -377,7 +376,7 @@ class Reward extends Component {
                                     <table class="table ">
                                         <thead>
                                             <tr>
-                                                <th scope="col">ID</th>
+                                                <th scope="col">No</th>
                                                 <th scope="col">Nama</th>
                                                 <th scope="col">Poin</th>
                                                 <th scope="col">Stok</th>
@@ -390,7 +389,7 @@ class Reward extends Component {
                                             {this.state.reward.map((item, index) => {
                                                 return (
                                                     <tr>
-                                                        <td> {item.id} </td>
+                                                        <td> {index + 1} </td>
                                                         <td> {item.name}</td>
                                                         <td> {item.point_to_claim}</td>
                                                         <td> {item.stock} Pcs</td>
@@ -473,4 +472,4 @@ class Reward extends Component {
     }
 }
 
-export default connect('url', actions, actionsReward)(Reward);
+export default connect('url', actionsReward)(Reward);

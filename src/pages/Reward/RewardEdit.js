@@ -4,11 +4,12 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store/store";
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import Swal from 'sweetalert2'
 import { storage } from "../../firebase/index";
+import actionsReward from "../../store/actionsReward";
+import { withRouter } from "react-router-dom"
 
 class RewardEdit extends Component {
     constructor(props) {
@@ -78,64 +79,18 @@ class RewardEdit extends Component {
     };
 
     // edit trash to database 
-    doEditReward = e => {
+    doEditReward = async e => {
         e.preventDefault();
-        const regexName = /^[^\s]+(\s+[^\s]+)*$/;
-        const regexNumber = /^\d+$/;
-        // check the form validation
-        if (!regexName.test(this.name.current.value) | this.name.current.value === "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Nama tidak boleh spasi/kosong!!'
-            })
-            return false;
-        } else if (!regexNumber.test(this.point.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Angka Untuk Poin!'
-            })
-            return;
-        } else if (!regexNumber.test(this.stock.current.value)) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gunakan Angka untuk Stok!'
-            })
-            return;
+        const data = {
+            point_to_claim: Number(this.point.current.value),
+            name: this.name.current.value,
+            stock: Number(this.stock.current.value),
+            photo: this.state.urlPhoto,
+            status: Number(this.status.current.value)
         }
-        const self = this;
-        let config = {
-            method: "PUT",
-            url: self.props.url + "/v1/rewards/" + self.props.match.params.reward_id,
-            data: {
-                point_to_claim: Number(this.point.current.value),
-                name: this.name.current.value,
-                stock: Number(this.stock.current.value),
-                photo: this.state.urlPhoto,
-                status: Number(this.status.current.value)
-            },
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
-            }
-        }
-        axios(config).then(function (response) {
-            Swal.fire({
-                type: 'success',
-                title: 'Success',
-                text: 'Berhasil Mengganti!'
-            })
-            self.props.history.push('/reward')
-        }).catch(function (error) {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Gagal!'
-            })
-        })
+        await this.props.doEditReward(data, this.props.match.params.reward_id)
+        this.props.history.push('/reward')
     }
-
 
     // function operate after renderred, to get the list of rewardes and category of rewardes
     componentDidMount = async () => {
@@ -241,7 +196,6 @@ class RewardEdit extends Component {
                             </button>
                             <br />
                         </form>
-
                     </MDBContainer>
                 </div >
             );
@@ -250,4 +204,4 @@ class RewardEdit extends Component {
         }
     }
 }
-export default connect('url', actions)(RewardEdit);
+export default connect('url', actionsReward)(withRouter(RewardEdit));
