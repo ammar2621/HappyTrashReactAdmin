@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store";
 import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
-import Swal from 'sweetalert2'
+import actionsCategory from "../../store/actionsCategory"
+import { withRouter } from "react-router-dom"
 
 class CategoryEdit extends Component {
     constructor(props) {
@@ -16,33 +16,10 @@ class CategoryEdit extends Component {
     }
 
     // to edit/put the new category name
-    editCategory = (e, id) => {
+    editCategory = async (e, id) => {
         e.preventDefault();
-        const regex = /^[^\s]+(\s+[^\s]+)*$/;
-        if (!regex.test(this.name.current.value) | this.name.current.value === "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Jangan spasi/kosong!!'
-            })
-            return false;
-        }
-        const self = this;
-        let config = {
-            method: "PUT",
-            url: self.props.url + "/v1/trash_category/" + id,
-            data: {
-                category_name: self.name.current.value,
-                status: !!Number(self.status.current.value)
-            },
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
-            }
-        }
-        axios(config).then(function (response) {
-            self.props.history.push('/category')
-        }).catch(function (error) {
-        })
+        await this.props.editCategory(id, this.name.current.value, !!Number(this.status.current.value))
+        this.props.history.push("/category")
     }
 
     // function that works after the dom renderred
@@ -109,4 +86,4 @@ class CategoryEdit extends Component {
     }
 }
 
-export default connect("url", actions)(CategoryEdit);
+export default connect("url", actionsCategory)(withRouter(CategoryEdit));

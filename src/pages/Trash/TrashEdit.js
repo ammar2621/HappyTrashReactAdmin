@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { MDBContainer } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store";
+import { actions } from "../../store/store";
 import { Redirect } from 'react-router-dom'
 import Header from '../../components/Header'
 import Swal from 'sweetalert2'
@@ -150,9 +150,16 @@ class TrashEdit extends Component {
                     }
                 })
             .then(response => {
-                this.setState({ category: response.data })
+                console.log(response.data)
+                response.data.map((item, index) => {
+                    if (item.status === true) {
+                        const joined = this.state.category.concat(item);
+                        this.setState({ category: joined })
+                    }
+                })
             })
             .catch(error => {
+                console.log(error)
             });
         // to get the all trashes 
         await axios

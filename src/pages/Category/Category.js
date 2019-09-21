@@ -9,12 +9,11 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'
 import Garbage from './img/garbage.png'
-import Swal from 'sweetalert2'
+import actionsCategory from "../../store/actionsCategory"
 
 class Category extends Component {
 
@@ -60,6 +59,11 @@ class Category extends Component {
                             this.setState({ status: joined })
                         }
                     })
+                    if (this.state.categories.length === 0) {
+                        this.setState({ notFoundCategory: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundCategory: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -89,6 +93,11 @@ class Category extends Component {
                             this.setState({ status: joined })
                         }
                     })
+                    if (this.state.categories.length === 0) {
+                        this.setState({ notFoundCategory: "---Tabel Kosong---" })
+                    } else {
+                        this.setState({ notFoundCategory: "" })
+                    }
                 })
                 .catch(error => {
                 });
@@ -109,38 +118,11 @@ class Category extends Component {
     };
 
     // function to submit/add category to database
-    doSubmit = e => {
+    doSubmit = async e => {
         e.preventDefault();
-        const regex = /^[^\s]+(\s+[^\s]+)*$/;
-        if (!regex.test(this.name.current.value) | this.name.current.value === "") {
-            Swal.fire({
-                type: 'error',
-                title: 'Oops...',
-                text: 'Jangan spasi/kosong!!'
-            })
-            return false;
-        }
-        const self = this;
-        let config = {
-            method: "POST",
-            url: self.props.url + "/v1/trash_category",
-            data: {
-                category_name: self.name.current.value
-            },
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("admin_token")
-            }
-        };
-        axios(config).then(function (response) {
-            Swal.fire({
-                type: 'success',
-                title: 'Success',
-                text: 'Berhasil Menambahkan Kategori'
-            })
-            self.name.current.value = ""
-            self.componentDidMount()
-        }).catch(function (error) {
-        })
+        await this.props.doSubmit(this.name.current.value)
+        this.name.current.value = ""
+        this.componentDidMount();
     }
 
     // function that works after react rendered/mounted
@@ -154,6 +136,7 @@ class Category extends Component {
             }
         }
         axios(config).then(async (response) => {
+            await self.setState({ categories: [], status: [] })
             await self.setState({ categories: response.data })
             await response.data.map((item, index) => {
                 if (item.status === false) {
@@ -174,56 +157,10 @@ class Category extends Component {
     }
 
     // function to delete category from database
-    deleteCategory = (e, id) => {
+    deleteCategory = async (e, id) => {
         e.preventDefault();
-        const self = this;
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-        // making the confirmaton first before it deleted
-        swalWithBootstrapButtons.fire({
-            title: 'Apakah anda yakin?',
-            text: "Anda tidak bisa mengembalikan ketika sudah dihapus",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, hapus saja!!',
-            cancelButtonText: 'Tidak!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                let config = {
-                    method: "DELETE",
-                    url: self.props.url + "/v1/trash_category/" + id,
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("admin_token")
-                    }
-                }
-                axios(config)
-                    .then(function (response) {
-                        swalWithBootstrapButtons.fire(
-                            'Terhapus',
-                            'Berhasil dihapus',
-                            'success'
-                        )
-                        self.componentDidMount()
-                    })
-                    .catch(function (error) {
-                    })
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Tidak Jadi',
-                    'Tetap aman :)',
-                    'error'
-                )
-            }
-        })
+        await this.props.deleteCategory(id)
+        this.componentDidMount();
     }
 
     render() {
@@ -342,4 +279,4 @@ class Category extends Component {
     }
 }
 
-export default connect("url", actions)(Category);
+export default connect("url", actionsCategory)(Category);

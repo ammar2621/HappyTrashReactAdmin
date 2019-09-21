@@ -11,7 +11,7 @@ import {
 import { Link } from 'react-router-dom'
 import Logo from './img/new_white.png'
 import { connect } from "unistore/react";
-import { actions } from "../store";
+import { actions } from "../store/store";
 import Swal from 'sweetalert2'
 import './index.css'
 

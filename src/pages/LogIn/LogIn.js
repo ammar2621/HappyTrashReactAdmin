@@ -8,7 +8,7 @@ import {
 import { Redirect } from 'react-router-dom'
 import axios from 'axios';
 import { connect } from 'unistore/react';
-import { actions } from '../../store';
+import { actions } from '../../store/store';
 import './LogIn.css'
 import Swal from 'sweetalert2'
 
