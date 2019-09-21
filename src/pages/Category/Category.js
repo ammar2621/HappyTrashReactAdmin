@@ -9,7 +9,7 @@ import {
 } from "mdbreact";
 import axios from "axios";
 import { connect } from "unistore/react";
-import { actions } from "../../store";
+import { actions } from "../../store/store";
 import { Redirect, Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import './Category.css'

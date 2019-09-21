@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "unistore/react";
-import { actions } from "../../store";
+import { actions } from "../../store/store";
 import { Link } from "react-router-dom"
 
 class NotFound extends React.Component {
