@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,700&display=swap');
+
+div {
+    font-family: 'Muli', sans-serif;
+}
+
+.button-green {
+    background-color: #49B462 !important;
+    padding: 4px !important;
+}
+
+#addbuttonreward, #addbuttonrewardedit {
+    font-weight: 700;
+    padding: 6px;
+    background-color: #49B462 !important;
+}
+
+#addbuttonreward:hover, #addbuttonrewardedit:hover {
+    background-color: #F8DB3D !important;
+    text-decoration: none;
+}
+
+#titlereward, #titlerewardedit {
+    font-weight: 700;
+}
+
+.tab-reward {
+color: black
+}
+
+.button-view-image-reward {
+    background-color: #49B462 !important;
+}

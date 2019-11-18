@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,700&display=swap');
+
+.button-green {
+    background-color: #49B462 !important;
+    padding: 4px !important;
+    color:white !important;
+}
+
+div {
+    font-family: 'Muli', sans-serif;
+}
+
+#titlereward, #titlerewardedit {
+    font-weight: 700;
+}
+
+.tab-reward {
+color: black
+}
+
+.thead-white {
+    background-color: white !important;
+    color: black !important;
+}
+
+.thead-white h4 {
+    font-weight: 700 !important;
+}
+
+.thead-green {
+    background-color: #49B462 !important;
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+
+.button-view-image-reward {
+    background-color: #49B462 !important;
+}
+
+.button-white {
+    background-color: white !important;
+    color: black !important;
+}
+
+#add-button-order {
+    font-weight: 700;
+    padding: 6px;
+    background-color: #49B462 !important;
+}
+
+#checkout-button-order {
+    font-weight: 700;
+    padding: 6px;
+}
+
+
+#add-button-order:hover, #checkout-button-order:hover{
+    font-weight: 700;
+    padding: 6px;
+    background-color: #F8DB3D !important;
+}
+
+.bold-text {
+    font-weight: 700 !important;
+}

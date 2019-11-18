@@ -1,15 +1,25 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Admin Loakin",
+  "name": "Admin Loakin",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "output-onlinepngtools.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "output-onlinepngtools.jpg",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "output-onlinepngtools.jpg",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#ffffff",
   "background_color": "#ffffff"
 }
